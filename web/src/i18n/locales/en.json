@@ -1,0 +1,42 @@
+{
+  "brand": "Link-ES",
+  "nav": {
+    "designSystem": "Design system"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "Auto",
+    "toggle": "Toggle theme"
+  },
+  "lang": {
+    "es": "Spanish",
+    "en": "English",
+    "toggle": "Toggle language"
+  },
+  "ds": {
+    "title": "Design system",
+    "subtitle": "Link-ES base tokens and components — a verified local directory where proximity leads.",
+    "colorsTitle": "Palette",
+    "colorsHint": "Every token has a light/dark pair; the top bar switch changes them live.",
+    "typographyTitle": "Typography",
+    "displayLabel": "Display — Space Grotesk (headings)",
+    "uiLabel": "UI / body — Inter",
+    "dataLabel": "Data — IBM Plex Mono (distances, prices, codes)",
+    "componentsTitle": "Components",
+    "buttonsTitle": "Buttons",
+    "primary": "Primary action",
+    "secondary": "Secondary",
+    "chipsTitle": "Filter chips",
+    "chipRadius": "Radius: 5 km",
+    "chipCategory": "Home and maintenance",
+    "cardTitle": "Provider card (directory entry)",
+    "signatureTitle": "Proximity ring (signature element)",
+    "signatureDesc": "Client dot + animated ring + dotted line to the provider with real distance.",
+    "inputsTitle": "Forms",
+    "searchPlaceholder": "Electrician, babysitter, catering…",
+    "verified": "Verified",
+    "pendingVerif": "Under review",
+    "requestBtn": "Request service"
+  }
+}

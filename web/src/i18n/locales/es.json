@@ -1,0 +1,42 @@
+{
+  "brand": "Link-ES",
+  "nav": {
+    "designSystem": "Sistema de diseño"
+  },
+  "theme": {
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Automático",
+    "toggle": "Cambiar tema"
+  },
+  "lang": {
+    "es": "Español",
+    "en": "Inglés",
+    "toggle": "Cambiar idioma"
+  },
+  "ds": {
+    "title": "Sistema de diseño",
+    "subtitle": "Tokens y componentes base de Link-ES — directorio local verificado con cercanía como protagonista.",
+    "colorsTitle": "Paleta",
+    "colorsHint": "Cada token tiene par claro/oscuro; el interruptor de la barra superior los cambia en vivo.",
+    "typographyTitle": "Tipografía",
+    "displayLabel": "Display — Space Grotesk (títulos)",
+    "uiLabel": "UI / cuerpo — Inter",
+    "dataLabel": "Datos — IBM Plex Mono (distancias, precios, códigos)",
+    "componentsTitle": "Componentes",
+    "buttonsTitle": "Botones",
+    "primary": "Acción primaria",
+    "secondary": "Secundario",
+    "chipsTitle": "Chips de filtro",
+    "chipRadius": "Radio: 5 km",
+    "chipCategory": "Hogar y mantenimiento",
+    "cardTitle": "Card de proveedor (ficha de directorio)",
+    "signatureTitle": "Anillo de proximidad (elemento de firma)",
+    "signatureDesc": "Punto del cliente + anillo animado + línea punteada hacia el proveedor con distancia real.",
+    "inputsTitle": "Formularios",
+    "searchPlaceholder": "Electricista, niñera, catering…",
+    "verified": "Verificado",
+    "pendingVerif": "En verificación",
+    "requestBtn": "Solicitar servicio"
+  }
+}
