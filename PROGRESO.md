@@ -1,6 +1,6 @@
 # Progreso de desarrollo — Link-ES
 
-> Documento de seguimiento generado el **22/08/2026**.
+> Documento de seguimiento generado el **22/08/2026** · última actualización **23/08/2026**.
 > Plan maestro: `../PlanDesarrolloApp/plan-desarrollo-link-es.md` · Referencia visual: `../PlanDesarrolloApp/mockup-link-es-v2.html`
 
 ---
@@ -47,6 +47,21 @@ link-es/
 - [x] `api`: typecheck OK · build OK · `GET /api/health` responde `{"status":"ok"}`
 - [x] Schema Prisma validado (`prisma validate`) y cliente generado
 
+### Fase 0 — Cierre de pendientes **(COMPLETADA 23/08/2026)**
+
+| Entregado | Detalle |
+|---|---|
+| **PostgreSQL levantado** | `docker compose up -d` con Postgres 16 (contenedor `link-es-db-1`, volumen persistente). El plugin Compose no venía instalado; se instaló a nivel de usuario en `~/.docker/cli-plugins/docker-compose` v5.5.0 (sin sudo) |
+| **Migración inicial** | `npx prisma migrate dev --name init` aplicada (`20260823163800_init`, 11 tablas). Config de Prisma migrada a `api/prisma.config.ts` (seed + dotenv) por deprecación de `package.json#prisma` |
+| **Seed de datos** | `api/prisma/seed.ts` idempotente: 5 categorías raíz + 12 subcategorías, 8 proveedores alrededor de San Salvador/Santa Tecla con coordenadas y radio, servicios con precio, suscripciones PRO/PREMIUM, documentos DUI pendientes para perfiles en revisión, reservas COMPLETED + reseñas coherentes con ratingAvg/ratingCount. Usuarios de prueba con contraseña `password123`: clientes `laura@linkes.dev` / `pedro@linkes.dev`, proveedores `maria.plomeria@linkes.dev` … `miguel.pintura@linkes.dev`. Ejecutar con `npx prisma db seed` |
+| **Health check real** | `GET /api/health` verifica la conexión con `SELECT 1` vía Prisma → `{"status":"ok","db":"up"}` (503 + `db:down` si falla); cierre graceful con desconexión del cliente. Añadida dependencia `bcryptjs` (hash de contraseñas del seed, se reutilizará en Fase 1) |
+
+#### Verificaciones ejecutadas
+
+- [x] Seed OK: 10 usuarios · 8 proveedores · 17 categorías · 10 servicios
+- [x] `prisma migrate status`: base de datos sincronizada
+- [x] `api`: typecheck OK · build OK · health responde con DB arriba
+
 ---
 
 ## ⬜ Lo faltante por realizar
@@ -54,9 +69,9 @@ link-es/
 ### Pendientes inmediatos (cierre de Fase 0)
 
 - [x] **Primer commit** — historial iniciado con commits por feature (chore/feat/docs)
-- [ ] **Levantar Postgres y primera migración** — `docker compose up -d` + `npx prisma migrate dev --name init`
-- [ ] **Seed de datos de prueba** (proveedores con coordenadas, categorías) para probar pantallas con datos reales
-- [ ] Conectar health check de la API a Prisma (verificar conexión real a DB)
+- [x] **Levantar Postgres y primera migración** — `docker compose up -d` + migración `init` aplicada
+- [x] **Seed de datos de prueba** — categorías, proveedores con coordenadas, servicios, reseñas
+- [x] Conectar health check de la API a Prisma — verificación real de DB con `SELECT 1`
 
 ### Roadmap restante (según sección 8 del plan)
 
@@ -75,7 +90,6 @@ link-es/
 
 ### Deuda técnica conocida
 
-- La API aún no usa Prisma en runtime (`server.ts` solo tiene health endpoint)
 - No hay tests automatizados todavía (solo lint/typecheck/build en CI)
 - El bundle JS de web (~300 kB) se puede reducir con code-splitting cuando crezcan las rutas
 - SEO: la SPA no hace SSR; si el catálogo público necesita posicionamiento, migrar rutas públicas a React Router v7 modo framework (plan sección 4)
@@ -88,4 +102,5 @@ link-es/
 cd web && npm run dev        # Frontend → http://localhost:5173
 cd api && npm run dev        # API      → http://localhost:4000/api/health
 docker compose up -d         # PostgreSQL local (raíz del repo)
+cd api && npx prisma db seed # Datos de prueba (categorías, proveedores, reseñas)
 ```
