@@ -49,7 +49,39 @@
     "clientDesc": "Busco y contrato profesionales",
     "provider": "Proveedor",
     "providerDesc": "Ofrezco mis servicios profesionales",
-    "becomeProviderHint": "Quieres ofrecer tus servicios: el registro de proveedor estará disponible próximamente."
+    "becomeProviderHint": "Ofrece tus servicios y aparece en las búsquedas cercanas.",
+    "becomeProviderCta": "Convertirme en proveedor"
+  },
+  "provider": {
+    "onboardingTitle": "Conviértete en proveedor",
+    "onboardingSubtitle": "Completa los datos de tu negocio para aparecer en el directorio. La verificación de documentos la revisa nuestro equipo.",
+    "businessTitle": "Datos del negocio",
+    "businessName": "Nombre del negocio",
+    "headline": "Frase corta",
+    "headlinePlaceholder": "Ej. Plomería residencial con 10 años de experiencia",
+    "bio": "Descripción",
+    "categoriesTitle": "Categorías de servicio",
+    "categoriesHint": "Elige hasta 5 categorías donde ofreces tus servicios.",
+    "areaTitle": "Zona de cobertura",
+    "radius": "Radio de servicio",
+    "areaMapHint": "El mapa interactivo para afinar tu zona llegará con la búsqueda por cercanía.",
+    "documentsTitle": "Documentos de verificación",
+    "documentsHint": "Sube tu identificación para comenzar la verificación. Formatos: PDF, JPG o PNG (máx. 5 MB).",
+    "docId": "Identificación oficial (DUI)",
+    "docLicense": "Licencia o permiso",
+    "docCertification": "Certificación profesional",
+    "submit": "Crear perfil de proveedor",
+    "submitting": "Creando perfil…",
+    "submitNote": "Al crear tu perfil pasarás a modo proveedor automáticamente.",
+    "status": {
+      "NONE": "Sin documentos",
+      "PENDING": "En verificación",
+      "VERIFIED": "Verificado"
+    },
+    "categories": "Categorías",
+    "documents": "Documentos",
+    "docsPending": "en revisión",
+    "docsReviewed": "revisados"
   },
   "profile": {
     "editTitle": "Datos personales",

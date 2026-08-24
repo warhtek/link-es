@@ -53,9 +53,14 @@ export function clearSession(): void {
   localStorage.removeItem(REFRESH_KEY)
 }
 
-async function request<T>(path: string, init: RequestInit = {}, retried = false): Promise<T> {
+async function request<T>(
+  path: string,
+  init: RequestInit = {},
+  retried = false,
+): Promise<T> {
   const headers = new Headers(init.headers)
-  if (init.body) headers.set('Content-Type', 'application/json')
+  // Con FormData el navegador fija Content-Type con el boundary; no tocarlo.
+  if (init.body && !(init.body instanceof FormData)) headers.set('Content-Type', 'application/json')
   const access = getAccessToken()
   if (access) headers.set('Authorization', `Bearer ${access}`)
 
@@ -137,4 +142,51 @@ export const api = {
       method: 'PATCH',
       body: JSON.stringify({ mode }),
     }),
+  categories: () =>
+    request<CategoryNode[]>('/categories'),
+  onboardingProvider: (input: {
+    businessName: string
+    headline?: string
+    bio?: string
+    categoryIds: string[]
+    city: string
+    serviceRadiusKm?: number
+  }) => request<OnboardingResponse>('/providers/onboarding', { method: 'POST', body: JSON.stringify(input) }),
+  providerMe: () => request<ProviderProfile>('/providers/me'),
+  uploadDocument: (file: File, type: string) => {
+    const form = new FormData()
+    form.append('file', file)
+    form.append('type', type)
+    return request<VerificationDocument>('/providers/me/documents', { method: 'POST', body: form })
+  },
+}
+
+export interface CategoryNode {
+  id: string
+  name: string
+  slug: string
+  children: { id: string; name: string; slug: string }[]
+}
+
+export interface VerificationDocument {
+  id: string
+  type: 'ID' | 'LICENSE' | 'CERTIFICATION' | 'OTHER'
+  fileUrl: string
+  status: 'PENDING' | 'APPROVED' | 'REJECTED'
+  createdAt: string
+}
+
+export interface ProviderProfile {
+  id: string
+  businessName: string
+  headline: string | null
+  bio: string | null
+  verificationStatus: 'NONE' | 'PENDING' | 'VERIFIED'
+  serviceRadiusKm: number
+  documents: VerificationDocument[]
+  categories: CategoryNode[]
+}
+
+interface OnboardingResponse extends SessionResponse {
+  profile: ProviderProfile
 }

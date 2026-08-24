@@ -4,6 +4,7 @@ import { DesignSystemPage } from './pages/DesignSystem'
 import { LoginPage } from './pages/Login'
 import { RegistroPage } from './pages/Registro'
 import { PerfilPage } from './pages/Perfil'
+import { OnboardingProveedorPage } from './pages/proveedor/Onboarding'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/registro" element={<RegistroPage />} />
         <Route path="/perfil" element={<PerfilPage />} />
+        <Route path="/proveedor/onboarding" element={<OnboardingProveedorPage />} />
         <Route path="*" element={<Navigate to="/design-system" replace />} />
       </Routes>
     </div>

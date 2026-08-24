@@ -49,7 +49,39 @@
     "clientDesc": "I look for and hire professionals",
     "provider": "Provider",
     "providerDesc": "I offer professional services",
-    "becomeProviderHint": "Want to offer your services? Provider registration is coming soon."
+    "becomeProviderHint": "Offer your services and appear in nearby searches.",
+    "becomeProviderCta": "Become a provider"
+  },
+  "provider": {
+    "onboardingTitle": "Become a provider",
+    "onboardingSubtitle": "Complete your business details to appear in the directory. Document verification is reviewed by our team.",
+    "businessTitle": "Business details",
+    "businessName": "Business name",
+    "headline": "Short tagline",
+    "headlinePlaceholder": "e.g. Residential plumbing with 10 years of experience",
+    "bio": "Description",
+    "categoriesTitle": "Service categories",
+    "categoriesHint": "Pick up to 5 categories where you offer your services.",
+    "areaTitle": "Coverage area",
+    "radius": "Service radius",
+    "areaMapHint": "The interactive map to fine-tune your zone arrives with proximity search.",
+    "documentsTitle": "Verification documents",
+    "documentsHint": "Upload your ID to start verification. Formats: PDF, JPG or PNG (max 5 MB).",
+    "docId": "Official ID",
+    "docLicense": "License or permit",
+    "docCertification": "Professional certification",
+    "submit": "Create provider profile",
+    "submitting": "Creating profile…",
+    "submitNote": "When your profile is created you will switch to provider mode automatically.",
+    "status": {
+      "NONE": "No documents",
+      "PENDING": "Under verification",
+      "VERIFIED": "Verified"
+    },
+    "categories": "Categories",
+    "documents": "Documents",
+    "docsPending": "under review",
+    "docsReviewed": "reviewed"
   },
   "profile": {
     "editTitle": "Personal details",

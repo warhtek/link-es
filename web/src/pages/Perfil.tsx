@@ -1,8 +1,9 @@
 import { useState, type FormEvent } from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { RequireAuth } from '../components/RequireAuth'
 import { inputClass } from './Login'
-import { useLogout, useMe, useSwitchMode, useUpdateProfile } from '../lib/auth'
+import { useLogout, useMe, useProviderMe, useSwitchMode, useUpdateProfile } from '../lib/auth'
 import type { PublicUser } from '../lib/auth'
 
 export function PerfilPage() {
@@ -65,8 +66,63 @@ function PerfilContent() {
         pending={switchMode.isPending}
       />
 
+      {user.roles.includes('PROVIDER') && <ProviderCard />}
       <EditProfileForm user={user} />
     </main>
+  )
+}
+
+const VERIFICATION_STYLE: Record<string, string> = {
+  VERIFIED: 'border-moss bg-moss-soft text-moss',
+  PENDING: 'border-clay/40 bg-clay/10 text-carbon',
+  NONE: 'border-line bg-paper text-ink-soft',
+}
+
+function ProviderCard() {
+  const { t } = useTranslation()
+  const provider = useProviderMe()
+
+  if (provider.isLoading) {
+    return (
+      <section className="rounded-card border border-line bg-panel p-5 sm:p-6">
+        <p className="font-mono text-xs uppercase tracking-wide text-ink-soft">…</p>
+      </section>
+    )
+  }
+  if (!provider.data) return null
+  const { verificationStatus, documents, categories, businessName, serviceRadiusKm } = provider.data
+
+  return (
+    <section className="rounded-card border border-line bg-panel p-5 sm:p-6">
+      <div className="flex flex-wrap items-center gap-2">
+        <h2 className="font-display text-base font-semibold tracking-tight">{businessName}</h2>
+        <span
+          className={`rounded-control border px-2 py-0.5 font-mono text-[11px] uppercase tracking-wide ${VERIFICATION_STYLE[verificationStatus]}`}
+        >
+          {t(`provider.status.${verificationStatus}`)}
+        </span>
+      </div>
+
+      <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-line pt-4 text-sm sm:grid-cols-3">
+        <div>
+          <dt className="text-xs uppercase tracking-wide text-ink-soft">{t('provider.categories')}</dt>
+          <dd className="mt-1 truncate">{categories.map((c) => c.name).join(', ') || '—'}</dd>
+        </div>
+        <div>
+          <dt className="text-xs uppercase tracking-wide text-ink-soft">{t('provider.radius')}</dt>
+          <dd className="mt-1 font-mono">{serviceRadiusKm} km</dd>
+        </div>
+        <div>
+          <dt className="text-xs uppercase tracking-wide text-ink-soft">{t('provider.documents')}</dt>
+          <dd className="mt-1 font-mono">
+            {documents.length} ·{' '}
+            {documents.filter((d) => d.status === 'PENDING').length > 0
+              ? t('provider.docsPending')
+              : t('provider.docsReviewed')}
+          </dd>
+        </div>
+      </dl>
+    </section>
   )
 }
 
@@ -121,9 +177,15 @@ function ModeSwitcher({
         })}
       </div>
       {!isProvider && (
-        <p className="mt-3 rounded-control border border-line bg-paper px-3 py-2 text-xs text-ink-soft">
-          {t('mode.becomeProviderHint')}
-        </p>
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-control border border-line bg-paper px-3 py-2.5">
+          <p className="text-xs text-ink-soft">{t('mode.becomeProviderHint')}</p>
+          <Link
+            to="/proveedor/onboarding"
+            className="shrink-0 cursor-pointer rounded-control bg-moss px-3 py-1.5 text-xs font-medium text-panel hover:opacity-90"
+          >
+            {t('mode.becomeProviderCta')}
+          </Link>
+        </div>
       )}
     </section>
   )

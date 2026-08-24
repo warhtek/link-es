@@ -75,3 +75,38 @@ export function useSwitchMode() {
     onSuccess: (user) => queryClient.setQueryData(ME_KEY, user),
   })
 }
+
+export function useCategories() {
+  return useQuery({ queryKey: ['categories'], queryFn: () => api.categories(), staleTime: Infinity })
+}
+
+const PROVIDER_ME_KEY = ['providers', 'me'] as const
+
+export function useProviderMe() {
+  return useQuery({
+    queryKey: PROVIDER_ME_KEY,
+    queryFn: () => api.providerMe(),
+    retry: false,
+  })
+}
+
+// Onboarding: el backend devuelve sesión nueva (el usuario pasa a PROVIDER).
+export function useOnboardingProvider() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: Parameters<typeof api.onboardingProvider>[0]) => api.onboardingProvider(input),
+    onSuccess: ({ ...session }) => {
+      saveSession(session)
+      queryClient.invalidateQueries({ queryKey: ME_KEY })
+      queryClient.invalidateQueries({ queryKey: PROVIDER_ME_KEY })
+    },
+  })
+}
+
+export function useUploadDocument() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ file, type }: { file: File; type: string }) => api.uploadDocument(file, type),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: PROVIDER_ME_KEY }),
+  })
+}
