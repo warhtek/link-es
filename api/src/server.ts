@@ -7,6 +7,7 @@ import { userRouter } from './routes/user.routes.js'
 import { categoryRouter } from './routes/category.routes.js'
 import { providerRouter, UPLOADS_DIR } from './routes/provider.routes.js'
 import { publicProviderRouter } from './routes/public.routes.js'
+import { bookingRouter } from './routes/booking.routes.js'
 
 const app = express()
 
@@ -21,6 +22,7 @@ app.use('/api/users', userRouter)
 app.use('/api/categories', categoryRouter)
 app.use('/api/providers', providerRouter)
 app.use('/api/public/providers', publicProviderRouter)
+app.use('/api/bookings', bookingRouter)
 
 // Express 5 reenvía aquí los rechazos de handlers async.
 app.use((error: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
