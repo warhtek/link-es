@@ -89,15 +89,17 @@ cd api && npx prisma migrate dev --name <nombre>
 
 ## Estado del proyecto
 
-Completadas: setup (0), auth (1), onboarding proveedor (2), catálogo+mapa (3) y reservas (4).
+Completadas: setup (0), auth (1), onboarding proveedor (2), catálogo+mapa (3), reservas (4) y chat (5).
 - Auth: JWT access 15 min + refresh con rotación en `api/src/lib/`, rutas `/auth/*` y `/users/me*`, cliente API con auto-refresh en `web/src/lib/api.ts`, hooks en `web/src/lib/auth.tsx`.
 - Proveedor: `POST /providers/onboarding`, `POST /providers/me/documents` (multer → `api/uploads/`), `GET /providers/me`, catálogo público en `GET /categories`; página `/proveedor/onboarding` y tarjeta de proveedor en `/perfil`.
 - Catálogo: PostGIS activo (imagen postgis/postgis en docker-compose), búsqueda pública `GET /public/providers` con distancia real/filtros/orden, Leaflet+OSM/CARTO con pines propios y anillo de proximidad; páginas `/` (home), `/buscar` (lista 45%/mapa 55%) y `/proveedores/:id`.
 
 - Reservas: `POST/GET/PATCH /bookings` con máquina de estados por actor y códigos `BK-XXXXXX`; formulario de solicitud en perfil público, `/reservas` (cliente) y `/proveedor/solicitudes` (proveedor).
 
-Fases pendientes según roadmap del plan (sección 8): chat (5),
-calificaciones (6), suscripciones (7), admin (8), pulido (9).
+- Chat: `setupSocket` en `api/src/socket.ts` (JWT en handshake, salas por conversación), conversación automática al aceptar reserva, REST `/conversations*`; hooks y singleton socket en `web/src/lib/chat.ts`, página `/mensajes/:id?`.
+
+Fases pendientes según roadmap del plan (sección 8): calificaciones (6),
+suscripciones (7), admin (8), pulido (9).
 
 Cada fase terminada genera su documento de cierre `FASE-<n>-<slug>-PROGRESO.md` en la raíz;
 `PROGRESO.md` queda como índice.

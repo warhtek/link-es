@@ -12,6 +12,7 @@
 | 2. Onboarding de proveedor | [`FASE-2-ONBOARDING-PROVEEDOR-PROGRESO.md`](./FASE-2-ONBOARDING-PROVEEDOR-PROGRESO.md) |
 | 3. Catálogo público + mapa | [`FASE-3-CATALOGO-MAPA-PROGRESO.md`](./FASE-3-CATALOGO-MAPA-PROGRESO.md) |
 | 4. Reservas/Solicitudes | [`FASE-4-RESERVAS-SOLICITUDES-PROGRESO.md`](./FASE-4-RESERVAS-SOLICITUDES-PROGRESO.md) |
+| 5. Chat | [`FASE-5-CHAT-PROGRESO.md`](./FASE-5-CHAT-PROGRESO.md) |
 
 ---
 
@@ -114,6 +115,7 @@ link-es/
 - [x] ~~Fases 0, 1 y 2 completadas~~ — ver documentos por fase
 - [x] ~~Fase 3 completa~~ — ver `FASE-3-CATALOGO-MAPA-PROGRESO.md` (24/08/2026)
 - [x] ~~Fase 4 completa~~ — ver `FASE-4-RESERVAS-SOLICITUDES-PROGRESO.md` (24/08/2026)
+- [x] ~~Fase 5 completa~~ — ver `FASE-5-CHAT-PROGRESO.md` (24/08/2026)
 - [x] Remoto GitHub configurado (`warhtek/link-es`) y push al día
 - [ ] Decidir token Mapbox más adelante si se quiere el basemap premium (hoy: Leaflet+OSM sin costo)
 
@@ -126,8 +128,8 @@ link-es/
 | ~~2. Onboarding de proveedor~~ | Formulario de negocio, categorías, subida de documentos, estado de verificación | ✅ Completada |
 | ~~3. Catálogo público + mapa~~ | Home, búsqueda por texto, geolocalización, vista lista/mapa dividida, filtro de radio, perfil público · Leaflet+OSM (decisión vs Mapbox) + PostGIS `ST_DWithin` | ✅ Completada |
 | ~~4. Reservas/Solicitudes~~ | Solicitudes con código BK-, máquina de estados por actor, historial cliente/proveedor | ✅ Completada |
-| **5. Chat** | Mensajería en tiempo real (Socket.io) ligada a solicitudes · crear conversación al aceptar reserva | ⬜ Siguiente |
-| **6. Calificaciones** | Review post-servicio solo sobre reservas COMPLETED, promedio visible en catálogo | ⬜ Pendiente |
+| ~~5. Chat~~ | Socket.io con JWT en handshake, conversación nace al aceptar reserva, `/mensajes` lista+hilo en vivo | ✅ Completada |
+| **6. Calificaciones** | Review post-servicio solo sobre reservas COMPLETED, promedio visible en catálogo | ⬜ Siguiente |
 | **7. Suscripciones/pagos** | Stripe Billing + Connect, planes FREE/PRO/PREMIUM, visibilidad bloqueada sin plan activo | ⬜ Pendiente |
 | **8. Panel admin** | Revisión de documentos (endpoint ya emite PENDING), gestión de categorías/usuarios, métricas | ⬜ Pendiente |
 | **9. Pulido y performance** | Accesibilidad, estados vacíos, optimización de imágenes, PWA | ⬜ Pendiente |
