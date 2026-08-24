@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:16-alpine
+    image: postgis/postgis:16-3.5-alpine
     environment:
       POSTGRES_USER: link_es
       POSTGRES_PASSWORD: link_es
