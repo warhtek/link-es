@@ -8,3 +8,6 @@ coverage/
 
 web/dist/
 api/dist/
+
+# Documentos de verificación locales (Fase 2)
+api/uploads/
