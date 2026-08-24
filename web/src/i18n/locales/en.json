@@ -2,7 +2,49 @@
   "brand": "Link-ES",
   "nav": {
     "designSystem": "Design system",
-    "profile": "My profile"
+    "profile": "My profile",
+    "search": "Search"
+  },
+  "home": {
+    "heroTitle": "Find someone trustworthy near you",
+    "heroSubtitle": "A verified local directory of independent professionals: home, beauty, tutoring, events and more.",
+    "searchCta": "Search",
+    "categoriesTitle": "Categories",
+    "viewAll": "View all",
+    "subcategoryCount_one": "{{count}} specialty",
+    "subcategoryCount_other": "{{count}} specialties",
+    "topRatedTitle": "Top rated",
+    "exploreNearby": "Explore on the map"
+  },
+  "search": {
+    "title": "Search professionals",
+    "useMyLocation": "Use my location",
+    "locating": "Locating…",
+    "pickOnMapHint": "Location permission unavailable: tap your position on the map to calculate distances.",
+    "clientPin": "Your location (never shared with providers)",
+    "viewProfile": "View profile",
+    "wholeCity": "Whole city",
+    "allCategories": "All categories",
+    "sortBy": "Sort by",
+    "sort": {
+      "distance": "Nearest first",
+      "rating": "Top rated",
+      "bookings": "Most requested"
+    },
+    "resultsNear_one": "{{count}} professional nearby · {{radius}}{{nearest}}",
+    "resultsNear_other": "{{count}} professionals nearby · {{radius}}{{nearest}}",
+    "nearest": "nearest is",
+    "emptyTitle": "No results in this area",
+    "emptyHint": "Try another radius, remove the category filter or search a different map area.",
+    "notFoundTitle": "Provider not found",
+    "backToSearch": "Back to search",
+    "reviewCount_one": "{{count}} review",
+    "reviewCount_other": "{{count}} reviews"
+  },
+  "public": {
+    "servicesTitle": "Services & pricing",
+    "noServices": "This provider has not published services yet.",
+    "requestNote": "Service requests are enabled after signing in. The exact address is only shared once the provider accepts."
   },
   "common": {
     "optional": "optional",

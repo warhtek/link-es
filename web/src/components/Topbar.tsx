@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   getStoredTheme,
@@ -45,6 +45,7 @@ const THEME_OPTIONS = [
 export function Topbar() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
+  const location = useLocation()
   const [pref, setPref] = useState<ThemePreference>(() => getStoredTheme())
   const [resolved, setResolved] = useState<ResolvedTheme>(() =>
     document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light',
@@ -79,11 +80,24 @@ export function Topbar() {
   return (
     <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-line bg-panel px-5 py-3 max-sm:px-4">
       <div className="flex shrink-0 items-center gap-2.5">
-        <div className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-moss font-display text-[15px] font-bold text-panel">
-          L
-        </div>
-        <b className="font-display text-base font-semibold tracking-tight">{t('brand')}</b>
+        <Link to="/" className="flex items-center gap-2.5" aria-label="Link-ES">
+          <div className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-moss font-display text-[15px] font-bold text-panel">
+            L
+          </div>
+          <b className="font-display text-base font-semibold tracking-tight">{t('brand')}</b>
+        </Link>
       </div>
+
+      <nav className="ml-4 hidden items-center gap-1 md:flex">
+        <Link
+          to="/buscar"
+          className={`rounded-lg px-3 py-1.5 text-sm font-medium hover:bg-moss-soft/60 ${
+            location.pathname === '/buscar' ? 'bg-moss-soft text-moss' : ''
+          }`}
+        >
+          {t('nav.search')}
+        </Link>
+      </nav>
 
       <div className="ml-auto flex shrink-0 items-center gap-2">
         <div

@@ -165,7 +165,8 @@ export interface CategoryNode {
   id: string
   name: string
   slug: string
-  children: { id: string; name: string; slug: string }[]
+  icon: string | null
+  children: { id: string; name: string; slug: string; icon: string | null }[]
 }
 
 export interface VerificationDocument {

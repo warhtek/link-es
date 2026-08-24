@@ -2,7 +2,49 @@
   "brand": "Link-ES",
   "nav": {
     "designSystem": "Sistema de diseño",
-    "profile": "Mi perfil"
+    "profile": "Mi perfil",
+    "search": "Buscar"
+  },
+  "home": {
+    "heroTitle": "Encuentra a alguien de confianza cerca de ti",
+    "heroSubtitle": "Directorio local verificado de profesionales independientes: hogar, belleza, clases, eventos y más.",
+    "searchCta": "Buscar",
+    "categoriesTitle": "Categorías",
+    "viewAll": "Ver todas",
+    "subcategoryCount_one": "{{count}} especialidad",
+    "subcategoryCount_other": "{{count}} especialidades",
+    "topRatedTitle": "Mejor calificados",
+    "exploreNearby": "Explorar en el mapa"
+  },
+  "search": {
+    "title": "Buscar profesionales",
+    "useMyLocation": "Usar mi ubicación",
+    "locating": "Ubicando…",
+    "pickOnMapHint": "Permiso de ubicación no disponible: toca tu posición en el mapa para calcular distancias.",
+    "clientPin": "Tu ubicación (nunca se comparte con proveedores)",
+    "viewProfile": "Ver perfil",
+    "wholeCity": "Toda la ciudad",
+    "allCategories": "Todas las categorías",
+    "sortBy": "Ordenar por",
+    "sort": {
+      "distance": "Más cercanos primero",
+      "rating": "Mejor calificados",
+      "bookings": "Más solicitados"
+    },
+    "resultsNear_one": "{{count}} profesional cerca · {{radius}}{{nearest}}",
+    "resultsNear_other": "{{count}} profesionales cerca · {{radius}}{{nearest}}",
+    "nearest": "el más cercano a",
+    "emptyTitle": "No hay resultados en esta zona",
+    "emptyHint": "Prueba con otro radio, quita el filtro de categoría o busca en otra zona del mapa.",
+    "notFoundTitle": "Proveedor no encontrado",
+    "backToSearch": "Volver a la búsqueda",
+    "reviewCount_one": "{{count}} reseña",
+    "reviewCount_other": "{{count}} reseñas"
+  },
+  "public": {
+    "servicesTitle": "Servicios y precios",
+    "noServices": "Este proveedor aún no publica servicios.",
+    "requestNote": "La solicitud de servicio se habilita al iniciar sesión. La dirección exacta solo se comparte cuando el proveedor acepta."
   },
   "common": {
     "optional": "opcional",
