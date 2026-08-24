@@ -1,7 +1,14 @@
 # Progreso de desarrollo — Link-ES
 
-> Documento de seguimiento generado el **22/08/2026** · última actualización **24/08/2026**.
+> Documento de seguimiento global · última actualización **24/08/2026**.
 > Plan maestro: `../PlanDesarrolloApp/plan-desarrollo-link-es.md` · Referencia visual: `../PlanDesarrolloApp/mockup-link-es-v2.html`
+
+**Convención**: cada fase terminada genera su propio documento `FASE-<n>-<slug>-PROGRESO.md` en la raíz del repo; este archivo queda como índice y estado general.
+
+| Fase | Documento de cierre |
+|---|---|
+| 0. Setup + sistema de diseño | [`FASE-0-SETUP-PROGRESO.md`](./FASE-0-SETUP-PROGRESO.md) |
+| 1. Auth y usuarios | [`FASE-1-AUTH-USUARIOS-PROGRESO.md`](./FASE-1-AUTH-USUARIOS-PROGRESO.md) |
 
 ---
 
