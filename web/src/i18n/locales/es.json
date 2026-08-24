@@ -5,7 +5,8 @@
     "profile": "Mi perfil",
     "search": "Buscar",
     "bookings": "Mis reservas",
-    "requests": "Solicitudes"
+    "requests": "Solicitudes",
+    "messages": "Mensajes"
   },
   "home": {
     "heroTitle": "Encuentra a alguien de confianza cerca de ti",
@@ -218,5 +219,16 @@
       "COMPLETED": "Completada",
       "CANCELLED": "Cancelada"
     }
+  },
+  "chat": {
+    "title": "Mensajes",
+    "empty": "Aún no tienes conversaciones. Se crean al aceptar una solicitud de servicio.",
+    "noMessages": "Sin mensajes todavía",
+    "noMessagesYet": "Escribe el primer mensaje para coordinar el servicio.",
+    "pickOne": "Elige una conversación",
+    "back": "Volver a la lista",
+    "placeholder": "Escribe un mensaje…",
+    "open": "Ver chat",
+    "locale": "es-SV"
   }
 }

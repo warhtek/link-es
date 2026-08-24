@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { RequireAuth } from '../../components/RequireAuth'
 import { BookingStatusBadge } from '../../components/BookingStatusBadge'
 import { useBookings, useMe, useUpdateBookingStatus } from '../../lib/auth'
+import { ChatLink } from '../Mensajes'
 import type { BookingAction, ProviderBooking } from '../../lib/api'
 
 export function SolicitudesPage() {
@@ -77,6 +78,9 @@ function SolicitudesContent() {
                   ✕ {t('booking.reject')}
                 </button>
               </>
+            )}
+                {b.conversationId && (
+              <ChatLink conversationId={b.conversationId} />
             )}
             {NEXT_ACTION[b.status] && (
               <button

@@ -99,6 +99,16 @@ export function Topbar() {
         </Link>
         {user && (
           <Link
+            to="/mensajes"
+            className={`rounded-lg px-3 py-1.5 text-sm font-medium hover:bg-moss-soft/60 ${
+              location.pathname.startsWith('/mensajes') ? 'bg-moss-soft text-moss' : ''
+            }`}
+          >
+            {t('nav.messages')}
+          </Link>
+        )}
+        {user && (
+          <Link
             to="/reservas"
             className={`rounded-lg px-3 py-1.5 text-sm font-medium hover:bg-moss-soft/60 ${
               location.pathname === '/reservas' ? 'bg-moss-soft text-moss' : ''

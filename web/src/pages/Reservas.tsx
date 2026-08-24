@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { RequireAuth } from '../components/RequireAuth'
 import { BookingStatusBadge } from '../components/BookingStatusBadge'
 import { useBookings, useUpdateBookingStatus } from '../lib/auth'
+import { ChatLink } from './Mensajes'
 import type { ClientBooking } from '../lib/api'
 
 const ACTIVE: ClientBooking['status'][] = ['PENDING', 'ACCEPTED', 'IN_PROGRESS']
@@ -77,6 +78,11 @@ function ReservasContent() {
                   <dt className="uppercase tracking-wide text-ink-soft">{t('booking.addressShort')}</dt>
                   <dd>{b.address}</dd>
                 </dl>
+                {'conversationId' in b && b.conversationId && (
+                  <div className="mt-2">
+                    <ChatLink conversationId={b.conversationId} />
+                  </div>
+                )}
               </li>
             ))}
           </ul>

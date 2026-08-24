@@ -200,10 +200,12 @@ interface BookingBase {
 export interface ClientBooking extends BookingBase {
   providerBusinessName: string
   providerId: string
+  conversationId?: string | null
 }
 
 export interface ProviderBooking extends BookingBase {
   clientName: string
+  conversationId?: string | null
 }
 
 export interface CategoryNode {

@@ -5,7 +5,8 @@
     "profile": "My profile",
     "search": "Search",
     "bookings": "My bookings",
-    "requests": "Requests"
+    "requests": "Requests",
+    "messages": "Messages"
   },
   "home": {
     "heroTitle": "Find someone trustworthy near you",
@@ -218,5 +219,16 @@
       "COMPLETED": "Completed",
       "CANCELLED": "Cancelled"
     }
+  },
+  "chat": {
+    "title": "Messages",
+    "empty": "You don't have conversations yet. They are created when a service request is accepted.",
+    "noMessages": "No messages yet",
+    "noMessagesYet": "Send the first message to coordinate the service.",
+    "pickOne": "Pick a conversation",
+    "back": "Back to list",
+    "placeholder": "Type a message…",
+    "open": "Open chat",
+    "locale": "en-US"
   }
 }
