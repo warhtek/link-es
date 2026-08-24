@@ -89,9 +89,12 @@ cd api && npx prisma migrate dev --name <nombre>
 
 ## Estado del proyecto
 
-Completadas: setup (0) y auth (1) — JWT access 15 min + refresh con rotación en `api/src/lib/`,
-rutas `/auth/*` y `/users/me*`, cliente API con auto-refresh en `web/src/lib/api.ts`, hooks en
-`web/src/lib/auth.tsx`.
+Completadas: setup (0), auth (1) y onboarding de proveedor (2).
+- Auth: JWT access 15 min + refresh con rotación en `api/src/lib/`, rutas `/auth/*` y `/users/me*`, cliente API con auto-refresh en `web/src/lib/api.ts`, hooks en `web/src/lib/auth.tsx`.
+- Proveedor: `POST /providers/onboarding`, `POST /providers/me/documents` (multer → `api/uploads/`), `GET /providers/me`, catálogo público en `GET /categories`; página `/proveedor/onboarding` y tarjeta de proveedor en `/perfil`.
 
-Fases pendientes según roadmap del plan (sección 8): onboarding proveedor (2),
-catálogo+mapa (3), reservas (4), chat (5), calificaciones (6), suscripciones (7), admin (8), pulido (9).
+Fases pendientes según roadmap del plan (sección 8): catálogo+mapa (3), reservas (4),
+chat (5), calificaciones (6), suscripciones (7), admin (8), pulido (9).
+
+Cada fase terminada genera su documento de cierre `FASE-<n>-<slug>-PROGRESO.md` en la raíz;
+`PROGRESO.md` queda como índice.

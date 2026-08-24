@@ -9,6 +9,7 @@
 |---|---|
 | 0. Setup + sistema de diseño | [`FASE-0-SETUP-PROGRESO.md`](./FASE-0-SETUP-PROGRESO.md) |
 | 1. Auth y usuarios | [`FASE-1-AUTH-USUARIOS-PROGRESO.md`](./FASE-1-AUTH-USUARIOS-PROGRESO.md) |
+| 2. Onboarding de proveedor | [`FASE-2-ONBOARDING-PROVEEDOR-PROGRESO.md`](./FASE-2-ONBOARDING-PROVEEDOR-PROGRESO.md) |
 
 ---
 
@@ -109,7 +110,9 @@ link-es/
 ### Pendientes inmediatos
 
 - [x] ~~Cierre de Fase 0~~ — completado 23/08/2026
-- [x] **Fase 1 completa** — ver detalle arriba (24/08/2026)
+- [x] ~~Fase 1 completa~~ — ver `FASE-1-AUTH-USUARIOS-PROGRESO.md` (24/08/2026)
+- [x] ~~Fase 2 completa~~ — ver `FASE-2-ONBOARDING-PROVEEDOR-PROGRESO.md` (24/08/2026)
+- [x] Remoto GitHub configurado (`warhtek/link-es`) y push al día
 
 ### Roadmap restante (según sección 8 del plan)
 
@@ -117,18 +120,20 @@ link-es/
 |---|---|---|
 | ~~0. Setup~~ | Monorepo, sistema de diseño, i18n, CI | ✅ Completada |
 | ~~1. Auth y usuarios~~ | Registro/login (JWT + refresh con rotación), roles CLIENT/PROVIDER, cambio de modo, perfil básico | ✅ Completada |
-| **2. Onboarding de proveedor** | Formulario de negocio, categorías, subida de documentos, estado de verificación; habilita `PATCH /users/me/mode` a PROVIDER | ⬜ Siguiente |
-| **3. Catálogo público + mapa** | Home, búsqueda por texto, geolocalización, vista lista/mapa dividida, filtro de radio, perfil público · Mapbox GL JS + PostGIS (`ST_DWithin`) · instalar shadcn/ui | ⬜ Pendiente |
+| ~~2. Onboarding de proveedor~~ | Formulario de negocio, categorías, subida de documentos, estado de verificación | ✅ Completada |
+| **3. Catálogo público + mapa** | Home, búsqueda por texto, geolocalización, vista lista/mapa dividida, filtro de radio, perfil público · Mapbox GL JS + PostGIS (`ST_DWithin`) · instalar shadcn/ui · completar coordenadas en onboarding | ⬜ Siguiente |
 | **4. Reservas/Solicitudes** | Crear solicitud, aceptar/rechazar, estados, historial | ⬜ Pendiente |
 | **5. Chat** | Mensajería en tiempo real (Socket.io) ligada a solicitudes | ⬜ Pendiente |
 | **6. Calificaciones** | Review post-servicio, promedio visible en catálogo | ⬜ Pendiente |
 | **7. Suscripciones/pagos** | Stripe Billing + Connect, planes FREE/PRO/PREMIUM, visibilidad bloqueada sin plan activo | ⬜ Pendiente |
-| **8. Panel admin** | Revisión de documentos, gestión de categorías/usuarios, métricas | ⬜ Pendiente |
+| **8. Panel admin** | Revisión de documentos (endpoint ya emite PENDING), gestión de categorías/usuarios, métricas | ⬜ Pendiente |
 | **9. Pulido y performance** | Accesibilidad, estados vacíos, optimización de imágenes, PWA | ⬜ Pendiente |
 
 ### Deuda técnica conocida
 
-- No hay tests automatizados de integración en CI (los E2E de Fase 1 corrieron manual con puppeteer-core + Chrome del sistema; considerar subirlos al repo)
+- No hay tests automatizados de integración en CI (los E2E corrieron manual con puppeteer-core + Chrome del sistema; considerar subirlos al repo)
+- Documentos de verificación en disco local (`api/uploads/`): migrar a Cloudinary/S3 con URLs firmadas antes de producción
+- Coordenadas de cobertura del proveedor aún sin capturar en onboarding (llega el mapa en Fase 3)
 - 3 vulnerabilidades "high" reportadas por npm audit, todas en `prisma` CLI (devDependency, no runtime)
 - El bundle JS de web (~350 kB) se puede reducir con code-splitting cuando crezcan las rutas
 - Tokens JWT en localStorage: suficiente para el MVP; migrar a cookies httpOnly si se requiere protección extra contra XSS
