@@ -3,7 +3,9 @@
   "nav": {
     "designSystem": "Sistema de diseño",
     "profile": "Mi perfil",
-    "search": "Buscar"
+    "search": "Buscar",
+    "bookings": "Mis reservas",
+    "requests": "Solicitudes"
   },
   "home": {
     "heroTitle": "Encuentra a alguien de confianza cerca de ti",
@@ -49,10 +51,12 @@
   "common": {
     "optional": "opcional",
     "save": "Guardar cambios",
-    "saved": "Guardado"
+    "saved": "Guardado",
+    "cancel": "Cancelar"
   },
   "errors": {
-    "generic": "Ocurrió un error. Intenta de nuevo."
+    "generic": "Ocurrió un error. Intenta de nuevo.",
+    "validation": "Revisa los datos del formulario."
   },
   "auth": {
     "loginTitle": "Inicia sesión",
@@ -167,5 +171,52 @@
     "verified": "Verificado",
     "pendingVerif": "En verificación",
     "requestBtn": "Solicitar servicio"
+  },
+  "booking": {
+    "formTitle": "Solicitar servicio",
+    "service": "Servicio",
+    "when": "Fecha y hora",
+    "address": "Dirección del servicio",
+    "addressPlaceholder": "Colonia, calle y número",
+    "addressPrivacy": "Tu dirección exacta solo se comparte cuando el proveedor acepta la solicitud.",
+    "notes": "Detalles adicionales",
+    "send": "Enviar solicitud",
+    "sending": "Enviando…",
+    "createdTitle": "Solicitud enviada",
+    "createdNote": "El proveedor recibirá tu solicitud y podrá aceptarla o rechazarla.",
+    "goMyBookings": "Ver mis reservas",
+    "myBookings": "Mis reservas",
+    "active": "Activas",
+    "history": "Historial",
+    "noActive": "No tienes reservas activas. Encuentra un profesional en Buscar.",
+    "noHistory": "Aún no hay reservas en el historial.",
+    "cancelAction": "Cancelar reserva",
+    "with": "con",
+    "addressShort": "Dirección",
+    "requestsTitle": "Solicitudes recibidas",
+    "requestsSubtitle": "Reservas que los clientes solicitaron de tus servicios.",
+    "pendingSection": "Pendientes de respuesta",
+    "noPending": "No hay solicitudes pendientes por ahora.",
+    "workingSection": "Trabajos en curso",
+    "noWorking": "No hay trabajos aceptados ni en curso.",
+    "accept": "Aceptar",
+    "reject": "Rechazar",
+    "startJob": "Iniciar trabajo",
+    "completeJob": "Marcar completado",
+    "providerOnlyTitle": "Modo proveedor requerido",
+    "providerOnlyNote": "Conviértete en proveedor desde tu perfil para recibir solicitudes.",
+    "errors": {
+      "invalidSchedule": "La fecha debe ser futura.",
+      "invalidTransition": "Ese cambio de estado no es válido.",
+      "serviceNotFound": "El servicio ya no está disponible."
+    },
+    "status": {
+      "PENDING": "Pendiente",
+      "ACCEPTED": "Aceptada",
+      "REJECTED": "Rechazada",
+      "IN_PROGRESS": "En curso",
+      "COMPLETED": "Completada",
+      "CANCELLED": "Cancelada"
+    }
   }
 }

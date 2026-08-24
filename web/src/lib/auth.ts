@@ -110,3 +110,36 @@ export function useUploadDocument() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: PROVIDER_ME_KEY }),
   })
 }
+
+const BOOKINGS_KEY = (scope: 'client' | 'provider') => ['bookings', scope] as const
+
+// El backend devuelve la forma según el scope; los componentes filtran con
+// type guard si necesitan distinguir.
+export function useBookings(scope: 'client' | 'provider') {
+  return useQuery({
+    queryKey: BOOKINGS_KEY(scope),
+    queryFn: () => api.bookings(scope) as Promise<import('./api').ClientBooking[] | import('./api').ProviderBooking[]>,
+    enabled: Boolean(getAccessToken()),
+  })
+}
+
+export function useCreateBooking() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: api.createBooking,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['bookings'] })
+    },
+  })
+}
+
+export function useUpdateBookingStatus(scope: 'client' | 'provider') {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: import('./api').BookingAction }) =>
+      api.updateBookingStatus(id, status),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['bookings', scope] })
+    },
+  })
+}

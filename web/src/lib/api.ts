@@ -159,6 +159,51 @@ export const api = {
     form.append('type', type)
     return request<VerificationDocument>('/providers/me/documents', { method: 'POST', body: form })
   },
+  createBooking: (input: { serviceId: string; scheduledAt: string; address: string; notes?: string }) =>
+    request<{ id: string; code: string; status: string }>('/bookings', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    }),
+  bookings: (scope: 'client' | 'provider') =>
+    request<ClientBooking[] | ProviderBooking[]>(`/bookings?scope=${scope}`),
+  updateBookingStatus: (id: string, status: BookingAction) =>
+    request<{ id: string; code: string; status: string }>(`/bookings/${id}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    }),
+}
+
+export type BookingStatusValue =
+  | 'PENDING'
+  | 'ACCEPTED'
+  | 'REJECTED'
+  | 'IN_PROGRESS'
+  | 'COMPLETED'
+  | 'CANCELLED'
+
+export type BookingAction = Extract<
+  BookingStatusValue,
+  'ACCEPTED' | 'REJECTED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED'
+>
+
+interface BookingBase {
+  id: string
+  code: string
+  status: BookingStatusValue
+  scheduledAt: string
+  address: string
+  notes: string | null
+  createdAt: string
+  service: { id: string; title: string; priceFrom: number; unit: 'HOUR' | 'PROJECT' }
+}
+
+export interface ClientBooking extends BookingBase {
+  providerBusinessName: string
+  providerId: string
+}
+
+export interface ProviderBooking extends BookingBase {
+  clientName: string
 }
 
 export interface CategoryNode {

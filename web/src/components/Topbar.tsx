@@ -97,6 +97,26 @@ export function Topbar() {
         >
           {t('nav.search')}
         </Link>
+        {user && (
+          <Link
+            to="/reservas"
+            className={`rounded-lg px-3 py-1.5 text-sm font-medium hover:bg-moss-soft/60 ${
+              location.pathname === '/reservas' ? 'bg-moss-soft text-moss' : ''
+            }`}
+          >
+            {t('nav.bookings')}
+          </Link>
+        )}
+        {user?.roles.includes('PROVIDER') && (
+          <Link
+            to="/proveedor/solicitudes"
+            className={`rounded-lg px-3 py-1.5 text-sm font-medium hover:bg-moss-soft/60 ${
+              location.pathname === '/proveedor/solicitudes' ? 'bg-moss-soft text-moss' : ''
+            }`}
+          >
+            {t('nav.requests')}
+          </Link>
+        )}
       </nav>
 
       <div className="ml-auto flex shrink-0 items-center gap-2">

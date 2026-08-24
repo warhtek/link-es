@@ -1,6 +1,11 @@
+import { useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { usePublicProvider } from '../../lib/search'
+import { getAccessToken } from '../../lib/api'
+import { useCreateBooking } from '../../lib/auth'
+import { authErrorMessage } from '../../lib/errors'
+import { inputClass } from '../Login'
 
 export function PerfilPublicoPage() {
   return <PerfilPublicoContent />
@@ -120,6 +125,29 @@ function PerfilPublicoContent() {
         )}
       </section>
 
+      <RequestServiceSection services={p.services} />
+    </main>
+  )
+}
+
+function RequestServiceSection({
+  services,
+}: {
+  services: { id: string; title: string; priceFrom: number; unit: 'HOUR' | 'PROJECT' }[]
+}) {
+  const { t, i18n } = useTranslation()
+  const createBooking = useCreateBooking()
+  const [open, setOpen] = useState(false)
+  const [form, setForm] = useState({
+    serviceId: services[0]?.id ?? '',
+    scheduledAt: '',
+    address: '',
+    notes: '',
+  })
+
+  // Sin sesión el CTA lleva a login (vuelve después); con sesión se abre el formulario.
+  if (!getAccessToken()) {
+    return (
       <div className="mt-6 rounded-card border border-line bg-panel p-5 text-center sm:p-6">
         <p className="text-sm text-ink-soft">{t('public.requestNote')}</p>
         <Link
@@ -130,6 +158,140 @@ function PerfilPublicoContent() {
           {t('ds.requestBtn')}
         </Link>
       </div>
-    </main>
+    )
+  }
+
+  function onSubmit(event: FormEvent) {
+    event.preventDefault()
+    createBooking.mutate(
+      {
+        serviceId: form.serviceId,
+        scheduledAt: new Date(form.scheduledAt).toISOString(),
+        address: form.address,
+        notes: form.notes || undefined,
+      },
+      {
+        onSuccess: () => setOpen(false),
+      },
+    )
+  }
+
+  if (createBooking.isSuccess && createBooking.data) {
+    return (
+      <div className="mt-6 rounded-card border border-moss bg-moss-soft p-5 text-center sm:p-6" data-testid="booking-success">
+        <p className="font-display text-base font-semibold text-moss">{t('booking.createdTitle')}</p>
+        <p className="mt-1 font-mono text-lg">{createBooking.data.code}</p>
+        <p className="mx-auto mt-1 max-w-xs text-xs text-ink-soft">{t('booking.createdNote')}</p>
+        <Link to="/reservas" className="mt-3 inline-block text-sm font-medium text-moss hover:underline">
+          {t('booking.goMyBookings')}
+        </Link>
+      </div>
+    )
+  }
+
+  if (!open || services.length === 0) {
+    return (
+      <div className="mt-6 rounded-card border border-line bg-panel p-5 text-center sm:p-6">
+        <p className="text-sm text-ink-soft">{t('public.requestNote')}</p>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          disabled={services.length === 0}
+          data-testid="request-service"
+          className="mt-3 cursor-pointer rounded-control bg-moss px-5 py-2.5 text-sm font-medium text-panel hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {t('ds.requestBtn')}
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <section className="mt-6 rounded-card border border-line bg-panel p-5 sm:p-6" data-testid="request-form">
+      <h2 className="font-display text-base font-semibold tracking-tight">{t('booking.formTitle')}</h2>
+      <form onSubmit={onSubmit} className="mt-4 grid gap-4 sm:grid-cols-2" noValidate>
+        <label className="block space-y-1.5">
+          <span className="text-sm font-medium">{t('booking.service')}</span>
+          <select
+            value={form.serviceId}
+            onChange={(e) => setForm({ ...form, serviceId: e.target.value })}
+            required
+            className={inputClass}
+            data-testid="booking-service"
+          >
+            {services.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.title} — ${s.priceFrom.toFixed(2)}
+                {' '}
+                {i18n.language.startsWith('en')
+                  ? s.unit === 'HOUR' ? '/hr' : '/project'
+                  : s.unit === 'HOUR' ? '/hora' : '/proyecto'}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="block space-y-1.5">
+          <span className="text-sm font-medium">{t('booking.when')}</span>
+          <input
+            type="datetime-local"
+            required
+            value={form.scheduledAt}
+            onChange={(e) => setForm({ ...form, scheduledAt: e.target.value })}
+            className={inputClass}
+            data-testid="booking-date"
+          />
+        </label>
+        <label className="block space-y-1.5 sm:col-span-2">
+          <span className="text-sm font-medium">{t('booking.address')}</span>
+          <input
+            type="text"
+            required
+            minLength={5}
+            value={form.address}
+            onChange={(e) => setForm({ ...form, address: e.target.value })}
+            placeholder={t('booking.addressPlaceholder')}
+            className={inputClass}
+            data-testid="booking-address"
+          />
+          <span className="block text-xs text-ink-soft">{t('booking.addressPrivacy')}</span>
+        </label>
+        <label className="block space-y-1.5 sm:col-span-2">
+          <span className="text-sm font-medium">
+            {t('booking.notes')} ({t('common.optional')})
+          </span>
+          <textarea
+            rows={2}
+            maxLength={1000}
+            value={form.notes}
+            onChange={(e) => setForm({ ...form, notes: e.target.value })}
+            className={`${inputClass} resize-none`}
+          />
+        </label>
+
+        {createBooking.isError && (
+          <p role="alert" className="rounded-control border border-clay/40 bg-clay/10 px-3 py-2 text-sm sm:col-span-2">
+            {authErrorMessage(createBooking.error, t)}
+          </p>
+        )}
+
+        <div className="flex items-center gap-3 sm:col-span-2">
+          <button
+            type="submit"
+            disabled={createBooking.isPending}
+            data-testid="booking-submit"
+            className="cursor-pointer rounded-control bg-moss px-5 py-2.5 text-sm font-medium text-panel hover:opacity-90 disabled:cursor-wait disabled:opacity-60"
+          >
+            {createBooking.isPending ? t('booking.sending') : t('booking.send')}
+          </button>
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="cursor-pointer rounded-control border border-line bg-paper px-4 py-2.5 text-sm font-medium hover:bg-moss-soft"
+          >
+            {t('common.cancel')}
+          </button>
+        </div>
+      </form>
+    </section>
   )
 }

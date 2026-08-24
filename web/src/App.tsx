@@ -8,6 +8,8 @@ import { PerfilPage } from './pages/Perfil'
 import { BuscarPage } from './pages/Buscar'
 import { OnboardingProveedorPage } from './pages/proveedor/Onboarding'
 import { PerfilPublicoPage } from './pages/proveedores/PerfilPublico'
+import { ReservasPage } from './pages/Reservas'
+import { SolicitudesPage } from './pages/proveedor/Solicitudes'
 
 function App() {
   return (
@@ -21,7 +23,9 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/registro" element={<RegistroPage />} />
         <Route path="/perfil" element={<PerfilPage />} />
+        <Route path="/reservas" element={<ReservasPage />} />
         <Route path="/proveedor/onboarding" element={<OnboardingProveedorPage />} />
+        <Route path="/proveedor/solicitudes" element={<SolicitudesPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>

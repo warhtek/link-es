@@ -3,7 +3,9 @@
   "nav": {
     "designSystem": "Design system",
     "profile": "My profile",
-    "search": "Search"
+    "search": "Search",
+    "bookings": "My bookings",
+    "requests": "Requests"
   },
   "home": {
     "heroTitle": "Find someone trustworthy near you",
@@ -49,10 +51,12 @@
   "common": {
     "optional": "optional",
     "save": "Save changes",
-    "saved": "Saved"
+    "saved": "Saved",
+    "cancel": "Cancel"
   },
   "errors": {
-    "generic": "Something went wrong. Please try again."
+    "generic": "Something went wrong. Please try again.",
+    "validation": "Please review the form fields."
   },
   "auth": {
     "loginTitle": "Sign in",
@@ -167,5 +171,52 @@
     "verified": "Verified",
     "pendingVerif": "Under verification",
     "requestBtn": "Request service"
+  },
+  "booking": {
+    "formTitle": "Request service",
+    "service": "Service",
+    "when": "Date & time",
+    "address": "Service address",
+    "addressPlaceholder": "Neighborhood, street and number",
+    "addressPrivacy": "Your exact address is only shared once the provider accepts the request.",
+    "notes": "Additional details",
+    "send": "Send request",
+    "sending": "Sending…",
+    "createdTitle": "Request sent",
+    "createdNote": "The provider will receive your request and may accept or reject it.",
+    "goMyBookings": "View my bookings",
+    "myBookings": "My bookings",
+    "active": "Active",
+    "history": "History",
+    "noActive": "You have no active bookings. Find a professional in Search.",
+    "noHistory": "No bookings in your history yet.",
+    "cancelAction": "Cancel booking",
+    "with": "with",
+    "addressShort": "Address",
+    "requestsTitle": "Incoming requests",
+    "requestsSubtitle": "Bookings clients requested from your services.",
+    "pendingSection": "Awaiting response",
+    "noPending": "No pending requests right now.",
+    "workingSection": "Jobs in progress",
+    "noWorking": "No accepted or in-progress jobs.",
+    "accept": "Accept",
+    "reject": "Reject",
+    "startJob": "Start job",
+    "completeJob": "Mark completed",
+    "providerOnlyTitle": "Provider mode required",
+    "providerOnlyNote": "Become a provider from your profile to receive requests.",
+    "errors": {
+      "invalidSchedule": "The date must be in the future.",
+      "invalidTransition": "That status change is not valid.",
+      "serviceNotFound": "This service is no longer available."
+    },
+    "status": {
+      "PENDING": "Pending",
+      "ACCEPTED": "Accepted",
+      "REJECTED": "Rejected",
+      "IN_PROGRESS": "In progress",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    }
   }
 }
