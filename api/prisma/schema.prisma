@@ -192,10 +192,11 @@ model Booking {
   notes       String?
   createdAt   DateTime      @default(now())
 
-  client   User            @relation("ClientBookings", fields: [clientId], references: [id])
-  provider ProviderProfile @relation("ProviderBookings", fields: [providerId], references: [id])
-  service  Service         @relation(fields: [serviceId], references: [id])
-  review   Review?
+  client       User            @relation("ClientBookings", fields: [clientId], references: [id])
+  provider     ProviderProfile @relation("ProviderBookings", fields: [providerId], references: [id])
+  service      Service         @relation(fields: [serviceId], references: [id])
+  review       Review?
+  conversation Conversation?
 
   @@index([clientId, status])
   @@index([providerId, status])
@@ -219,15 +220,16 @@ model Review {
 }
 
 model Conversation {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   clientId    String
   providerId  String
-  bookingId   String?  @unique
-  createdAt   DateTime @default(now())
+  bookingId   String?   @unique
+  createdAt   DateTime  @default(now())
   lastMessage DateTime?
 
   client    User            @relation("ClientConversations", fields: [clientId], references: [id])
   provider  ProviderProfile @relation("ProviderConversations", fields: [providerId], references: [id])
+  booking   Booking?        @relation(fields: [bookingId], references: [id])
   messages  Message[]
 
   @@unique([clientId, providerId, bookingId])

@@ -71,12 +71,17 @@ bookingRouter.get('/', async (req, res) => {
     const bookings = await prisma.booking.findMany({
       where: { providerId: profile.id },
       orderBy: { createdAt: 'desc' },
-      include: { ...include, client: { select: { id: true, name: true } } },
+      include: {
+        ...include,
+        client: { select: { id: true, name: true } },
+        conversation: { select: { id: true } },
+      },
     })
-    res.json(bookings.map(({ client, service, ...b }) => ({
+    res.json(bookings.map(({ client, service, conversation, ...b }) => ({
       ...b,
       service: { ...service, priceFrom: Number(service.priceFrom) },
       clientName: client.name,
+      conversationId: conversation?.id ?? null,
     })))
   } else {
     const bookings = await prisma.booking.findMany({
@@ -85,13 +90,15 @@ bookingRouter.get('/', async (req, res) => {
       include: {
         ...include,
         provider: { select: { id: true, businessName: true } },
+        conversation: { select: { id: true } },
       },
     })
-    res.json(bookings.map(({ provider, service, ...b }) => ({
+    res.json(bookings.map(({ provider, service, conversation, ...b }) => ({
       ...b,
       service: { ...service, priceFrom: Number(service.priceFrom) },
       providerBusinessName: provider.businessName,
       providerId: provider.id,
+      conversationId: conversation?.id ?? null,
     })))
   }
 })
@@ -137,10 +144,25 @@ bookingRouter.patch('/:id/status', async (req, res) => {
     })
     return
   }
-  const updated = await prisma.booking.update({
-    where: { id: booking.id },
-    data: { status: parsed.data.status },
-    select: { id: true, code: true, status: true },
+  const updated = await prisma.$transaction(async (tx) => {
+    const result = await tx.booking.update({
+      where: { id: booking.id },
+      data: { status: parsed.data.status },
+      select: { id: true, code: true, status: true },
+    })
+    // Al aceptar nace la conversación ligada a la reserva (Fase 5).
+    if (parsed.data.status === 'ACCEPTED') {
+      const existing = await tx.conversation.findFirst({
+        where: { clientId: booking.clientId, providerId: booking.providerId, bookingId: booking.id },
+        select: { id: true },
+      })
+      if (!existing) {
+        await tx.conversation.create({
+          data: { clientId: booking.clientId, providerId: booking.providerId, bookingId: booking.id },
+        })
+      }
+    }
+    return result
   })
   res.json(updated)
 })
