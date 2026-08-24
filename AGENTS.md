@@ -89,5 +89,9 @@ cd api && npx prisma migrate dev --name <nombre>
 
 ## Estado del proyecto
 
-Fases pendientes según roadmap del plan (sección 8): auth (1), onboarding proveedor (2),
+Completadas: setup (0) y auth (1) — JWT access 15 min + refresh con rotación en `api/src/lib/`,
+rutas `/auth/*` y `/users/me*`, cliente API con auto-refresh en `web/src/lib/api.ts`, hooks en
+`web/src/lib/auth.tsx`.
+
+Fases pendientes según roadmap del plan (sección 8): onboarding proveedor (2),
 catálogo+mapa (3), reservas (4), chat (5), calificaciones (6), suscripciones (7), admin (8), pulido (9).

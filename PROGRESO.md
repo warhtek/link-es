@@ -1,6 +1,6 @@
 # Progreso de desarrollo — Link-ES
 
-> Documento de seguimiento generado el **22/08/2026** · última actualización **23/08/2026**.
+> Documento de seguimiento generado el **22/08/2026** · última actualización **24/08/2026**.
 > Plan maestro: `../PlanDesarrolloApp/plan-desarrollo-link-es.md` · Referencia visual: `../PlanDesarrolloApp/mockup-link-es-v2.html`
 
 ---
@@ -62,25 +62,56 @@ link-es/
 - [x] `prisma migrate status`: base de datos sincronizada
 - [x] `api`: typecheck OK · build OK · health responde con DB arriba
 
+### Fase 1 — Auth y usuarios **(COMPLETADA 24/08/2026)**
+
+#### Backend (`api/`)
+
+| Entregado | Detalle |
+|---|---|
+| **Modelo RefreshToken** | Migración `auth_refresh_tokens`: guarda solo hash SHA-256 del token, con expiración (30 días) y revocación. Cascada al borrar usuario |
+| **`lib/tokens.ts`** | Access token JWT de 15 min (payload: sub, roles, mode); refresh token aleatorio de 48 bytes viajando crudo al cliente y hasheado en DB |
+| **`lib/session.ts`** | Emisión de sesión completa (usuario público + tokens), **rotación de refresh** (el usado queda revocado), verificación bcrypt |
+| **Rutas auth** | `POST /auth/register` (nace CLIENT, 409 si email duplicado), `POST /auth/login` (401 genérico sin revelar si existe el email), `POST /auth/refresh`, `POST /auth/logout`, `GET /auth/me`. Validación con zod; errores JSON consistentes (`validation_error`, `email_in_use`, `invalid_credentials`) |
+| **Rutas users** | `GET/PATCH /users/me` (nombre, teléfono, dirección, ciudad, código postal, locale), `PATCH /users/me/mode` (cambio CLIENT↔PROVIDER, 403 `provider_onboarding_required` si aún no tiene el rol — habilitar en fase 2) |
+| **Infra** | `middleware/auth.ts` (`requireAuth`, `requireRole`), cliente Prisma compartido en `lib/prisma.ts`, error handler JSON global, secretos JWT en `.env` |
+
+#### Frontend (`web/`)
+
+| Entregado | Detalle |
+|---|---|
+| **TanStack Query** | Instalado + `QueryClientProvider`; clave `['me']` compartida por Topbar y páginas |
+| **`lib/api.ts`** | Cliente fetch con Bearer automático, **refresh transparente ante 401** (una sola petición concurrente vía promesa compartida), tokens en localStorage, clase `ApiError` con códigos del backend |
+| **`lib/auth.tsx`** | Hooks: `useMe`, `useLogin`, `useRegister`, `useLogout`, `useUpdateProfile`, `useSwitchMode` |
+| **Páginas** | `/login`, `/registro` (validación HTML5 + mensajes de error traducidos desde códigos API), `/perfil` (cabecera de cuenta, cambio de modo con chips tipo radio, edición de datos personales con confirmación "Guardado") |
+| **Protección de rutas** | `RequireAuth`: sin sesión → redirect a `/login` (verificado E2E) |
+| **Topbar** | Sin sesión: botones Iniciar sesión / Crear cuenta · Con sesión: avatar con inicial → `/perfil`, Salir (desktop). El idioma elegido con sesión activa se persiste también en el perfil (`PATCH users/me locale`) |
+| **Responsive** | Overflow 0px en 375/768/1280 en las tres páginas (se ocultó el indicador de tema resuelto y "Salir" en móvil; logout accesible dentro de `/perfil`) |
+
+#### Verificaciones ejecutadas
+
+- [x] curl: registro, login, me, PATCH perfil, cambio de modo (403 sin rol), refresh con rotación (reuso → 401), logout (204), credenciales inválidas (401), email duplicado (409)
+- [x] CORS preflight 5173→4000 OK
+- [x] **E2E con Chrome headless (10/10 PASS)**: registro → redirige a perfil → tokens en localStorage → recarga mantiene sesión → logout limpia → login con el usuario creado → edición de ciudad persiste tras recargar
+- [x] Responsive sin overflow en 375/768/1280 en `/login`, `/registro` y `/perfil`
+- [x] `api` typecheck+build OK · `web` lint+build OK
+
 ---
 
 ## ⬜ Lo faltante por realizar
 
-### Pendientes inmediatos (cierre de Fase 0)
+### Pendientes inmediatos
 
-- [x] **Primer commit** — historial iniciado con commits por feature (chore/feat/docs)
-- [x] **Levantar Postgres y primera migración** — `docker compose up -d` + migración `init` aplicada
-- [x] **Seed de datos de prueba** — categorías, proveedores con coordenadas, servicios, reseñas
-- [x] Conectar health check de la API a Prisma — verificación real de DB con `SELECT 1`
+- [x] ~~Cierre de Fase 0~~ — completado 23/08/2026
+- [x] **Fase 1 completa** — ver detalle arriba (24/08/2026)
 
 ### Roadmap restante (según sección 8 del plan)
 
 | Fase | Contenido | Estado |
 |---|---|---|
 | ~~0. Setup~~ | Monorepo, sistema de diseño, i18n, CI | ✅ Completada |
-| **1. Auth y usuarios** | Registro/login (JWT + refresh), roles CLIENT/PROVIDER, cambio de modo, perfil básico | ⬜ Pendiente |
-| **2. Onboarding de proveedor** | Formulario de negocio, categorías, subida de documentos, estado de verificación | ⬜ Pendiente |
-| **3. Catálogo público + mapa** | Home, búsqueda por texto, geolocalización, vista lista/mapa dividida, filtro de radio, perfil público · Mapbox GL JS + PostGIS (`ST_DWithin`) · instalar TanStack Query y shadcn/ui | ⬜ Pendiente |
+| ~~1. Auth y usuarios~~ | Registro/login (JWT + refresh con rotación), roles CLIENT/PROVIDER, cambio de modo, perfil básico | ✅ Completada |
+| **2. Onboarding de proveedor** | Formulario de negocio, categorías, subida de documentos, estado de verificación; habilita `PATCH /users/me/mode` a PROVIDER | ⬜ Siguiente |
+| **3. Catálogo público + mapa** | Home, búsqueda por texto, geolocalización, vista lista/mapa dividida, filtro de radio, perfil público · Mapbox GL JS + PostGIS (`ST_DWithin`) · instalar shadcn/ui | ⬜ Pendiente |
 | **4. Reservas/Solicitudes** | Crear solicitud, aceptar/rechazar, estados, historial | ⬜ Pendiente |
 | **5. Chat** | Mensajería en tiempo real (Socket.io) ligada a solicitudes | ⬜ Pendiente |
 | **6. Calificaciones** | Review post-servicio, promedio visible en catálogo | ⬜ Pendiente |
@@ -90,8 +121,10 @@ link-es/
 
 ### Deuda técnica conocida
 
-- No hay tests automatizados todavía (solo lint/typecheck/build en CI)
-- El bundle JS de web (~300 kB) se puede reducir con code-splitting cuando crezcan las rutas
+- No hay tests automatizados de integración en CI (los E2E de Fase 1 corrieron manual con puppeteer-core + Chrome del sistema; considerar subirlos al repo)
+- 3 vulnerabilidades "high" reportadas por npm audit, todas en `prisma` CLI (devDependency, no runtime)
+- El bundle JS de web (~350 kB) se puede reducir con code-splitting cuando crezcan las rutas
+- Tokens JWT en localStorage: suficiente para el MVP; migrar a cookies httpOnly si se requiere protección extra contra XSS
 - SEO: la SPA no hace SSR; si el catálogo público necesita posicionamiento, migrar rutas públicas a React Router v7 modo framework (plan sección 4)
 
 ---
