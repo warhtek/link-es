@@ -79,6 +79,7 @@ model User {
   createdAt    DateTime  @default(now())
   verifiedAt   DateTime?
 
+  refreshTokens   RefreshToken[]
   providerProfile ProviderProfile?
   bookingsAsClient Booking[]       @relation("ClientBookings")
   reviews          Review[]
@@ -87,6 +88,21 @@ model User {
   addresses        Address[]
 
   @@map("users")
+}
+
+// Sesiones: solo se guarda el hash del refresh token; rotación al refrescar.
+model RefreshToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
 }
 
 model ProviderProfile {
