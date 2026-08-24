@@ -24,7 +24,7 @@ Referencia visual: `../PlanDesarrolloApp/mockup-link-es-v2.html` — seguir ese 
 | Auth | JWT + refresh tokens, roles CLIENT/PROVIDER/ADMIN en el token |
 | Chat | Socket.io (fase 5) |
 | Pagos | Stripe Billing + Connect (fase 7) |
-| Mapas | Mapbox GL JS vía react-map-gl + PostGIS `ST_DWithin` (fase 3) |
+| Mapas | Leaflet + tiles OSM/CARTO (decisión Fase 3; Mapbox requería token) + PostGIS `ST_DWithin` |
 | i18n | react-i18next, diccionarios ES/EN |
 
 ## Estructura
@@ -89,11 +89,12 @@ cd api && npx prisma migrate dev --name <nombre>
 
 ## Estado del proyecto
 
-Completadas: setup (0), auth (1) y onboarding de proveedor (2).
+Completadas: setup (0), auth (1), onboarding proveedor (2) y catálogo+mapa (3).
 - Auth: JWT access 15 min + refresh con rotación en `api/src/lib/`, rutas `/auth/*` y `/users/me*`, cliente API con auto-refresh en `web/src/lib/api.ts`, hooks en `web/src/lib/auth.tsx`.
 - Proveedor: `POST /providers/onboarding`, `POST /providers/me/documents` (multer → `api/uploads/`), `GET /providers/me`, catálogo público en `GET /categories`; página `/proveedor/onboarding` y tarjeta de proveedor en `/perfil`.
+- Catálogo: PostGIS activo (imagen postgis/postgis en docker-compose), búsqueda pública `GET /public/providers` con distancia real/filtros/orden, Leaflet+OSM/CARTO con pines propios y anillo de proximidad; páginas `/` (home), `/buscar` (lista 45%/mapa 55%) y `/proveedores/:id`.
 
-Fases pendientes según roadmap del plan (sección 8): catálogo+mapa (3), reservas (4),
+Fases pendientes según roadmap del plan (sección 8): reservas (4),
 chat (5), calificaciones (6), suscripciones (7), admin (8), pulido (9).
 
 Cada fase terminada genera su documento de cierre `FASE-<n>-<slug>-PROGRESO.md` en la raíz;
