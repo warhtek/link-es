@@ -1,13 +1,25 @@
 import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from './lib/prisma.js'
+import { authRouter } from './routes/auth.routes.js'
+import { userRouter } from './routes/user.routes.js'
 
-const prisma = new PrismaClient()
 const app = express()
 
 app.use(cors({ origin: process.env.CORS_ORIGIN?.split(',') ?? true }))
 app.use(express.json())
+
+app.use('/api/auth', authRouter)
+app.use('/api/users', userRouter)
+
+// Express 5 reenvía aquí los rechazos de handlers async.
+app.use((error: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error('[link-es-api] error no manejado:', error)
+  if (!res.headersSent) {
+    res.status(500).json({ error: 'internal_error', message: 'Error interno del servidor' })
+  }
+})
 
 app.get('/api/health', async (_req, res) => {
   try {
