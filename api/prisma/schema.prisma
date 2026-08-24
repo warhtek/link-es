@@ -182,6 +182,7 @@ model Service {
 
 model Booking {
   id          String        @id @default(cuid())
+  code        String        @unique // código legible BK-XXXXXX para soporte/mono
   clientId    String
   providerId  String
   serviceId   String
