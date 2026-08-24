@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   getStoredTheme,
@@ -6,6 +7,8 @@ import {
   type ResolvedTheme,
   type ThemePreference,
 } from '../lib/theme'
+import { getAccessToken } from '../lib/api'
+import { useLogout, useMe, useUpdateProfile } from '../lib/auth'
 
 function SunIcon() {
   return (
@@ -41,10 +44,15 @@ const THEME_OPTIONS = [
 
 export function Topbar() {
   const { t, i18n } = useTranslation()
+  const navigate = useNavigate()
   const [pref, setPref] = useState<ThemePreference>(() => getStoredTheme())
   const [resolved, setResolved] = useState<ResolvedTheme>(() =>
     document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light',
   )
+  const me = useMe()
+  const logout = useLogout()
+  const updateProfile = useUpdateProfile()
+  const user = getAccessToken() ? me.data : undefined
 
   useEffect(() => {
     const observer = new MutationObserver(() => {
@@ -64,6 +72,8 @@ export function Topbar() {
 
   function changeLang(lang: string) {
     void i18n.changeLanguage(lang)
+    // La elección manual se guarda también en el perfil cuando hay sesión.
+    if (user && user.locale !== lang) updateProfile.mutate({ locale: lang as 'es' | 'en' })
   }
 
   return (
@@ -119,11 +129,57 @@ export function Topbar() {
         </div>
 
         <span
-          className="font-mono text-[11px] uppercase tracking-wide text-ink-soft"
+          className="hidden font-mono text-[11px] uppercase tracking-wide text-ink-soft sm:inline"
           data-testid="resolved-theme"
         >
           {resolved}
         </span>
+
+        {user ? (
+          <div
+            className="flex shrink-0 items-center gap-1 rounded-lg border border-line bg-paper p-0.5"
+            data-testid="session-user"
+          >
+            <Link
+              to="/perfil"
+              title={t('nav.profile')}
+              className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-moss-soft/60"
+            >
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-moss font-display text-[10px] font-bold text-panel">
+                {user.name.charAt(0).toUpperCase()}
+              </span>
+              <span className="hidden max-w-[120px] truncate text-xs font-medium sm:block">
+                {user.name.split(' ')[0]}
+              </span>
+            </Link>
+            <button
+              type="button"
+              onClick={() => {
+                logout.mutate()
+                navigate('/')
+              }}
+              title={t('auth.logout')}
+              className="hidden cursor-pointer rounded-md px-2 py-1 font-mono text-[11px] font-semibold uppercase text-ink-soft hover:bg-moss-soft/60 hover:text-carbon sm:block"
+            >
+              {t('auth.logoutShort')}
+            </button>
+          </div>
+        ) : (
+          <div className="flex shrink-0 items-center gap-2">
+            <Link
+              to="/login"
+              className="rounded-lg border border-line bg-paper px-3 py-1.5 text-xs font-medium hover:bg-moss-soft"
+            >
+              {t('auth.loginShort')}
+            </Link>
+            <Link
+              to="/registro"
+              className="hidden rounded-lg bg-moss px-3 py-1.5 text-xs font-medium text-panel hover:opacity-90 sm:block"
+            >
+              {t('auth.registerShort')}
+            </Link>
+          </div>
+        )}
       </div>
     </header>
   )

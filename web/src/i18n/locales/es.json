@@ -1,7 +1,62 @@
 {
   "brand": "Link-ES",
   "nav": {
-    "designSystem": "Sistema de diseño"
+    "designSystem": "Sistema de diseño",
+    "profile": "Mi perfil"
+  },
+  "common": {
+    "optional": "opcional",
+    "save": "Guardar cambios",
+    "saved": "Guardado"
+  },
+  "errors": {
+    "generic": "Ocurrió un error. Intenta de nuevo."
+  },
+  "auth": {
+    "loginTitle": "Inicia sesión",
+    "loginSubtitle": "Encuentra profesionales de confianza cerca de ti.",
+    "registerTitle": "Crea tu cuenta",
+    "registerSubtitle": "Regístrate como cliente; podrás convertirte en proveedor desde tu perfil.",
+    "email": "Correo electrónico",
+    "emailPlaceholder": "tu@correo.com",
+    "password": "Contraseña",
+    "passwordHint": "Mínimo 8 caracteres",
+    "name": "Nombre completo",
+    "phone": "Teléfono",
+    "loginSubmit": "Entrar",
+    "registerSubmit": "Crear cuenta",
+    "logout": "Cerrar sesión",
+    "logoutShort": "Salir",
+    "loginShort": "Iniciar sesión",
+    "registerShort": "Crear cuenta",
+    "noAccount": "¿No tienes cuenta?",
+    "goRegister": "Regístrate",
+    "hasAccount": "¿Ya tienes cuenta?",
+    "goLogin": "Inicia sesión",
+    "roles": "Roles",
+    "roleClient": "Cliente",
+    "roleBoth": "Cliente · Proveedor",
+    "errors": {
+      "invalidCredentials": "Correo o contraseña incorrectos.",
+      "emailInUse": "Ese correo ya está registrado.",
+      "validation": "Revisa los datos del formulario."
+    }
+  },
+  "mode": {
+    "title": "Modo de uso",
+    "subtitle": "Cambia entre contratar servicios (cliente) y ofrecerlos (proveedor) con la misma cuenta.",
+    "client": "Cliente",
+    "clientDesc": "Busco y contrato profesionales",
+    "provider": "Proveedor",
+    "providerDesc": "Ofrezco mis servicios profesionales",
+    "becomeProviderHint": "Quieres ofrecer tus servicios: el registro de proveedor estará disponible próximamente."
+  },
+  "profile": {
+    "editTitle": "Datos personales",
+    "address": "Dirección",
+    "postalCode": "Código postal",
+    "city": "Ciudad",
+    "since": "Miembro desde"
   },
   "theme": {
     "light": "Claro",

@@ -1,7 +1,62 @@
 {
   "brand": "Link-ES",
   "nav": {
-    "designSystem": "Design system"
+    "designSystem": "Design system",
+    "profile": "My profile"
+  },
+  "common": {
+    "optional": "optional",
+    "save": "Save changes",
+    "saved": "Saved"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again."
+  },
+  "auth": {
+    "loginTitle": "Sign in",
+    "loginSubtitle": "Find trusted professionals near you.",
+    "registerTitle": "Create your account",
+    "registerSubtitle": "Sign up as a client; you can become a provider later from your profile.",
+    "email": "Email address",
+    "emailPlaceholder": "you@email.com",
+    "password": "Password",
+    "passwordHint": "At least 8 characters",
+    "name": "Full name",
+    "phone": "Phone",
+    "loginSubmit": "Sign in",
+    "registerSubmit": "Create account",
+    "logout": "Sign out",
+    "logoutShort": "Exit",
+    "loginShort": "Sign in",
+    "registerShort": "Create account",
+    "noAccount": "Don't have an account?",
+    "goRegister": "Sign up",
+    "hasAccount": "Already have an account?",
+    "goLogin": "Sign in",
+    "roles": "Roles",
+    "roleClient": "Client",
+    "roleBoth": "Client · Provider",
+    "errors": {
+      "invalidCredentials": "Incorrect email or password.",
+      "emailInUse": "That email is already registered.",
+      "validation": "Please review the form fields."
+    }
+  },
+  "mode": {
+    "title": "Usage mode",
+    "subtitle": "Switch between hiring services (client) and offering them (provider) with the same account.",
+    "client": "Client",
+    "clientDesc": "I look for and hire professionals",
+    "provider": "Provider",
+    "providerDesc": "I offer professional services",
+    "becomeProviderHint": "Want to offer your services? Provider registration is coming soon."
+  },
+  "profile": {
+    "editTitle": "Personal details",
+    "address": "Address",
+    "postalCode": "Postal code",
+    "city": "City",
+    "since": "Member since"
   },
   "theme": {
     "light": "Light",
@@ -12,13 +67,13 @@
   "lang": {
     "es": "Spanish",
     "en": "English",
-    "toggle": "Toggle language"
+    "toggle": "Change language"
   },
   "ds": {
     "title": "Design system",
-    "subtitle": "Link-ES base tokens and components — a verified local directory where proximity leads.",
+    "subtitle": "Link-ES base tokens and components — a verified local directory with proximity at its core.",
     "colorsTitle": "Palette",
-    "colorsHint": "Every token has a light/dark pair; the top bar switch changes them live.",
+    "colorsHint": "Every token has a light/dark pair; the switch in the top bar changes them live.",
     "typographyTitle": "Typography",
     "displayLabel": "Display — Space Grotesk (headings)",
     "uiLabel": "UI / body — Inter",
@@ -29,14 +84,14 @@
     "secondary": "Secondary",
     "chipsTitle": "Filter chips",
     "chipRadius": "Radius: 5 km",
-    "chipCategory": "Home and maintenance",
+    "chipCategory": "Home & maintenance",
     "cardTitle": "Provider card (directory entry)",
     "signatureTitle": "Proximity ring (signature element)",
     "signatureDesc": "Client dot + animated ring + dotted line to the provider with real distance.",
     "inputsTitle": "Forms",
     "searchPlaceholder": "Electrician, babysitter, catering…",
     "verified": "Verified",
-    "pendingVerif": "Under review",
+    "pendingVerif": "Under verification",
     "requestBtn": "Request service"
   }
 }
