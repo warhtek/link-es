@@ -166,6 +166,14 @@ export const api = {
     }),
   bookings: (scope: 'client' | 'provider') =>
     request<ClientBooking[] | ProviderBooking[]>(`/bookings?scope=${scope}`),
+  createBookingReview: (
+    id: string,
+    input: { rating: number; comment?: string },
+  ) =>
+    request<{ id: string; rating: number; comment: string | null }>(`/bookings/${id}/review`, {
+      method: 'POST',
+      body: JSON.stringify(input),
+    }),
   updateBookingStatus: (id: string, status: BookingAction) =>
     request<{ id: string; code: string; status: string }>(`/bookings/${id}/status`, {
       method: 'PATCH',
@@ -201,6 +209,7 @@ export interface ClientBooking extends BookingBase {
   providerBusinessName: string
   providerId: string
   conversationId?: string | null
+  myRating?: number | null
 }
 
 export interface ProviderBooking extends BookingBase {

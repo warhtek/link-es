@@ -124,11 +124,21 @@ export function useSendMessage() {
 }
 
 // Unirse a la sala al abrir un hilo + marcar como leído.
+// Unirse a la sala al abrir un hilo + marcar como leídos.
+// Re-emitir en cada 'connect': si la conexión tarda o se recupera,
+// el join vuelve a enviarse sin quedar perdido en el buffer.
 export function useJoinConversation(conversationId: string | undefined) {
   useEffect(() => {
     if (!conversationId || !getAccessToken()) return
     const s = getSocket()
-    s.emit('conversation:join', conversationId)
-    s.emit('conversation:read', conversationId)
+    const join = () => {
+      s.emit('conversation:join', conversationId)
+      s.emit('conversation:read', conversationId)
+    }
+    join()
+    s.on('connect', join)
+    return () => {
+      s.off('connect', join)
+    }
   }, [conversationId])
 }

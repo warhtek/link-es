@@ -47,7 +47,10 @@
   "public": {
     "servicesTitle": "Servicios y precios",
     "noServices": "Este proveedor aún no publica servicios.",
-    "requestNote": "La solicitud de servicio se habilita al iniciar sesión. La dirección exacta solo se comparte cuando el proveedor acepta."
+    "requestNote": "La solicitud de servicio se habilita al iniciar sesión. La dirección exacta solo se comparte cuando el proveedor acepta.",
+    "reviewsTitle": "Reseñas",
+    "noReviews": "Aún no tiene reseñas.",
+    "reviewsVerifiedNote": "Solo pueden reseñar clientes con un servicio completado en la plataforma."
   },
   "common": {
     "optional": "opcional",
@@ -230,5 +233,13 @@
     "placeholder": "Escribe un mensaje…",
     "open": "Ver chat",
     "locale": "es-SV"
+  },
+  "review": {
+    "cta": "Calificar servicio",
+    "ratingLabel": "¿Cómo fue el servicio?",
+    "commentPlaceholder": "Cuenta cómo fue tu experiencia (opcional)",
+    "send": "Enviar reseña",
+    "yourRating": "Tu reseña",
+    "starsAria": "Calificación en estrellas"
   }
 }

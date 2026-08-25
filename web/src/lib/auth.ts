@@ -143,3 +143,13 @@ export function useUpdateBookingStatus(scope: 'client' | 'provider') {
     },
   })
 }
+
+
+export function useCreateReview() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, ...input }: { id: string; rating: number; comment?: string }) =>
+      api.createBookingReview(id, input),
+    onSuccess: () => void queryClient.invalidateQueries({ queryKey: ['bookings', 'client'] }),
+  })
+}

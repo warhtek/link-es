@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RequireAuth } from '../components/RequireAuth'
 import { BookingStatusBadge } from '../components/BookingStatusBadge'
-import { useBookings, useUpdateBookingStatus } from '../lib/auth'
+import { StarRating } from '../components/StarRating'
+import { inputClass } from './Login'
+import { useBookings, useCreateReview, useUpdateBookingStatus } from '../lib/auth'
 import { ChatLink } from './Mensajes'
 import type { ClientBooking } from '../lib/api'
 
@@ -20,6 +23,8 @@ function ReservasContent() {
   const { t, i18n } = useTranslation()
   const bookings = useBookings('client')
   const cancel = useUpdateBookingStatus('client')
+  const createReview = useCreateReview()
+  const [reviewingId, setReviewingId] = useState<string | null>(null)
 
   const list = (bookings.data ?? []) as ClientBooking[]
   const active = list.filter((b) => ACTIVE.includes(b.status))
@@ -110,11 +115,96 @@ function ReservasContent() {
                   {t('booking.with')} {b.providerBusinessName} ·{' '}
                   <span className="font-mono">{fmtDate(b.scheduledAt)}</span>
                 </p>
+
+                {b.status === 'COMPLETED' && b.myRating != null && (
+                  <div className="mt-2 flex items-center gap-2" data-testid={`my-rating-${b.code}`}>
+                    <StarRating value={b.myRating} size="text-xs" />
+                    <span className="font-mono text-[10px] uppercase tracking-wide text-ink-soft">
+                      {t('review.yourRating')}
+                    </span>
+                  </div>
+                )}
+
+                {b.status === 'COMPLETED' && b.myRating == null && reviewingId !== b.id && (
+                  <button
+                    type="button"
+                    onClick={() => setReviewingId(b.id)}
+                    data-testid={`rate-${b.code}`}
+                    className="mt-2 cursor-pointer rounded-control bg-moss px-3 py-1.5 text-xs font-medium text-panel hover:opacity-90"
+                  >
+                    ★ {t('review.cta')}
+                  </button>
+                )}
+
+                {reviewingId === b.id && (
+                  <ReviewForm
+                    onSubmit={(rating, comment) =>
+                      createReview.mutate(
+                        { id: b.id, rating, comment },
+                        { onSuccess: () => setReviewingId(null) },
+                      )
+                    }
+                    pending={createReview.isPending}
+                    error={createReview.error}
+                  />
+                )}
               </li>
             ))}
           </ul>
         )}
       </section>
     </main>
+  )
+}
+
+function ReviewForm({
+  onSubmit,
+  pending,
+  error,
+}: {
+  onSubmit: (rating: number, comment?: string) => void
+  pending: boolean
+  error: unknown
+}) {
+  const { t } = useTranslation()
+  const [rating, setRating] = useState(0)
+  const [comment, setComment] = useState('')
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        if (rating > 0) onSubmit(rating, comment || undefined)
+      }}
+      className="mt-3 space-y-3 rounded-control border border-line bg-paper p-3"
+      data-testid="review-form"
+    >
+      <div>
+        <span className="mb-1 block text-xs font-medium">{t('review.ratingLabel')}</span>
+        <StarRating value={rating} onChange={setRating} />
+      </div>
+      <textarea
+        rows={2}
+        maxLength={1000}
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        placeholder={t('review.commentPlaceholder')}
+        data-testid="review-comment"
+        className={`${inputClass} resize-none`}
+      />
+      {error ? (
+        <p role="alert" className="text-xs text-clay">
+          {t('errors.generic')}
+        </p>
+      ) : null}
+      <button
+        type="submit"
+        disabled={pending || rating === 0}
+        data-testid="review-submit"
+        className="cursor-pointer rounded-control bg-moss px-4 py-1.5 text-xs font-medium text-panel hover:opacity-90 disabled:opacity-50"
+      >
+        {t('review.send')}
+      </button>
+    </form>
   )
 }

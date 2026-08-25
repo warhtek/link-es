@@ -21,6 +21,7 @@ export interface PublicProviderDetail extends Omit<ProviderSearchResult, 'distan
   bio: string | null
   serviceRadiusKm: number
   categories: { id: string; name: string; icon: string | null }[]
+  reviews: { id: string; rating: number; comment: string | null; createdAt: string; authorFirstName: string }[]
   services: { id: string; title: string; description: string | null; priceFrom: number; unit: 'HOUR' | 'PROJECT' }[]
 }
 

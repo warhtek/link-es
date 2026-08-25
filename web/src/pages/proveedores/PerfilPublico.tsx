@@ -6,6 +6,7 @@ import { getAccessToken } from '../../lib/api'
 import { useCreateBooking } from '../../lib/auth'
 import { authErrorMessage } from '../../lib/errors'
 import { inputClass } from '../Login'
+import { StarRating } from '../../components/StarRating'
 
 export function PerfilPublicoPage() {
   return <PerfilPublicoContent />
@@ -123,6 +124,44 @@ function PerfilPublicoContent() {
             ))}
           </ul>
         )}
+      </section>
+
+      {/* Reseñas verificadas: solo clientes con servicio completado */}
+      <section className="mt-6 rounded-card border border-line bg-panel p-5 sm:p-6" data-testid="reviews-section">
+        <div className="flex items-center justify-between">
+          <h2 className="font-display text-base font-semibold tracking-tight">{t('public.reviewsTitle')}</h2>
+          {p.ratingCount > 0 && (
+            <span className="font-mono text-sm">
+              ★ {p.ratingAvg.toFixed(1)} <span className="text-xs text-ink-soft">({t('search.reviewCount', { count: p.ratingCount })})</span>
+            </span>
+          )}
+        </div>
+        {p.reviews.length === 0 ? (
+          <p className="mt-2 text-sm text-ink-soft">{t('public.noReviews')}</p>
+        ) : (
+          <ul className="mt-3 divide-y divide-line">
+            {p.reviews.map((r) => (
+              <li key={r.id} className="flex gap-3 py-3" data-testid="review-item">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-moss-soft font-display text-xs font-semibold text-moss">
+                  {r.authorFirstName.charAt(0).toUpperCase()}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <b className="text-sm font-medium">{r.authorFirstName}</b>
+                    <span className="shrink-0 font-mono text-[10px] uppercase tracking-wide text-ink-soft">
+                      {new Intl.DateTimeFormat(t('chat.locale'), { dateStyle: 'medium' }).format(new Date(r.createdAt))}
+                    </span>
+                  </div>
+                  <StarRating value={r.rating} size="text-xs" />
+                  {r.comment && <p className="mt-1 text-sm leading-relaxed text-carbon/90">{r.comment}</p>}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+        <p className="mt-3 rounded-control border border-line bg-paper px-3 py-2 text-xs text-ink-soft">
+          {t('public.reviewsVerifiedNote')}
+        </p>
       </section>
 
       <RequestServiceSection services={p.services} />

@@ -47,7 +47,10 @@
   "public": {
     "servicesTitle": "Services & pricing",
     "noServices": "This provider has not published services yet.",
-    "requestNote": "Service requests are enabled after signing in. The exact address is only shared once the provider accepts."
+    "requestNote": "Service requests are enabled after signing in. The exact address is only shared once the provider accepts.",
+    "reviewsTitle": "Reviews",
+    "noReviews": "No reviews yet.",
+    "reviewsVerifiedNote": "Only clients with a completed service on the platform can leave a review."
   },
   "common": {
     "optional": "optional",
@@ -230,5 +233,13 @@
     "placeholder": "Type a message…",
     "open": "Open chat",
     "locale": "en-US"
+  },
+  "review": {
+    "cta": "Rate service",
+    "ratingLabel": "How was the service?",
+    "commentPlaceholder": "Tell us about your experience (optional)",
+    "send": "Send review",
+    "yourRating": "Your review",
+    "starsAria": "Star rating"
   }
 }
