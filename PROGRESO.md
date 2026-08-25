@@ -13,6 +13,7 @@
 | 3. Catálogo público + mapa | [`FASE-3-CATALOGO-MAPA-PROGRESO.md`](./FASE-3-CATALOGO-MAPA-PROGRESO.md) |
 | 4. Reservas/Solicitudes | [`FASE-4-RESERVAS-SOLICITUDES-PROGRESO.md`](./FASE-4-RESERVAS-SOLICITUDES-PROGRESO.md) |
 | 5. Chat | [`FASE-5-CHAT-PROGRESO.md`](./FASE-5-CHAT-PROGRESO.md) |
+| 6. Calificaciones | [`FASE-6-CALIFICACIONES-PROGRESO.md`](./FASE-6-CALIFICACIONES-PROGRESO.md) |
 
 ---
 
@@ -116,6 +117,7 @@ link-es/
 - [x] ~~Fase 3 completa~~ — ver `FASE-3-CATALOGO-MAPA-PROGRESO.md` (24/08/2026)
 - [x] ~~Fase 4 completa~~ — ver `FASE-4-RESERVAS-SOLICITUDES-PROGRESO.md` (24/08/2026)
 - [x] ~~Fase 5 completa~~ — ver `FASE-5-CHAT-PROGRESO.md` (24/08/2026)
+- [x] ~~Fase 6 completa~~ — ver `FASE-6-CALIFICACIONES-PROGRESO.md` (24/08/2026)
 - [x] Remoto GitHub configurado (`warhtek/link-es`) y push al día
 - [ ] Decidir token Mapbox más adelante si se quiere el basemap premium (hoy: Leaflet+OSM sin costo)
 
@@ -129,8 +131,8 @@ link-es/
 | ~~3. Catálogo público + mapa~~ | Home, búsqueda por texto, geolocalización, vista lista/mapa dividida, filtro de radio, perfil público · Leaflet+OSM (decisión vs Mapbox) + PostGIS `ST_DWithin` | ✅ Completada |
 | ~~4. Reservas/Solicitudes~~ | Solicitudes con código BK-, máquina de estados por actor, historial cliente/proveedor | ✅ Completada |
 | ~~5. Chat~~ | Socket.io con JWT en handshake, conversación nace al aceptar reserva, `/mensajes` lista+hilo en vivo | ✅ Completada |
-| **6. Calificaciones** | Review post-servicio solo sobre reservas COMPLETED, promedio visible en catálogo | ⬜ Siguiente |
-| **7. Suscripciones/pagos** | Stripe Billing + Connect, planes FREE/PRO/PREMIUM, visibilidad bloqueada sin plan activo | ⬜ Pendiente |
+| ~~6. Calificaciones~~ | Review post-servicio sobre COMPLETED con recálculo de promedio, reseñas visibles en catálogo | ✅ Completada |
+| **7. Suscripciones/pagos** | Stripe Billing + Connect, planes FREE/PRO/PREMIUM, visibilidad bloqueada sin plan activo · requiere cuenta/llaves de Stripe | ⬜ Siguiente |
 | **8. Panel admin** | Revisión de documentos (endpoint ya emite PENDING), gestión de categorías/usuarios, métricas | ⬜ Pendiente |
 | **9. Pulido y performance** | Accesibilidad, estados vacíos, optimización de imágenes, PWA | ⬜ Pendiente |
 
