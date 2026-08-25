@@ -133,6 +133,17 @@ publicProviderRouter.get('/:id', async (req: Request, res: Response) => {
       serviceRadiusKm: true,
       user: { select: { city: true } },
       categories: { select: { id: true, name: true, icon: true } },
+      reviews: {
+        orderBy: { createdAt: 'desc' },
+        take: 10,
+        select: {
+          id: true,
+          rating: true,
+          comment: true,
+          createdAt: true,
+          client: { select: { name: true } },
+        },
+      },
       services: {
         where: { active: true },
         select: { id: true, title: true, description: true, priceFrom: true, unit: true },
@@ -155,6 +166,14 @@ publicProviderRouter.get('/:id', async (req: Request, res: Response) => {
     serviceRadiusKm: profile.serviceRadiusKm,
     city: profile.user.city,
     categories: profile.categories,
+    // Privacidad: solo primer nombre del autor de la reseña.
+    reviews: profile.reviews.map((r) => ({
+      id: r.id,
+      rating: r.rating,
+      comment: r.comment,
+      createdAt: r.createdAt,
+      authorFirstName: r.client.name.split(' ')[0],
+    })),
     services: profile.services.map((s) => ({ ...s, priceFrom: Number(s.priceFrom) })),
   })
 })

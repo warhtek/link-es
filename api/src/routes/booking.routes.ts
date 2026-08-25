@@ -75,13 +75,15 @@ bookingRouter.get('/', async (req, res) => {
         ...include,
         client: { select: { id: true, name: true } },
         conversation: { select: { id: true } },
+        review: { select: { rating: true } },
       },
     })
-    res.json(bookings.map(({ client, service, conversation, ...b }) => ({
+    res.json(bookings.map(({ client, service, conversation, review, ...b }) => ({
       ...b,
       service: { ...service, priceFrom: Number(service.priceFrom) },
       clientName: client.name,
       conversationId: conversation?.id ?? null,
+      myRating: review?.rating ?? null,
     })))
   } else {
     const bookings = await prisma.booking.findMany({
@@ -91,14 +93,16 @@ bookingRouter.get('/', async (req, res) => {
         ...include,
         provider: { select: { id: true, businessName: true } },
         conversation: { select: { id: true } },
+        review: { select: { rating: true } },
       },
     })
-    res.json(bookings.map(({ provider, service, conversation, ...b }) => ({
+    res.json(bookings.map(({ provider, service, conversation, review, ...b }) => ({
       ...b,
       service: { ...service, priceFrom: Number(service.priceFrom) },
       providerBusinessName: provider.businessName,
       providerId: provider.id,
       conversationId: conversation?.id ?? null,
+      myRating: review?.rating ?? null,
     })))
   }
 })
