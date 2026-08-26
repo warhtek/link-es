@@ -6,6 +6,7 @@ const CODE_TO_KEY: Record<string, string> = {
   invalid_credentials: 'auth.errors.invalidCredentials',
   email_in_use: 'auth.errors.emailInUse',
   validation_error: 'errors.validation',
+  invalid_reset_token: 'auth.errors.invalidResetToken',
   invalid_schedule: 'booking.errors.invalidSchedule',
   invalid_transition: 'booking.errors.invalidTransition',
   service_not_found: 'booking.errors.serviceNotFound',

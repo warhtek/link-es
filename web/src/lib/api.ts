@@ -118,6 +118,16 @@ export const api = {
     request<SessionResponse>('/auth/register', { method: 'POST', body: JSON.stringify(input) }),
   login: (input: { email: string; password: string }) =>
     request<SessionResponse>('/auth/login', { method: 'POST', body: JSON.stringify(input) }),
+  forgotPassword: (email: string) =>
+    request<{ ok: boolean; message: string }>('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    }),
+  resetPassword: (input: { token: string; password: string }) =>
+    request<{ ok: boolean }>('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    }),
   logout: () => {
     const refreshToken = getRefreshToken()
     clearSession()

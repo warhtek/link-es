@@ -80,6 +80,7 @@ model User {
   verifiedAt   DateTime?
 
   refreshTokens   RefreshToken[]
+  passwordResetTokens PasswordResetToken[]
   providerProfile ProviderProfile?
   bookingsAsClient Booking[]       @relation("ClientBookings")
   reviews          Review[]
@@ -103,6 +104,21 @@ model RefreshToken {
 
   @@index([userId])
   @@map("refresh_tokens")
+}
+
+// Recuperación de contraseña: token de un solo uso; en DB solo su hash SHA-256.
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
 }
 
 model ProviderProfile {

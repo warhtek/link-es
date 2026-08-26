@@ -65,6 +65,12 @@ export function LoginPage() {
             {t('auth.loginSubmit')}
           </button>
         </form>
+
+        <p className="mt-3 text-center text-sm">
+          <Link to="/recuperar-password" className="font-medium text-moss hover:underline">
+            {t('auth.forgotLink')}
+          </Link>
+        </p>
       </div>
 
       <p className="mt-4 text-center text-sm text-ink-soft">

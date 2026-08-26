@@ -4,6 +4,8 @@ import { DesignSystemPage } from './pages/DesignSystem'
 import { HomePage } from './pages/Home'
 import { LoginPage } from './pages/Login'
 import { RegistroPage } from './pages/Registro'
+import { RecuperarPasswordPage } from './pages/RecuperarPassword'
+import { RestablecerPasswordPage } from './pages/RestablecerPassword'
 import { PerfilPage } from './pages/Perfil'
 import { BuscarPage } from './pages/Buscar'
 import { OnboardingProveedorPage } from './pages/proveedor/Onboarding'
@@ -23,6 +25,8 @@ function App() {
         <Route path="/design-system" element={<DesignSystemPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/registro" element={<RegistroPage />} />
+        <Route path="/recuperar-password" element={<RecuperarPasswordPage />} />
+        <Route path="/restablecer-password" element={<RestablecerPasswordPage />} />
         <Route path="/perfil" element={<PerfilPage />} />
         <Route path="/reservas" element={<ReservasPage />} />
         <Route path="/proveedor/onboarding" element={<OnboardingProveedorPage />} />
