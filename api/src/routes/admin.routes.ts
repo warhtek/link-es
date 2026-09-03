@@ -505,8 +505,7 @@ function slugify(text: string): string {
 
 // 8.1 Listar todas las categorías con jerarquía y métricas
 adminRouter.get('/categories', async (_req, res) => {
-  const roots = await prisma.category.findMany({
-    where: { parentId: null },
+  const allCategories = await prisma.category.findMany({
     orderBy: { name: 'asc' },
     include: {
       _count: {
@@ -516,16 +515,8 @@ adminRouter.get('/categories', async (_req, res) => {
           services: true,
         },
       },
-      children: {
-        orderBy: { name: 'asc' },
-        include: {
-          _count: {
-            select: {
-              profiles: true,
-              services: true,
-            },
-          },
-        },
+      parent: {
+        select: { id: true, name: true, slug: true },
       },
     },
   })
@@ -533,7 +524,7 @@ adminRouter.get('/categories', async (_req, res) => {
   const totalCount = await prisma.category.count()
 
   res.json({
-    categories: roots,
+    categories: allCategories,
     total: totalCount,
   })
 })
