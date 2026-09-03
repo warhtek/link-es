@@ -13,6 +13,7 @@ datasource db {
 enum Role {
   CLIENT
   PROVIDER
+  ADMIN
 }
 
 enum VerificationStatus {

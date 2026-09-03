@@ -2,7 +2,10 @@
 // Tokens en localStorage: suficiente para el MVP; migrar a cookies httpOnly si
 // se necesita protección extra contra XSS.
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000/api'
+// Sin variable de entorno se deduce del host con el que se abre el sitio:
+// permite usar la app desde otros equipos de la red sin reconfigurar nada.
+const API_URL =
+  import.meta.env.VITE_API_URL ?? `http://${window.location.hostname}:4000/api`
 const ACCESS_KEY = 'link-es-access-token'
 const REFRESH_KEY = 'link-es-refresh-token'
 
@@ -189,6 +192,52 @@ export const api = {
       method: 'PATCH',
       body: JSON.stringify({ status }),
     }),
+  admin: {
+    getStats: () => request<AdminStats>('/admin/stats'),
+    getUsers: (params?: {
+      search?: string
+      role?: string
+      verificationStatus?: string
+      page?: number
+      limit?: number
+    }) => {
+      const sp = new URLSearchParams()
+      if (params?.search) sp.set('search', params.search)
+      if (params?.role) sp.set('role', params.role)
+      if (params?.verificationStatus) sp.set('verificationStatus', params.verificationStatus)
+      if (params?.page) sp.set('page', String(params.page))
+      if (params?.limit) sp.set('limit', String(params.limit))
+      const qs = sp.toString()
+      return request<AdminUsersResponse>(`/admin/users?${qs}`)
+    },
+    getCategories: () => request<AdminCategoriesResponse>('/admin/categories'),
+    createCategory: (data: AdminCreateCategoryInput) =>
+      request<AdminCategoryItem>('/admin/categories', { method: 'POST', body: JSON.stringify(data) }),
+    updateCategory: (id: string, data: AdminUpdateCategoryInput) =>
+      request<AdminCategoryItem>(`/admin/categories/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+    deleteCategory: (id: string) =>
+      request<{ ok: boolean; message: string }>(`/admin/categories/${id}`, { method: 'DELETE' }),
+    getUser: (id: string) => request<AdminUserItem>(`/admin/users/${id}`),
+    createUser: (data: AdminCreateUserInput) =>
+      request<AdminUserItem>('/admin/users', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    updateUser: (id: string, data: AdminUpdateUserInput) =>
+      request<AdminUserItem>(`/admin/users/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      }),
+    setVerification: (id: string, verificationStatus: 'NONE' | 'PENDING' | 'VERIFIED') =>
+      request<{ ok: boolean; verificationStatus: string }>(`/admin/users/${id}/verification`, {
+        method: 'PATCH',
+        body: JSON.stringify({ verificationStatus }),
+      }),
+    deleteUser: (id: string) =>
+      request<{ ok: boolean; message: string }>(`/admin/users/${id}`, {
+        method: 'DELETE',
+      }),
+  },
 }
 
 export type BookingStatusValue =
@@ -257,3 +306,116 @@ export interface ProviderProfile {
 interface OnboardingResponse extends SessionResponse {
   profile: ProviderProfile
 }
+
+export interface AdminStats {
+  totalUsers: number
+  clientsCount: number
+  providersCount: number
+  adminsCount: number
+  pendingVerifications: number
+  totalBookings: number
+}
+
+export interface AdminUserItem {
+  id: string
+  name: string
+  email: string
+  phone: string | null
+  avatarUrl: string | null
+  roles: ('CLIENT' | 'PROVIDER' | 'ADMIN')[]
+  activeMode: 'CLIENT' | 'PROVIDER'
+  address: string | null
+  city: string | null
+  postalCode: string | null
+  createdAt: string
+  verifiedAt: string | null
+  providerProfile?: {
+    id: string
+    businessName: string
+    headline: string | null
+    verificationStatus: 'NONE' | 'PENDING' | 'VERIFIED'
+    serviceRadiusKm: number
+    ratingAvg: number
+    ratingCount: number
+    categories: { id: string; name: string; slug: string }[]
+  } | null
+  _count: {
+    bookingsAsClient: number
+    reviews: number
+  }
+}
+
+export interface AdminUsersResponse {
+  users: AdminUserItem[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+export interface AdminCreateUserInput {
+  name: string
+  email: string
+  password: string
+  phone?: string | null
+  city?: string | null
+  address?: string | null
+  roles: ('CLIENT' | 'PROVIDER' | 'ADMIN')[]
+  businessName?: string | null
+  headline?: string | null
+  bio?: string | null
+  serviceRadiusKm?: number
+  verificationStatus?: 'NONE' | 'PENDING' | 'VERIFIED'
+  categoryIds?: string[]
+}
+
+export interface AdminUpdateUserInput {
+  name?: string
+  email?: string
+  password?: string | null
+  phone?: string | null
+  city?: string | null
+  address?: string | null
+  roles?: ('CLIENT' | 'PROVIDER' | 'ADMIN')[]
+  businessName?: string | null
+  headline?: string | null
+  bio?: string | null
+  serviceRadiusKm?: number
+  verificationStatus?: 'NONE' | 'PENDING' | 'VERIFIED'
+  categoryIds?: string[]
+}
+
+export interface AdminCategoryItem {
+  id: string
+  name: string
+  slug: string
+  icon: string | null
+  parentId: string | null
+  _count: {
+    profiles: number
+    services: number
+    children: number
+  }
+  children: AdminCategoryItem[]
+  parent: AdminCategoryItem | null
+}
+
+export interface AdminCategoriesResponse {
+  categories: AdminCategoryItem[]
+  total: number
+}
+
+export interface AdminCreateCategoryInput {
+  name: string
+  slug?: string
+  icon?: string | null
+  parentId?: string | null
+}
+
+export interface AdminUpdateCategoryInput {
+  name?: string
+  slug?: string
+  icon?: string | null
+  parentId?: string | null
+}
+

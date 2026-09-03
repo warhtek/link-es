@@ -127,6 +127,16 @@ export function Topbar() {
             {t('nav.requests')}
           </Link>
         )}
+        {user?.roles.includes('ADMIN') && (
+          <Link
+            to="/admin"
+            className={`rounded-lg px-3 py-1.5 text-sm font-medium hover:bg-moss-soft/60 ${
+              location.pathname.startsWith('/admin') ? 'bg-moss-soft text-moss' : ''
+            }`}
+          >
+            {t('nav.admin')}
+          </Link>
+        )}
       </nav>
 
       <div className="ml-auto flex shrink-0 items-center gap-2">

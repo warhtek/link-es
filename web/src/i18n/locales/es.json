@@ -6,7 +6,8 @@
     "search": "Buscar",
     "bookings": "Mis reservas",
     "requests": "Solicitudes",
-    "messages": "Mensajes"
+    "messages": "Mensajes",
+    "admin": "Administración"
   },
   "home": {
     "heroTitle": "Encuentra a alguien de confianza cerca de ti",
@@ -257,5 +258,130 @@
     "send": "Enviar reseña",
     "yourRating": "Tu reseña",
     "starsAria": "Calificación en estrellas"
+  },
+  "admin": {
+    "title": "Panel de Administración",
+    "subtitle": "Gestión de usuarios, clientes y profesionales de la plataforma",
+    "stats": {
+      "totalUsers": "Total Usuarios",
+      "clients": "Clientes",
+      "providers": "Proveedores",
+      "pendingVerifications": "Verificación Pendiente"
+    },
+    "filters": {
+      "searchPlaceholder": "Buscar por nombre, correo, teléfono, negocio…",
+      "allRoles": "Todos los roles",
+      "clientsOnly": "Clientes",
+      "providersOnly": "Proveedores",
+      "adminsOnly": "Administradores",
+      "allStatus": "Todos los estados",
+      "verified": "Verificados",
+      "pending": "Pendientes",
+      "none": "Sin verificar"
+    },
+    "actions": {
+      "createUser": "Nuevo usuario",
+      "edit": "Modificar",
+      "delete": "Eliminar",
+      "verify": "Aprobar verificación",
+      "unverify": "Quitar verificación",
+      "save": "Guardar cambios",
+      "cancel": "Cancelar",
+      "confirmDelete": "Sí, eliminar usuario"
+    },
+    "tabs": {
+      "users": "Usuarios y Proveedores",
+      "categories": "Categorías y Especialidades"
+    },
+    "table": {
+      "user": "Usuario",
+      "roles": "Roles",
+      "details": "Detalles / Negocio",
+      "city": "Ciudad",
+      "verification": "Verificación",
+      "date": "Fecha registro",
+      "actions": "Acciones",
+      "noResults": "No se encontraron usuarios con los filtros aplicados."
+    },
+    "modal": {
+      "createTitle": "Dar de alta usuario / proveedor",
+      "editTitle": "Modificar usuario",
+      "deleteTitle": "¿Eliminar usuario?",
+      "deleteWarning": "Esta acción es irreversible. Se eliminarán permanentemente todos los datos asociados al usuario (perfil, reservas, mensajes, reseñas y accesos).",
+      "typeClient": "Cliente",
+      "typeProvider": "Proveedor de servicios",
+      "typeAdmin": "Administrador",
+      "name": "Nombre completo",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "passwordHint": "Mínimo 6 caracteres",
+      "passwordEditHint": "Dejar en blanco para mantener la contraseña actual",
+      "phone": "Teléfono",
+      "city": "Ciudad / Municipio",
+      "address": "Dirección",
+      "businessName": "Nombre comercial",
+      "headline": "Titular profesional (ej: Plomería y fontanería 24/7)",
+      "bio": "Biografía o descripción",
+      "radius": "Radio de cobertura (km)",
+      "categories": "Categorías o especialidades",
+      "verificationStatus": "Estado de verificación",
+      "roles": "Roles del usuario"
+    },
+    "badges": {
+      "verified": "Verificado",
+      "pending": "Pendiente",
+      "none": "No verificado"
+    },
+    "messages": {
+      "createdSuccess": "Usuario creado exitosamente.",
+      "updatedSuccess": "Usuario actualizado correctamente.",
+      "deletedSuccess": "Usuario eliminado correctamente.",
+      "verificationSuccess": "Estado de verificación actualizado."
+    },
+    "categories": {
+      "title": "Categorías y Especialidades",
+      "stats": {
+        "total": "Total categorías",
+        "roots": "Categorías raíz",
+        "specialties": "Especialidades"
+      },
+      "labels": {
+        "providers": "proveedores",
+        "services": "servicios",
+        "subcategories": "subcategorías"
+      },
+      "actions": {
+        "createCategory": "Nueva categoría",
+        "addSubcategory": "Añadir subcategoría",
+        "edit": "Editar",
+        "delete": "Eliminar"
+      },
+      "form": {
+        "name": "Nombre",
+        "slug": "Slug",
+        "slugPlaceholder": "Auto-generado desde el nombre",
+        "slugHint": "Identificador único en minúsculas, sin espacios ni caracteres especiales",
+        "icon": "Icono (emoji)",
+        "iconHint": "Un emoji representativo (ej: 🏠, 💻, 💄)",
+        "parentCategory": "Categoría principal",
+        "noParent": "— Ninguna (categoría raíz) —",
+        "parentHint": "Deja vacío para crear una categoría principal"
+      },
+      "modal": {
+        "createCategoryTitle": "Crear categoría principal",
+        "createSubcategoryTitle": "Crear subcategoría",
+        "editTitle": "Editar categoría",
+        "deleteTitle": "¿Eliminar categoría?",
+        "deleteWarning": "Esta acción es irreversible. La categoría se eliminará permanentemente.",
+        "deleteWarningChildren": "No se puede eliminar: tiene {{count}} subcategoría(s) dependiente(s). Elimínalas o reasígnalas primero.",
+        "deleteWarningServices": "No se puede eliminar: tiene {{count}} servicio(s) activo(s) asociado(s)."
+      },
+      "empty": "No hay categorías creadas aún.",
+      "messages": {
+        "createdSuccess": "Categoría creada exitosamente.",
+        "updatedSuccess": "Categoría actualizada correctamente.",
+        "deletedSuccess": "Categoría eliminada correctamente."
+      }
+    }
   }
 }

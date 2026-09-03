@@ -11,6 +11,7 @@ import { publicProviderRouter } from './routes/public.routes.js'
 import { bookingRouter } from './routes/booking.routes.js'
 import { conversationRouter } from './routes/conversation.routes.js'
 import { reviewRouter } from './routes/review.routes.js'
+import { adminRouter } from './routes/admin.routes.js'
 import { setupSocket } from './socket.js'
 
 const app = express()
@@ -29,6 +30,7 @@ app.use('/api/public/providers', publicProviderRouter)
 app.use('/api/bookings', bookingRouter)
 app.use('/api/bookings/:id/review', reviewRouter)
 app.use('/api/conversations', conversationRouter)
+app.use('/api/admin', adminRouter)
 
 // Express 5 reenvía aquí los rechazos de handlers async.
 app.use((error: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

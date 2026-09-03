@@ -14,6 +14,7 @@
 | 4. Reservas/Solicitudes | [`FASE-4-RESERVAS-SOLICITUDES-PROGRESO.md`](./FASE-4-RESERVAS-SOLICITUDES-PROGRESO.md) |
 | 5. Chat | [`FASE-5-CHAT-PROGRESO.md`](./FASE-5-CHAT-PROGRESO.md) |
 | 6. Calificaciones | [`FASE-6-CALIFICACIONES-PROGRESO.md`](./FASE-6-CALIFICACIONES-PROGRESO.md) |
+| 8. Panel admin | [`FASE-8-ADMIN-PROGRESO.md`](./FASE-8-ADMIN-PROGRESO.md) |
 
 ---
 
@@ -133,7 +134,7 @@ link-es/
 | ~~5. Chat~~ | Socket.io con JWT en handshake, conversación nace al aceptar reserva, `/mensajes` lista+hilo en vivo | ✅ Completada |
 | ~~6. Calificaciones~~ | Review post-servicio sobre COMPLETED con recálculo de promedio, reseñas visibles en catálogo | ✅ Completada |
 | **7. Suscripciones/pagos** | Stripe Billing + Connect, planes FREE/PRO/PREMIUM, visibilidad bloqueada sin plan activo · requiere cuenta/llaves de Stripe | ⬜ Siguiente |
-| **8. Panel admin** | Revisión de documentos (endpoint ya emite PENDING), gestión de categorías/usuarios, métricas | ⬜ Pendiente |
+| **8. Panel admin** | Gestión de usuarios (clientes y proveedores: alta, modificación, eliminación), estados de verificación, métricas | ✅ Completada |
 | **9. Pulido y performance** | Accesibilidad, estados vacíos, optimización de imágenes, PWA | ⬜ Pendiente |
 
 ### Deuda técnica conocida

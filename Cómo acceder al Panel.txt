@@ -1,0 +1,8 @@
+🔑 Cómo acceder al Panel de Administración
+Tienes dos formas de acceder con permisos de administrador:
+
+Opción 1: Usar la cuenta administradora predeterminada
+Correo: admin@linkes.dev
+Contraseña: password123
+Al iniciar sesión, verás la pestaña "Administración" en la barra superior o puedes ingresar directamente a la URL: http://localhost:5173/admin
+Opción 2: Convertir tu propio usuario en Administrador

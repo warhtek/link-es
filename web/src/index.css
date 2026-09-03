@@ -2,25 +2,25 @@
 
 /* ---------- Design tokens — Link-ES (plan sección 3) ---------- */
 :root {
-  --carbon: #171512;
-  --paper: #faf9f6;
+  --carbon: #0f172a;
+  --paper: #f8fafc;
   --panel: #ffffff;
-  --moss: #2e5339;
-  --moss-soft: #e4ece3;
+  --moss: #1d4ed8;
+  --moss-soft: #eff6ff;
   --clay: #b5502e;
-  --line: #e7e4dc;
-  --ink-soft: #6b675f;
+  --line: #e2e8f0;
+  --ink-soft: #64748b;
 }
 
 [data-theme='dark'] {
-  --carbon: #f3f1ec;
-  --paper: #15140f;
-  --panel: #1e1c17;
-  --moss: #7fb88f;
-  --moss-soft: #22322a;
+  --carbon: #f8fafc;
+  --paper: #0b0f17;
+  --panel: #151e2e;
+  --moss: #60a5fa;
+  --moss-soft: #172554;
   --clay: #e08a63;
-  --line: #2c2a24;
-  --ink-soft: #a9a497;
+  --line: #283548;
+  --ink-soft: #94a3b8;
 }
 
 @theme inline {

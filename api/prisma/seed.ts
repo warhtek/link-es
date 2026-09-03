@@ -267,6 +267,23 @@ async function main() {
     }
   }
 
+  // Usuario Administrador (Fase 8: Admin)
+  await prisma.user.upsert({
+    where: { email: 'admin@linkes.dev' },
+    update: {},
+    create: {
+      name: 'Administrador Link-ES',
+      email: 'admin@linkes.dev',
+      phone: '+503 7000 0000',
+      passwordHash: PASSWORD_HASH,
+      roles: ['ADMIN', 'CLIENT'],
+      activeMode: 'CLIENT',
+      city: 'San Salvador',
+      lat: 13.6929,
+      lng: -89.2182,
+    },
+  })
+
   // Clientes de prueba
   const laura = await prisma.user.create({
     data: {

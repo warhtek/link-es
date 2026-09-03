@@ -2,14 +2,14 @@ import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 const COLOR_TOKENS = [
-  { name: 'carbon', light: '#171512', dark: '#F3F1EC' },
-  { name: 'paper', light: '#FAF9F6', dark: '#15140F' },
-  { name: 'panel', light: '#FFFFFF', dark: '#1E1C17' },
-  { name: 'moss', light: '#2E5339', dark: '#7FB88F' },
-  { name: 'moss-soft', light: '#E4ECE3', dark: '#22322A' },
+  { name: 'carbon', light: '#0F172A', dark: '#F8FAFC' },
+  { name: 'paper', light: '#F8FAFC', dark: '#0B0F17' },
+  { name: 'panel', light: '#FFFFFF', dark: '#151E2E' },
+  { name: 'moss', light: '#1D4ED8', dark: '#60A5FA' },
+  { name: 'moss-soft', light: '#EFF6FF', dark: '#172554' },
   { name: 'clay', light: '#B5502E', dark: '#E08A63' },
-  { name: 'line', light: '#E7E4DC', dark: '#2C2A24' },
-  { name: 'ink-soft', light: '#6B675F', dark: '#A9A497' },
+  { name: 'line', light: '#E2E8F0', dark: '#283548' },
+  { name: 'ink-soft', light: '#64748B', dark: '#94A3B8' },
 ] as const
 
 function CheckTag({ label }: { label: string }) {

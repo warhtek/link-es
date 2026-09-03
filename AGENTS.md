@@ -51,14 +51,14 @@ Usar SIEMPRE clases utilitarias (`bg-panel`, `text-ink-soft`, `border-line`…),
 
 | Token | Claro | Oscuro | Uso |
 |---|---|---|---|
-| `carbon` | #171512 | #F3F1EC | Texto principal |
-| `paper` | #FAF9F6 | #15140F | Fondo general |
-| `panel` | #FFFFFF | #1E1C17 | Cards y paneles |
-| `moss` | #2E5339 | #7FB88F | Marca / acción primaria |
-| `moss-soft` | #E4ECE3 | #22322A | Fondos activos tenues |
+| `carbon` | #0F172A | #F8FAFC | Texto principal |
+| `paper` | #F8FAFC | #0B0F17 | Fondo general |
+| `panel` | #FFFFFF | #151E2E | Cards y paneles |
+| `moss` | #1D4ED8 | #60A5FA | Marca / acción primaria (azul real / celeste) |
+| `moss-soft` | #EFF6FF | #172554 | Fondos activos tenues (azul hielo / azul noche) |
 | `clay` | #B5502E | #E08A63 | Distancias, pines, acento |
-| `line` | #E7E4DC | #2C2A24 | Bordes y divisores |
-| `ink-soft` | #6B675F | #A9A497 | Texto secundario |
+| `line` | #E2E8F0 | #283548 | Bordes y divisores |
+| `ink-soft` | #64748B | #94A3B8 | Texto secundario |
 
 Tipografía: **Space Grotesk** (`font-display`) títulos · **Inter** (`font-sans`) UI/cuerpo · **IBM Plex Mono** (`font-mono`) distancias, precios, códigos.
 
@@ -89,7 +89,7 @@ cd api && npx prisma migrate dev --name <nombre>
 
 ## Estado del proyecto
 
-Completadas: setup (0), auth (1), onboarding proveedor (2), catálogo+mapa (3), reservas (4), chat (5) y calificaciones (6).
+Completadas: setup (0), auth (1), onboarding proveedor (2), catálogo+mapa (3), reservas (4), chat (5), calificaciones (6) y admin (8).
 - Auth: JWT access 15 min + refresh con rotación en `api/src/lib/`, rutas `/auth/*` y `/users/me*`, cliente API con auto-refresh en `web/src/lib/api.ts`, hooks en `web/src/lib/auth.tsx`.
 - Proveedor: `POST /providers/onboarding`, `POST /providers/me/documents` (multer → `api/uploads/`), `GET /providers/me`, catálogo público en `GET /categories`; página `/proveedor/onboarding` y tarjeta de proveedor en `/perfil`.
 - Catálogo: PostGIS activo (imagen postgis/postgis en docker-compose), búsqueda pública `GET /public/providers` con distancia real/filtros/orden, Leaflet+OSM/CARTO con pines propios y anillo de proximidad; páginas `/` (home), `/buscar` (lista 45%/mapa 55%) y `/proveedores/:id`.
@@ -100,8 +100,9 @@ Completadas: setup (0), auth (1), onboarding proveedor (2), catálogo+mapa (3), 
 
 - Calificaciones: `POST /bookings/:id/review` (solo cliente + COMPLETED + única), recálculo de ratingAvg/ratingCount en transacción, reseñas en perfil público; StarRating compartido en web.
 
-Fases pendientes según roadmap del plan (sección 8): suscripciones (7),
-admin (8), pulido (9).
+- Admin (Fase 8): Rol `ADMIN` en Prisma + migración, endpoints `/api/admin/*` con `requireAuth` + `requireRole('ADMIN')`, script CLI `npm run make-admin`, panel `/admin` con KPIs, filtros, tabla y modales para dar de alta, modificar y eliminar clientes y proveedores.
+
+Fases pendientes según roadmap del plan (sección 8): suscripciones (7), pulido (9).
 
 Cada fase terminada genera su documento de cierre `FASE-<n>-<slug>-PROGRESO.md` en la raíz;
 `PROGRESO.md` queda como índice.

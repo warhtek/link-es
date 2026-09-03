@@ -6,7 +6,8 @@
     "search": "Search",
     "bookings": "My bookings",
     "requests": "Requests",
-    "messages": "Messages"
+    "messages": "Messages",
+    "admin": "Administration"
   },
   "home": {
     "heroTitle": "Find someone trustworthy near you",
@@ -257,5 +258,130 @@
     "send": "Send review",
     "yourRating": "Your review",
     "starsAria": "Star rating"
+  },
+  "admin": {
+    "title": "Administration Panel",
+    "subtitle": "Manage platform users, clients and service providers",
+    "stats": {
+      "totalUsers": "Total Users",
+      "clients": "Clients",
+      "providers": "Providers",
+      "pendingVerifications": "Pending Verification"
+    },
+    "filters": {
+      "searchPlaceholder": "Search by name, email, phone, business…",
+      "allRoles": "All roles",
+      "clientsOnly": "Clients",
+      "providersOnly": "Providers",
+      "adminsOnly": "Administrators",
+      "allStatus": "All statuses",
+      "verified": "Verified",
+      "pending": "Pending",
+      "none": "Unverified"
+    },
+    "actions": {
+      "createUser": "New user",
+      "edit": "Edit",
+      "delete": "Delete",
+      "verify": "Approve verification",
+      "unverify": "Revoke verification",
+      "save": "Save changes",
+      "cancel": "Cancel",
+      "confirmDelete": "Yes, delete user"
+    },
+    "tabs": {
+      "users": "Users & Providers",
+      "categories": "Categories & Specialties"
+    },
+    "table": {
+      "user": "User",
+      "roles": "Roles",
+      "details": "Details / Business",
+      "city": "City",
+      "verification": "Verification",
+      "date": "Registered on",
+      "actions": "Actions",
+      "noResults": "No users found matching current filters."
+    },
+    "modal": {
+      "createTitle": "Create user / service provider",
+      "editTitle": "Edit user",
+      "deleteTitle": "Delete user?",
+      "deleteWarning": "This action is irreversible. All data associated with the user (profile, bookings, messages, reviews, and credentials) will be permanently deleted.",
+      "typeClient": "Client",
+      "typeProvider": "Service provider",
+      "typeAdmin": "Administrator",
+      "name": "Full name",
+      "email": "Email address",
+      "password": "Password",
+      "passwordHint": "Minimum 6 characters",
+      "passwordEditHint": "Leave blank to keep current password",
+      "phone": "Phone number",
+      "city": "City / Municipality",
+      "address": "Address",
+      "businessName": "Business name",
+      "headline": "Professional headline (e.g., 24/7 plumbing services)",
+      "bio": "Bio or description",
+      "radius": "Service radius (km)",
+      "categories": "Categories or specialties",
+      "verificationStatus": "Verification status",
+      "roles": "User roles"
+    },
+    "badges": {
+      "verified": "Verified",
+      "pending": "Pending",
+      "none": "Unverified"
+    },
+    "messages": {
+      "createdSuccess": "User created successfully.",
+      "updatedSuccess": "User updated successfully.",
+      "deletedSuccess": "User deleted successfully.",
+      "verificationSuccess": "Verification status updated."
+    },
+    "categories": {
+      "title": "Categories & Specialties",
+      "stats": {
+        "total": "Total categories",
+        "roots": "Root categories",
+        "specialties": "Specialties"
+      },
+      "labels": {
+        "providers": "providers",
+        "services": "services",
+        "subcategories": "subcategories"
+      },
+      "actions": {
+        "createCategory": "New category",
+        "addSubcategory": "Add subcategory",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "form": {
+        "name": "Name",
+        "slug": "Slug",
+        "slugPlaceholder": "Auto-generated from name",
+        "slugHint": "Unique identifier in lowercase, no spaces or special characters",
+        "icon": "Icon (emoji)",
+        "iconHint": "A representative emoji (e.g., 🏠, 💻, 💄)",
+        "parentCategory": "Parent category",
+        "noParent": "— None (root category) —",
+        "parentHint": "Leave empty to create a root category"
+      },
+      "modal": {
+        "createCategoryTitle": "Create root category",
+        "createSubcategoryTitle": "Create subcategory",
+        "editTitle": "Edit category",
+        "deleteTitle": "Delete category?",
+        "deleteWarning": "This action is irreversible. The category will be permanently deleted.",
+        "deleteWarningChildren": "Cannot delete: it has {{count}} dependent subcategory(ies). Delete or reassign them first.",
+        "deleteWarningServices": "Cannot delete: it has {{count}} active service(s) associated."
+      },
+      "empty": "No categories created yet.",
+      "messages": {
+        "createdSuccess": "Category created successfully.",
+        "updatedSuccess": "Category updated successfully.",
+        "deletedSuccess": "Category deleted successfully."
+      }
+    }
   }
 }
