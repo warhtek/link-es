@@ -302,8 +302,36 @@ function ProviderProfileEdit() {
   })
   const [selectedCategoryIds, setSelectedCategoryIds] = useState(providerCategories.map((c) => c.id))
   const [files, setFiles] = useState<Partial<Record<'ID' | 'LICENSE' | 'CERTIFICATION', File>>>({})
+  const [gettingLocation, setGettingLocation] = useState(false)
 
   if (provider.isLoading || !provider.data) return null
+
+  function getCurrentLocation() {
+    if (!navigator.geolocation) {
+      alert(t('profile.geolocationNotSupported'))
+      return
+    }
+    setGettingLocation(true)
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setForm((prev) => ({
+          ...prev,
+          lat: pos.coords.latitude.toFixed(6),
+          lng: pos.coords.longitude.toFixed(6),
+        }))
+        setGettingLocation(false)
+      },
+      (err) => {
+        setGettingLocation(false)
+        if (err.code === err.PERMISSION_DENIED) {
+          alert(t('profile.geolocationDenied'))
+        } else {
+          alert(t('profile.geolocationError'))
+        }
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    )
+  }
 
   function toggleCategory(id: string) {
     setSelectedCategoryIds((prev) =>
@@ -438,14 +466,25 @@ function ProviderProfileEdit() {
               </select>
             </Field>
             <Field label={`${t('profile.lat')} (${t('common.optional')})`}>
-              <input
-                type="number"
-                step="any"
-                placeholder="Latitud"
-                value={form.lat}
-                onChange={(e) => setForm({ ...form, lat: e.target.value })}
-                className={inputClass}
-              />
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  step="any"
+                  placeholder="Latitud"
+                  value={form.lat}
+                  onChange={(e) => setForm({ ...form, lat: e.target.value })}
+                  className={inputClass}
+                />
+                <button
+                  type="button"
+                  onClick={getCurrentLocation}
+                  disabled={gettingLocation}
+                  className="cursor-pointer rounded-control border border-line bg-paper px-3 py-2 text-sm font-medium hover:bg-moss-soft disabled:opacity-50 disabled:cursor-not-allowed"
+                  title={t('profile.useCurrentLocation')}
+                >
+                  {gettingLocation ? '📍' : '📍'}
+                </button>
+              </div>
             </Field>
             <Field label={`${t('profile.lng')} (${t('common.optional')})`}>
               <input

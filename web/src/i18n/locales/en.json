@@ -155,6 +155,12 @@
     "address": "Address",
     "postalCode": "Postal code",
     "city": "City",
+    "lat": "Latitude",
+    "lng": "Longitude",
+    "useCurrentLocation": "Use current location",
+    "geolocationNotSupported": "Your browser doesn't support geolocation",
+    "geolocationDenied": "Location permission denied. Enable it in browser settings.",
+    "geolocationError": "Could not get location. Please try again.",
     "since": "Member since"
   },
   "theme": {
