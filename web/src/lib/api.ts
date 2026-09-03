@@ -166,6 +166,16 @@ export const api = {
     serviceRadiusKm?: number
   }) => request<OnboardingResponse>('/providers/onboarding', { method: 'POST', body: JSON.stringify(input) }),
   providerMe: () => request<ProviderProfile>('/providers/me'),
+  updateProviderProfile: (input: {
+    businessName?: string
+    headline?: string | null
+    bio?: string | null
+    categoryIds?: string[]
+    city?: string | null
+    serviceRadiusKm?: number
+    lat?: number | null
+    lng?: number | null
+  }) => request<ProviderProfile>('/providers/me', { method: 'PATCH', body: JSON.stringify(input) }),
   uploadDocument: (file: File, type: string) => {
     const form = new FormData()
     form.append('file', file)
@@ -299,6 +309,9 @@ export interface ProviderProfile {
   bio: string | null
   verificationStatus: 'NONE' | 'PENDING' | 'VERIFIED'
   serviceRadiusKm: number
+  city: string | null
+  lat: number | null
+  lng: number | null
   documents: VerificationDocument[]
   categories: CategoryNode[]
 }

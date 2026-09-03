@@ -111,6 +111,14 @@ export function useUploadDocument() {
   })
 }
 
+export function useUpdateProviderProfile() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: api.updateProviderProfile,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: PROVIDER_ME_KEY }),
+  })
+}
+
 const BOOKINGS_KEY = (scope: 'client' | 'provider') => ['bookings', scope] as const
 
 // El backend devuelve la forma según el scope; los componentes filtran con

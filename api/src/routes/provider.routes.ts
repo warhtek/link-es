@@ -125,4 +125,48 @@ providerRouter.post('/me/documents', requireAuth, (req, res) => {
   })
 })
 
+// Actualizar perfil de proveedor (categorías, radio, ubicación, etc.)
+const updateProviderSchema = z.object({
+  businessName: z.string().trim().min(2).max(100).optional(),
+  headline: z.string().trim().max(120).optional().nullable(),
+  bio: z.string().trim().max(2000).optional().nullable(),
+  categoryIds: z.array(z.string()).min(0).max(5).optional(),
+  city: z.string().trim().max(80).optional().nullable(),
+  serviceRadiusKm: z.coerce.number().min(1).max(50).optional(),
+  lat: z.coerce.number().min(-90).max(90).optional().nullable(),
+  lng: z.coerce.number().min(-180).max(180).optional().nullable(),
+})
+
+providerRouter.patch('/me', requireAuth, async (req, res) => {
+  const parsed = updateProviderSchema.safeParse(req.body)
+  if (!parsed.success) {
+    res.status(400).json({ error: 'validation_error', issues: parsed.error.flatten() })
+    return
+  }
+  const profile = await prisma.providerProfile.findFirst({ where: { userId: req.auth!.sub } })
+  if (!profile) {
+    res.status(404).json({ error: 'no_provider_profile' })
+    return
+  }
+  const data = parsed.data
+  const updated = await prisma.providerProfile.update({
+    where: { id: profile.id },
+    data: {
+      businessName: data.businessName ?? undefined,
+      headline: data.headline ?? undefined,
+      bio: data.bio ?? undefined,
+      serviceRadiusKm: data.serviceRadiusKm ?? undefined,
+      city: data.city ?? undefined,
+      lat: data.lat ?? undefined,
+      lng: data.lng ?? undefined,
+      categories: data.categoryIds ? { set: data.categoryIds.map((id) => ({ id })) } : undefined,
+    },
+    include: {
+      documents: { orderBy: { createdAt: 'desc' } },
+      categories: true,
+    },
+  })
+  res.json(updated)
+})
+
 export { UPLOADS_DIR }
