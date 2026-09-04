@@ -42,7 +42,19 @@ publicProviderRouter.get('/', async (req: Request, res: Response) => {
   }
   const { q, categoryId, lat, lng, radiusKm, sort } = parsed.data
 
-  // TRUE como primera condición simplifica el join con AND.
+  // Si se pasa una categoría raíz, obtener sus subcategorías para incluir en la búsqueda
+  let categoryIds: string[] = []
+  if (categoryId) {
+    const cat = await prisma.category.findUnique({ where: { id: categoryId }, select: { parentId: true } })
+    if (cat && !cat.parentId) {
+      // Es categoría raíz: buscar sus hijas
+      const children = await prisma.category.findMany({ where: { parentId: categoryId }, select: { id: true } })
+      categoryIds = [categoryId, ...children.map((c) => c.id)]
+    } else {
+      categoryIds = [categoryId]
+    }
+  }
+
   const conditions = [Prisma.sql`TRUE`]
   if (q) {
     const like = `%${q}%`
@@ -51,10 +63,11 @@ publicProviderRouter.get('/', async (req: Request, res: Response) => {
         OR EXISTS (SELECT 1 FROM services s WHERE s."providerId" = p.id AND s.title ILIKE ${like}))`,
     )
   }
-  if (categoryId) {
+  if (categoryIds.length > 0) {
+    const catList = Prisma.join(categoryIds.map((id) => Prisma.sql`${id}`), ', ')
     conditions.push(
-      Prisma.sql`(EXISTS (SELECT 1 FROM "_CategoryToProviderProfile" cp WHERE cp."B" = p.id AND cp."A" = ${categoryId})
-        OR EXISTS (SELECT 1 FROM services s WHERE s."providerId" = p.id AND s."categoryId" = ${categoryId}))`,
+      Prisma.sql`(EXISTS (SELECT 1 FROM "_CategoryToProviderProfile" cp WHERE cp."B" = p.id AND cp."A" IN (${catList}))
+        OR EXISTS (SELECT 1 FROM services s WHERE s."providerId" = p.id AND s."categoryId" IN (${catList})))`,
     )
   }
   if (lat !== undefined && lng !== undefined && radiusKm) {
