@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { MapContainer, Marker, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
 import { useTranslation } from 'react-i18next'
@@ -20,10 +20,49 @@ interface Props {
   onChange: (lat: number, lng: number) => void
 }
 
-// Selecciona la ubicación: tocar el mapa o arrastrar el pin. El botón usa el GPS del navegador.
+// Convierte texto a número válido dentro del rango de la coordenada, o null.
+function parseCoord(text: string, max: number): number | null {
+  const n = Number.parseFloat(text)
+  if (Number.isNaN(n) || n < -max || n > max) {
+    return null
+  }
+  return n
+}
+
+function fmtCoord(n: number): string {
+  return n.toFixed(6).replace(/0+$/, '').replace(/\.$/, '')
+}
+
+// Selecciona la ubicación: tocar el mapa, arrastrar el pin, el GPS o escribir lat/long.
 export function LocationPicker({ value, onChange }: Props) {
   const { t } = useTranslation()
   const [getting, setGetting] = useState(false)
+  const [latInput, setLatInput] = useState(value ? fmtCoord(value.lat) : '')
+  const [lngInput, setLngInput] = useState(value ? fmtCoord(value.lng) : '')
+  // No pisar lo que el usuario escribe: solo se resincroniza el campo cuando el
+  // cambio provino del mapa/GPS/arrastre y no de los propios inputs.
+  const lastChange = useRef<'input' | 'external'>('external')
+
+  useEffect(() => {
+    if (value && lastChange.current === 'external') {
+      setLatInput(fmtCoord(value.lat))
+      setLngInput(fmtCoord(value.lng))
+    }
+  }, [value])
+
+  function externalChange(lat: number, lng: number) {
+    lastChange.current = 'external'
+    onChange(lat, lng)
+  }
+
+  function commitFromInput(latValue: string, lngValue: string) {
+    const lat = parseCoord(latValue, 90)
+    const lng = parseCoord(lngValue, 180)
+    if (lat !== null && lng !== null) {
+      lastChange.current = 'input'
+      onChange(lat, lng)
+    }
+  }
 
   function pickFromBrowser() {
     if (!navigator.geolocation) {
@@ -33,7 +72,7 @@ export function LocationPicker({ value, onChange }: Props) {
     setGetting(true)
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        onChange(pos.coords.latitude, pos.coords.longitude)
+        externalChange(pos.coords.latitude, pos.coords.longitude)
         setGetting(false)
       },
       (err) => {
@@ -60,8 +99,44 @@ export function LocationPicker({ value, onChange }: Props) {
           attributionControl={false}
         >
           <ThemeTileLayer />
-          <PlacedPin value={value} onChange={onChange} />
+          <PlacedPin value={value} onChange={externalChange} />
         </MapContainer>
+      </div>
+      <div className="grid grid-cols-2 gap-2 border-t border-line px-3 py-2 sm:gap-3">
+        <label className="block space-y-1">
+          <span className="text-xs font-medium text-ink-soft">{t('provider.mapPickerLat')}</span>
+          <input
+            type="text"
+            inputMode="decimal"
+            autoComplete="off"
+            value={latInput}
+            onChange={(e) => {
+              const v = e.target.value
+              setLatInput(v)
+              commitFromInput(v, lngInput)
+            }}
+            placeholder="13.6770"
+            aria-invalid={latInput !== '' && parseCoord(latInput, 90) === null}
+            className={`w-full rounded-control border bg-paper px-2.5 py-1.5 font-mono text-sm ${latInput !== '' && parseCoord(latInput, 90) === null ? 'border-clay' : 'border-line'}`}
+          />
+        </label>
+        <label className="block space-y-1">
+          <span className="text-xs font-medium text-ink-soft">{t('provider.mapPickerLng')}</span>
+          <input
+            type="text"
+            inputMode="decimal"
+            autoComplete="off"
+            value={lngInput}
+            onChange={(e) => {
+              const v = e.target.value
+              setLngInput(v)
+              commitFromInput(latInput, v)
+            }}
+            placeholder="-89.2730"
+            aria-invalid={lngInput !== '' && parseCoord(lngInput, 180) === null}
+            className={`w-full rounded-control border bg-paper px-2.5 py-1.5 font-mono text-sm ${lngInput !== '' && parseCoord(lngInput, 180) === null ? 'border-clay' : 'border-line'}`}
+          />
+        </label>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line px-3 py-2">
         <span className="font-mono text-xs text-ink-soft">
