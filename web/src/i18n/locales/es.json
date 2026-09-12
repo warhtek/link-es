@@ -7,7 +7,10 @@
     "bookings": "Mis reservas",
     "requests": "Solicitudes",
     "messages": "Mensajes",
-    "admin": "Administración"
+    "admin": "Administración",
+    "openMenu": "Abrir menu",
+    "closeMenu": "Cerrar menu",
+    "mobileMenu": "Navegacion"
   },
   "home": {
     "heroTitle": "Encuentra a alguien de confianza cerca de ti",

@@ -1,9 +1,9 @@
 import { io, type Socket } from 'socket.io-client'
 import { useEffect } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { getAccessToken, type BookingStatusValue } from './api'
+import { getAccessToken, API_URL, type BookingStatusValue } from './api'
 
-const SOCKET_ORIGIN = (import.meta.env.VITE_API_URL ?? 'http://localhost:4000/api').replace(/\/api$/, '')
+const SOCKET_ORIGIN = API_URL.replace(/\/api$/, '')
 
 let socket: Socket | null = null
 
@@ -15,8 +15,6 @@ export function getSocket(): Socket {
   }
   return socket
 }
-
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000/api'
 
 async function apiGet<T>(path: string): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {

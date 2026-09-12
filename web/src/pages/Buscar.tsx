@@ -61,9 +61,9 @@ export function BuscarPage() {
   const pickMode = geo.status === 'denied' || geo.status === 'unavailable'
 
   return (
-    <main className="lg:flex lg:h-[calc(100vh-53px)]">
+    <main className="flex flex-col lg:flex-row lg:h-[calc(100vh-53px)]">
       {/* Columna izquierda: filtros + resultados (45% en escritorio) */}
-      <div className="flex min-w-0 flex-col border-line lg:w-[45%] lg:border-r">
+      <div className="flex min-w-0 flex-col border-line lg:w-[45%] lg:border-r lg:overflow-hidden">
         <div className="space-y-3 border-b border-line bg-panel px-4 py-3">
           <form onSubmit={onSubmit} className="flex gap-2" role="search">
             <input
@@ -168,7 +168,7 @@ export function BuscarPage() {
         </div>
 
         {/* Resultados */}
-        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4" data-testid="results-list">
+        <div className="min-h-[200px] flex-1 overflow-y-auto px-4 py-4 lg:min-h-0" data-testid="results-list">
           {geo.status === 'granted' && (
             <p className="mb-3 font-mono text-xs uppercase tracking-wide text-ink-soft">
               {t('search.resultsNear', {

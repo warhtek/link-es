@@ -6,3 +6,5 @@ Correo: admin@linkes.dev
 Contraseña: password123
 Al iniciar sesión, verás la pestaña "Administración" en la barra superior o puedes ingresar directamente a la URL: http://localhost:5173/admin
 Opción 2: Convertir tu propio usuario en Administrador
+
+rosa.belleza@linkes.dev

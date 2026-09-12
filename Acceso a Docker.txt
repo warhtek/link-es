@@ -1,0 +1,18 @@
+Acceso a Docker
+
+# Iniciar el servicio db
+docker compose up -d db
+# Iniciar el contenedor existente
+docker start link-es-db-1
+
+# Verificar que está corriendo
+docker ps
+
+# Verificar que esté corriendo
+docker compose ps
+
+# Ver los logs para confirmar que inició bien
+docker compose logs db
+
+# Probar conexión (opcional)
+docker compose exec db psql -U link_es -d link_es -c "SELECT version();"

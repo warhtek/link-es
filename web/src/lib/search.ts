@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000/api'
+import { API_URL } from './api'
 
 export interface ProviderSearchResult {
   id: string

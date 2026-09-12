@@ -7,7 +7,10 @@
     "bookings": "My bookings",
     "requests": "Requests",
     "messages": "Messages",
-    "admin": "Administration"
+    "admin": "Administration",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "mobileMenu": "Navigation"
   },
   "home": {
     "heroTitle": "Find someone trustworthy near you",

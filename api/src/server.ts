@@ -50,9 +50,10 @@ app.get('/api/health', async (_req, res) => {
 })
 
 const port = Number(process.env.PORT) || 4000
+const host = process.env.HOST || '0.0.0.0'
 
-const server = app.listen(port, () => {
-  console.log(`[link-es-api] escuchando en http://localhost:${port}`)
+const server = app.listen(port, host, () => {
+  console.log(`[link-es-api] escuchando en http://${host}:${port}`)
 })
 
 // Chat en tiempo real (Fase 5): Socket.io sobre el mismo servidor HTTP.

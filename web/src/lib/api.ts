@@ -6,6 +6,7 @@
 // permite usar la app desde otros equipos de la red sin reconfigurar nada.
 const API_URL =
   import.meta.env.VITE_API_URL ?? `http://${window.location.hostname}:4000/api`
+export { API_URL }
 const ACCESS_KEY = 'link-es-access-token'
 const REFRESH_KEY = 'link-es-refresh-token'
 
