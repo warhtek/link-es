@@ -48,6 +48,32 @@ function ThemeTileLayer() {
   )
 }
 
+// Recalibra el tamaño interno de Leaflet: en móvil el contenedor se monta antes
+// de que el layout termine (vh del navegador, barra inferior), y sin esto los
+// pines quedan emplazados fuera del área visible.
+function AutoFitSize() {
+  const map = useMap()
+  useEffect(() => {
+    const container = map.getContainer()
+    let frame = 0
+    const invalidate = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => map.invalidateSize())
+    }
+    const observer = new ResizeObserver(invalidate)
+    observer.observe(container)
+    window.addEventListener('resize', invalidate)
+    const timer = window.setTimeout(() => map.invalidateSize(), 60)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.clearTimeout(timer)
+      observer.disconnect()
+      window.removeEventListener('resize', invalidate)
+    }
+  }, [map])
+  return null
+}
+
 function Recenter({ center }: { center: [number, number] | null }) {
   const map = useMap()
   useEffect(() => {
@@ -94,6 +120,7 @@ export function ProviderMap({
         attributionControl
       >
         <ThemeTileLayer />
+        <AutoFitSize />
         <Recenter center={clientPosition ? [clientPosition.lat, clientPosition.lng] : null} />
         <ClickToLocate enabled={pickMode} onPick={onPickClientPosition} />
 

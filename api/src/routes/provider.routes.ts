@@ -81,7 +81,8 @@ providerRouter.get('/me', requireAuth, async (req, res) => {
     res.status(404).json({ error: 'no_provider_profile' })
     return
   }
-  res.json(profile)
+  // Alias lat/lng (misma convención que la búsqueda pública) sobre la cobertura.
+  res.json({ ...profile, lat: profile.serviceAreaLat, lng: profile.serviceAreaLng })
 })
 
 const DOCUMENT_TYPES = new Set(['ID', 'LICENSE', 'CERTIFICATION', 'OTHER'])
@@ -149,24 +150,32 @@ providerRouter.patch('/me', requireAuth, async (req, res) => {
     return
   }
   const data = parsed.data
-  const updated = await prisma.providerProfile.update({
-    where: { id: profile.id },
-    data: {
-      businessName: data.businessName ?? undefined,
-      headline: data.headline ?? undefined,
-      bio: data.bio ?? undefined,
-      serviceRadiusKm: data.serviceRadiusKm ?? undefined,
-      city: data.city ?? undefined,
-      lat: data.lat ?? undefined,
-      lng: data.lng ?? undefined,
-      categories: data.categoryIds ? { set: data.categoryIds.map((id) => ({ id })) } : undefined,
-    },
-    include: {
-      documents: { orderBy: { createdAt: 'desc' } },
-      categories: true,
-    },
+  const updated = await prisma.$transaction(async (tx) => {
+    // La ciudad vive en el usuario (el perfil público la muestra con u.city).
+    if (data.city !== undefined) {
+      await tx.user.update({
+        where: { id: req.auth!.sub },
+        data: { city: data.city },
+      })
+    }
+    return tx.providerProfile.update({
+      where: { id: profile.id },
+      data: {
+        businessName: data.businessName ?? undefined,
+        headline: data.headline ?? undefined,
+        bio: data.bio ?? undefined,
+        serviceRadiusKm: data.serviceRadiusKm ?? undefined,
+        serviceAreaLat: data.lat === undefined ? undefined : data.lat,
+        serviceAreaLng: data.lng === undefined ? undefined : data.lng,
+        categories: data.categoryIds ? { set: data.categoryIds.map((id) => ({ id })) } : undefined,
+      },
+      include: {
+        documents: { orderBy: { createdAt: 'desc' } },
+        categories: true,
+      },
+    })
   })
-  res.json(updated)
+  res.json({ ...updated, lat: updated.serviceAreaLat, lng: updated.serviceAreaLng })
 })
 
 export { UPLOADS_DIR }
