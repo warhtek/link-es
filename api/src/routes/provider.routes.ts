@@ -15,6 +15,8 @@ const onboardingSchema = z.object({
   categoryIds: z.array(z.string().min(1)).min(1).max(5),
   city: z.string().trim().min(2).max(80),
   serviceRadiusKm: z.coerce.number().min(1).max(50).optional(),
+  lat: z.coerce.number().min(-90).max(90).optional().nullable(),
+  lng: z.coerce.number().min(-180).max(180).optional().nullable(),
 })
 
 // Convierte a un usuario en proveedor: crea el perfil, vincula categorías y
@@ -40,7 +42,7 @@ providerRouter.post('/onboarding', requireAuth, async (req, res) => {
     return
   }
 
-  // Coordenadas de cobertura llegan con el mapa en Fase 3; por ahora solo texto.
+  // La ubicación (pin del mapa) se guarda desde el selector de mapa del onboarding.
   const [profile] = await prisma.$transaction([
     prisma.providerProfile.create({
       data: {
@@ -49,6 +51,8 @@ providerRouter.post('/onboarding', requireAuth, async (req, res) => {
         headline: parsed.data.headline ?? null,
         bio: parsed.data.bio ?? null,
         serviceRadiusKm: parsed.data.serviceRadiusKm ?? 5,
+        serviceAreaLat: parsed.data.lat ?? undefined,
+        serviceAreaLng: parsed.data.lng ?? undefined,
         categories: { connect: parsed.data.categoryIds.map((id) => ({ id })) },
       },
     }),

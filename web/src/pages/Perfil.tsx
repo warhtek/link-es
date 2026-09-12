@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { RequireAuth } from '../components/RequireAuth'
 import { inputClass } from './Login'
 import { useLogout, useMe, useProviderMe, useSwitchMode, useUpdateProfile, useUploadDocument, useUpdateProviderProfile, useCategories } from '../lib/auth'
+import { LocationPicker } from '../components/LocationPicker'
 import type { PublicUser } from '../lib/auth'
 import type { CategoryNode } from '../lib/api'
 
@@ -24,6 +25,7 @@ export function PerfilPage() {
 function PerfilContent() {
   const { t } = useTranslation()
   const me = useMe()
+  const providerData = useProviderMe().data
   const logout = useLogout()
   const switchMode = useSwitchMode()
 
@@ -74,7 +76,7 @@ function PerfilContent() {
       />
 
       {user.roles.includes('PROVIDER') && <ProviderCard />}
-      {user.roles.includes('PROVIDER') && <ProviderProfileEdit />}
+      {user.roles.includes('PROVIDER') && <ProviderProfileEdit key={providerData?.id ?? 'pending'} />}
       <EditProfileForm user={user} />
     </main>
   )
@@ -297,41 +299,14 @@ function ProviderProfileEdit() {
     bio: bio ?? '',
     serviceRadiusKm,
     city: city ?? '',
-    lat: lat ?? '',
-    lng: lng ?? '',
   })
+  const [position, setPosition] = useState<{ lat: number; lng: number } | null>(
+    lat != null && lng != null ? { lat, lng } : null,
+  )
   const [selectedCategoryIds, setSelectedCategoryIds] = useState(providerCategories.map((c) => c.id))
   const [files, setFiles] = useState<Partial<Record<'ID' | 'LICENSE' | 'CERTIFICATION', File>>>({})
-  const [gettingLocation, setGettingLocation] = useState(false)
 
   if (provider.isLoading || !provider.data) return null
-
-  function getCurrentLocation() {
-    if (!navigator.geolocation) {
-      alert(t('profile.geolocationNotSupported'))
-      return
-    }
-    setGettingLocation(true)
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setForm((prev) => ({
-          ...prev,
-          lat: pos.coords.latitude.toFixed(6),
-          lng: pos.coords.longitude.toFixed(6),
-        }))
-        setGettingLocation(false)
-      },
-      (err) => {
-        setGettingLocation(false)
-        if (err.code === err.PERMISSION_DENIED) {
-          alert(t('profile.geolocationDenied'))
-        } else {
-          alert(t('profile.geolocationError'))
-        }
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    )
-  }
 
   function toggleCategory(id: string) {
     setSelectedCategoryIds((prev) =>
@@ -353,8 +328,8 @@ function ProviderProfileEdit() {
         categoryIds: selectedCategoryIds,
         serviceRadiusKm: form.serviceRadiusKm,
         city: form.city || undefined,
-        lat: form.lat ? Number(form.lat) : null,
-        lng: form.lng ? Number(form.lng) : null,
+        lat: position ? position.lat : null,
+        lng: position ? position.lng : null,
       })
     } catch {
       return
@@ -443,7 +418,7 @@ function ProviderProfileEdit() {
         </Section>
 
         <Section title={t('provider.areaTitle')}>
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2">
             <Field label={t('profile.city')}>
               <input
                 type="text"
@@ -465,39 +440,13 @@ function ProviderProfileEdit() {
                 ))}
               </select>
             </Field>
-            <Field label={`${t('profile.lat')} (${t('common.optional')})`}>
-              <div className="flex gap-2">
-                <input
-                  type="number"
-                  step="any"
-                  placeholder="Latitud"
-                  value={form.lat}
-                  onChange={(e) => setForm({ ...form, lat: e.target.value })}
-                  className={inputClass}
-                />
-                <button
-                  type="button"
-                  onClick={getCurrentLocation}
-                  disabled={gettingLocation}
-                  className="cursor-pointer rounded-control border border-line bg-paper px-3 py-2 text-sm font-medium hover:bg-moss-soft disabled:opacity-50 disabled:cursor-not-allowed"
-                  title={t('profile.useCurrentLocation')}
-                >
-                  {gettingLocation ? '📍' : '📍'}
-                </button>
-              </div>
-            </Field>
-            <Field label={`${t('profile.lng')} (${t('common.optional')})`}>
-              <input
-                type="number"
-                step="any"
-                placeholder="Longitud"
-                value={form.lng}
-                onChange={(e) => setForm({ ...form, lng: e.target.value })}
-                className={inputClass}
-              />
-            </Field>
           </div>
-          <p className="mt-2 text-xs text-ink-soft">{t('provider.areaMapHint')}</p>
+          <div className="mt-4 space-y-2">
+            <Field label={t('provider.mapPickerLabel')}>
+              <LocationPicker value={position} onChange={(lat, lng) => setPosition({ lat, lng })} />
+            </Field>
+            <p className="text-xs text-ink-soft">{t('provider.areaMapHint')}</p>
+          </div>
         </Section>
 
         <Section title={t('provider.documentsTitle')} hint={t('provider.documentsHint')}>

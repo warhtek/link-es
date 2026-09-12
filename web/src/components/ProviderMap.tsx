@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
-import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from 'react-leaflet'
+import { useEffect } from 'react'
+import { MapContainer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
 import { useTranslation } from 'react-i18next'
 import { formatDistance, type ProviderSearchResult } from '../lib/search'
-
-const DEFAULT_CENTER: [number, number] = [13.6929, -89.2182] // San Salvador
+import { DEFAULT_CENTER } from '../lib/geo'
+import { ThemeTileLayer } from './ThemeTileLayer'
 
 // Pines propios del sistema de diseño (ficha de directorio, no app de delivery).
 function providerIcon(status: string): L.DivIcon {
@@ -25,27 +25,6 @@ function clientIcon(): L.DivIcon {
     iconSize: [28, 28],
     iconAnchor: [14, 14],
   })
-}
-
-function ThemeTileLayer() {
-  const [theme, setTheme] = useState(() => document.documentElement.getAttribute('data-theme') ?? 'light')
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setTheme(document.documentElement.getAttribute('data-theme') ?? 'light')
-    })
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
-    return () => observer.disconnect()
-  }, [])
-
-  const dark = theme === 'dark'
-  return (
-    <TileLayer
-      key={theme}
-      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-      url={dark ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'}
-    />
-  )
 }
 
 // Recalibra el tamaño interno de Leaflet: en móvil el contenedor se monta antes

@@ -73,6 +73,14 @@ body {
   background: var(--moss);
 }
 
+/* Pin de ubicación elegida (selector de Perfil/onboarding). */
+.linkes-pin-picked {
+  background: var(--clay);
+  box-shadow:
+    0 0 0 1px var(--line),
+    0 0 0 7px color-mix(in srgb, var(--clay) 22%, transparent);
+}
+
 /* Punto del cliente + anillo animado (elemento de firma del plan). */
 .linkes-client-wrap { background: none; border: none; }
 .linkes-client {

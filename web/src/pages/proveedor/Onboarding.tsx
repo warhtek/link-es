@@ -2,6 +2,7 @@ import { useRef, useState, type FormEvent } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { RequireAuth } from '../../components/RequireAuth'
+import { LocationPicker } from '../../components/LocationPicker'
 import { inputClass } from '../Login'
 import {
   useCategories,
@@ -62,6 +63,8 @@ function OnboardingForm() {
     bio: '',
     city: '',
     serviceRadiusKm: 5,
+    lat: null as number | null,
+    lng: null as number | null,
   })
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [files, setFiles] = useState<FileSelection>({})
@@ -86,6 +89,8 @@ function OnboardingForm() {
         categoryIds: selectedCategories,
         city: form.city,
         serviceRadiusKm: form.serviceRadiusKm,
+        lat: form.lat ?? undefined,
+        lng: form.lng ?? undefined,
       })
     } catch {
       return // el error se muestra bajo el formulario
@@ -194,7 +199,15 @@ function OnboardingForm() {
             </select>
           </Field>
         </div>
-        <p className="mt-2 text-xs text-ink-soft">{t('provider.areaMapHint')}</p>
+        <div className="mt-4 space-y-2">
+          <Field label={t('provider.mapPickerLabel')}>
+            <LocationPicker
+              value={form.lat != null && form.lng != null ? { lat: form.lat, lng: form.lng } : null}
+              onChange={(lat, lng) => setForm((prev) => ({ ...prev, lat, lng }))}
+            />
+          </Field>
+          <p className="text-xs text-ink-soft">{t('provider.areaMapHint')}</p>
+        </div>
       </Section>
 
       <Section title={t('provider.documentsTitle')} hint={t('provider.documentsHint')}>

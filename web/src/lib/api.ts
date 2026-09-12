@@ -165,6 +165,8 @@ export const api = {
     categoryIds: string[]
     city: string
     serviceRadiusKm?: number
+    lat?: number | null
+    lng?: number | null
   }) => request<OnboardingResponse>('/providers/onboarding', { method: 'POST', body: JSON.stringify(input) }),
   providerMe: () => request<ProviderProfile>('/providers/me'),
   updateProviderProfile: (input: {
