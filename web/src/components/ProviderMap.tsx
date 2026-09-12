@@ -82,6 +82,31 @@ function Recenter({ center }: { center: [number, number] | null }) {
   return null
 }
 
+// Encaja la vista para que todos los pines de la búsqueda queden visibles
+// (algunos proveedores, como CREATIAES en Santa Tecla, caen fuera de la vista fija).
+function RefitOnProviders({
+  providers,
+  clientPosition,
+}: {
+  providers: ProviderSearchResult[]
+  clientPosition: { lat: number; lng: number } | null
+}) {
+  const map = useMap()
+  useEffect(() => {
+    const points: L.LatLngExpression[] = providers
+      .filter((p) => p.lat != null && p.lng != null)
+      .map((p) => [p.lat!, p.lng!])
+    if (clientPosition) points.push([clientPosition.lat, clientPosition.lng])
+    if (!points.length) return
+    if (points.length === 1) {
+      map.setView(points[0], Math.min(16, Math.max(13, map.getZoom())))
+      return
+    }
+    map.fitBounds(L.latLngBounds(points), { padding: [48, 48], maxZoom: 15 })
+  }, [providers, clientPosition, map])
+  return null
+}
+
 // Alternativa al permiso de geolocalización: tocar el mapa define la ubicación.
 function ClickToLocate({ enabled, onPick }: { enabled: boolean; onPick: (lat: number, lng: number) => void }) {
   useMapEvents({
@@ -122,6 +147,7 @@ export function ProviderMap({
         <ThemeTileLayer />
         <AutoFitSize />
         <Recenter center={clientPosition ? [clientPosition.lat, clientPosition.lng] : null} />
+        <RefitOnProviders providers={providers} clientPosition={clientPosition} />
         <ClickToLocate enabled={pickMode} onPick={onPickClientPosition} />
 
         {clientPosition && (
