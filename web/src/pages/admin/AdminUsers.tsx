@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Alert, Badge, Button, Card, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter, Input, SearchInput, Tabs, TabsList, TabsTrigger } from '@/components/ui'
 import { api, getAccessToken, type AdminCreateUserInput, type AdminUpdateUserInput, type AdminUserItem, type AdminCategoryItem, type AdminCreateCategoryInput, type AdminUpdateCategoryInput } from '../../lib/api'
 import { useMe } from '../../lib/auth'
 
@@ -127,67 +128,43 @@ export function AdminUsersPage() {
       </div>
 
       {/* Navegación por pestañas */}
-      <div className="flex gap-1 border-b border-line">
-        <button
-          type="button"
-          onClick={() => setActiveTab('users')}
-          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
-            activeTab === 'users'
-              ? 'border-moss text-moss'
-              : 'border-transparent text-ink-soft hover:text-carbon'
-          }`}
-        >
-          👥 {t('admin.tabs.users')}
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab('categories')}
-          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
-            activeTab === 'categories'
-              ? 'border-moss text-moss'
-              : 'border-transparent text-ink-soft hover:text-carbon'
-          }`}
-        >
-          🏷️ {t('admin.tabs.categories')}
-        </button>
-      </div>
+      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'users' | 'categories')} className="border-b border-line">
+        <TabsList variant="line">
+          <TabsTrigger value="users">👥 {t('admin.tabs.users')}</TabsTrigger>
+          <TabsTrigger value="categories">🏷️ {t('admin.tabs.categories')}</TabsTrigger>
+        </TabsList>
+      </Tabs>
 
       {/* Alerta flotante o de estado */}
       {alertMessage && (
-        <div
-          className={`mt-4 rounded-control border p-3 text-sm font-medium ${
-            alertMessage.type === 'success'
-              ? 'border-moss/30 bg-moss-soft text-moss'
-              : 'border-clay/30 bg-clay/10 text-clay'
-          }`}
-        >
+        <Alert className="mt-4" variant={alertMessage.type === 'success' ? 'success' : 'destructive'}>
           {alertMessage.text}
-        </div>
+        </Alert>
       )}
 
       {activeTab === 'users' ? (
         <>
           {/* Tarjetas KPI de Estadísticas */}
           <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <div className="rounded-card border border-line bg-panel p-4">
+            <Card className="p-4">
               <span className="block font-mono text-xs uppercase tracking-wide text-ink-soft">
                 {t('admin.stats.totalUsers')}
               </span>
               <b className="mt-1 block font-mono text-2xl font-semibold">{stats?.totalUsers ?? '…'}</b>
-            </div>
-            <div className="rounded-card border border-line bg-panel p-4">
+            </Card>
+            <Card className="p-4">
               <span className="block font-mono text-xs uppercase tracking-wide text-ink-soft">
                 {t('admin.stats.clients')}
               </span>
               <b className="mt-1 block font-mono text-2xl font-semibold">{stats?.clientsCount ?? '…'}</b>
-            </div>
-            <div className="rounded-card border border-line bg-panel p-4">
+            </Card>
+            <Card className="p-4">
               <span className="block font-mono text-xs uppercase tracking-wide text-ink-soft">
                 {t('admin.stats.providers')}
               </span>
               <b className="mt-1 block font-mono text-2xl font-semibold text-moss">{stats?.providersCount ?? '…'}</b>
-            </div>
-            <div className="rounded-card border border-line bg-panel p-4">
+            </Card>
+            <Card className="p-4">
               <span className="block font-mono text-xs uppercase tracking-wide text-ink-soft">
                 {t('admin.stats.pendingVerifications')}
               </span>
@@ -199,32 +176,18 @@ export function AdminUsersPage() {
               </span>
             )}
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Barra de Filtros y Búsqueda */}
-      <div className="mt-6 rounded-card border border-line bg-panel p-4">
+      <Card className="mt-6 p-4">
         <div className="flex flex-col gap-3 md:flex-row md:items-center">
-          <div className="relative flex-1">
-            <input
-              type="search"
+          <div className="flex-1">
+            <SearchInput
               value={search}
-              onChange={(e) => {
-                setSearch(e.target.value)
-                setPage(1)
-              }}
+              onChange={(val) => { setSearch(val); setPage(1) }}
               placeholder={t('admin.filters.searchPlaceholder')}
-              className="w-full rounded-control border border-line bg-paper py-2 pr-3 pl-9 text-sm outline-none placeholder:text-ink-soft focus:border-moss"
             />
-            <svg
-              className="absolute top-2.5 left-3 h-4 w-4 text-ink-soft"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
@@ -259,10 +222,10 @@ export function AdminUsersPage() {
             </select>
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Tabla de Usuarios */}
-      <div className="mt-4 overflow-hidden rounded-card border border-line bg-panel">
+      <Card className="mt-4 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="border-b border-line bg-paper font-mono text-[11px] uppercase tracking-wider text-ink-soft">
@@ -313,20 +276,21 @@ export function AdminUsersPage() {
                       {/* Roles */}
                       <td className="px-4 py-3.5">
                         <div className="flex flex-wrap gap-1">
-                          {u.roles.map((r) => (
-                            <span
-                              key={r}
-                              className={`rounded-control px-2 py-0.5 font-mono text-[10px] font-semibold uppercase ${
-                                r === 'ADMIN'
-                                  ? 'border border-carbon/30 bg-carbon text-panel'
-                                  : r === 'PROVIDER'
-                                    ? 'border border-moss bg-moss-soft text-moss'
-                                    : 'border border-line bg-paper text-ink-soft'
-                              }`}
-                            >
-                              {r}
-                            </span>
-                          ))}
+                          {u.roles.map((r) =>
+                        r === 'ADMIN' ? (
+                          <Badge key={r} variant="default" className="rounded-control px-2 py-0.5 font-mono text-[10px] uppercase border-carbon/30 bg-carbon text-panel">
+                            {r}
+                          </Badge>
+                        ) : r === 'PROVIDER' ? (
+                          <Badge key={r} variant="success" className="rounded-control px-2 py-0.5 font-mono text-[10px] uppercase border-moss bg-moss-soft text-moss">
+                            {r}
+                          </Badge>
+                        ) : (
+                          <Badge key={r} variant="secondary" className="rounded-control px-2 py-0.5 font-mono text-[10px] uppercase text-ink-soft">
+                            {r}
+                          </Badge>
+                        )
+                      )}
                         </div>
                       </td>
 
@@ -432,26 +396,28 @@ export function AdminUsersPage() {
               Página {usersQuery.data.page} de {usersQuery.data.totalPages} ({usersQuery.data.total} en total)
             </span>
             <div className="flex items-center gap-1">
-              <button
-                type="button"
+              <Button
+                variant="outline"
+                size="sm"
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="cursor-pointer rounded-md border border-line px-3 py-1 font-mono text-xs disabled:cursor-not-allowed disabled:opacity-40"
+                className="font-mono"
               >
                 ← Anterior
-              </button>
-              <button
-                type="button"
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
                 disabled={page >= usersQuery.data.totalPages}
                 onClick={() => setPage((p) => p + 1)}
-                className="cursor-pointer rounded-md border border-line px-3 py-1 font-mono text-xs disabled:cursor-not-allowed disabled:opacity-40"
+                className="font-mono"
               >
                 Siguiente →
-              </button>
+              </Button>
             </div>
           </div>
         )}
-      </div>
+      </Card>
 
       {/* Modal: Crear Usuario / Proveedor */}
       {createUserModalOpen && (
@@ -482,41 +448,36 @@ export function AdminUsersPage() {
 
       {/* Modal: Confirmar Eliminación Usuario */}
       {deletingUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-carbon/50 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-md rounded-card border border-line bg-panel p-6 shadow-xl">
-            <div className="flex items-center gap-3 text-clay">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-clay/10">
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-              </div>
-              <h2 className="font-display text-lg font-semibold">{t('admin.modal.deleteTitle')}</h2>
-            </div>
-            <p className="mt-3 text-sm text-ink-soft">
-              {t('admin.modal.deleteWarning')}
-            </p>
+        <Dialog open={true} onOpenChange={(open) => !open && setDeletingUser(null)}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-3 text-clay">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-clay/10">
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+                {t('admin.modal.deleteTitle')}
+              </DialogTitle>
+              <DialogDescription>{t('admin.modal.deleteWarning')}</DialogDescription>
+            </DialogHeader>
             <div className="mt-3 rounded-control border border-line bg-paper p-3 font-mono text-xs">
               <b>{deletingUser.name}</b> ({deletingUser.email})
             </div>
-            <div className="mt-6 flex justify-end gap-2">
-              <button
-                type="button"
-                onClick={() => setDeletingUser(null)}
-                className="cursor-pointer rounded-control border border-line bg-paper px-4 py-2 text-sm font-medium hover:bg-paper/80"
-              >
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setDeletingUser(null)}>
                 {t('admin.actions.cancel')}
-              </button>
-              <button
-                type="button"
-                disabled={deleteMutation.isPending}
+              </Button>
+              <Button
+                variant="destructive"
+                isLoading={deleteMutation.isPending}
                 onClick={() => deleteMutation.mutate(deletingUser.id)}
-                className="cursor-pointer rounded-control bg-clay px-4 py-2 text-sm font-medium text-panel hover:opacity-90 disabled:opacity-50"
               >
                 {deleteMutation.isPending ? 'Eliminando…' : t('admin.actions.confirmDelete')}
-              </button>
-            </div>
-          </div>
-        </div>
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       )}
         </> // Cierre users tab
       ) : (
@@ -524,55 +485,55 @@ export function AdminUsersPage() {
         <>
           {/* Métricas categorías */}
           <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
-            <div className="rounded-card border border-line bg-panel p-4">
+            <Card className="p-4">
               <span className="block font-mono text-xs uppercase tracking-wide text-ink-soft">
                 {t('admin.categories.stats.total')}
               </span>
               <b className="mt-1 block font-mono text-2xl font-semibold">{(categoriesQuery.data as { total: number } | undefined)?.total ?? '…'}</b>
-            </div>
-            <div className="rounded-card border border-line bg-panel p-4">
+            </Card>
+            <Card className="p-4">
               <span className="block font-mono text-xs uppercase tracking-wide text-ink-soft">
                 {t('admin.categories.stats.roots')}
               </span>
               <b className="mt-1 block font-mono text-2xl font-semibold text-moss">
                 {(categoriesQuery.data as { categories: AdminCategoryItem[] } | undefined)?.categories.filter((c) => !c.parentId).length ?? '…'}
               </b>
-            </div>
-            <div className="rounded-card border border-line bg-panel p-4">
+            </Card>
+            <Card className="p-4">
               <span className="block font-mono text-xs uppercase tracking-wide text-ink-soft">
                 {t('admin.categories.stats.specialties')}
               </span>
               <b className="mt-1 block font-mono text-2xl font-semibold text-clay">
                 {(categoriesQuery.data as { categories: AdminCategoryItem[] } | undefined)?.categories.filter((c) => c.parentId).length ?? '…'}
               </b>
-            </div>
+            </Card>
           </div>
 
           {/* Cabecera con botón crear */}
           <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <h2 className="font-display text-xl font-semibold">{t('admin.categories.title')}</h2>
-            <button
+            <Button
               type="button"
               onClick={() => setCreateCategoryModalOpen(true)}
-              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-control bg-moss px-4 py-2.5 text-sm font-medium text-panel transition-opacity hover:opacity-90 max-sm:w-full"
+              className="gap-2 max-sm:w-full"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
               </svg>
               {t('admin.categories.actions.createCategory')}
-            </button>
+            </Button>
           </div>
 
           {/* Lista de categorías */}
           <div className="mt-4">
             {categoriesQuery.isLoading ? (
-              <div className="rounded-card border border-line bg-panel p-8 text-center">
+              <Card className="p-8 text-center text-ink-soft">
                 <span className="font-mono text-xs text-ink-soft">Cargando categorías…</span>
-              </div>
+              </Card>
             ) : (categoriesQuery.data as { categories: AdminCategoryItem[] } | undefined)?.categories.length === 0 ? (
-              <div className="rounded-card border border-line bg-panel p-8 text-center text-ink-soft">
+              <Card className="p-8 text-center text-ink-soft">
                 {t('admin.categories.empty')}
-              </div>
+              </Card>
             ) : (
               <div className="space-y-4">
                 {(categoriesQuery.data as { categories: AdminCategoryItem[] } | undefined)?.categories
@@ -651,48 +612,45 @@ export function AdminUsersPage() {
 
       {/* Modal: Confirmar Eliminación Categoría */}
       {deletingCategory && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-carbon/50 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-md rounded-card border border-line bg-panel p-6 shadow-xl">
-            <div className="flex items-center gap-3 text-clay">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-clay/10">
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-              </div>
-              <h2 className="font-display text-lg font-semibold">{t('admin.categories.modal.deleteTitle')}</h2>
-            </div>
-            <p className="mt-3 text-sm text-ink-soft">
-              {deletingCategory._count.children > 0
-                ? t('admin.categories.modal.deleteWarningChildren', { count: deletingCategory._count.children })
-                : deletingCategory._count.services > 0
-                ? t('admin.categories.modal.deleteWarningServices', { count: deletingCategory._count.services })
-                : t('admin.categories.modal.deleteWarning')}
-            </p>
+        <Dialog open={true} onOpenChange={(open) => !open && setDeletingCategory(null)}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-3 text-clay">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-clay/10">
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+                {t('admin.categories.modal.deleteTitle')}
+              </DialogTitle>
+              <DialogDescription>
+                {deletingCategory._count.children > 0
+                  ? t('admin.categories.modal.deleteWarningChildren', { count: deletingCategory._count.children })
+                  : deletingCategory._count.services > 0
+                  ? t('admin.categories.modal.deleteWarningServices', { count: deletingCategory._count.services })
+                  : t('admin.categories.modal.deleteWarning')}
+              </DialogDescription>
+            </DialogHeader>
             <div className="mt-3 rounded-control border border-line bg-paper p-3 font-mono text-xs">
               <b>{deletingCategory.name}</b> ({deletingCategory.slug})
               <div className="mt-1 text-[10px] text-ink-soft">
                 Proveedores: {deletingCategory._count.profiles} · Servicios: {deletingCategory._count.services}
               </div>
             </div>
-            <div className="mt-6 flex justify-end gap-2">
-              <button
-                type="button"
-                onClick={() => setDeletingCategory(null)}
-                className="cursor-pointer rounded-control border border-line bg-paper px-4 py-2 text-sm font-medium hover:bg-paper/80"
-              >
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setDeletingCategory(null)}>
                 {t('admin.actions.cancel')}
-              </button>
-              <button
-                type="button"
-                disabled={deleteCategoryMutation.isPending}
+              </Button>
+              <Button
+                variant="destructive"
+                isLoading={deleteCategoryMutation.isPending}
                 onClick={() => deleteCategoryMutation.mutate(deletingCategory.id)}
-                className="cursor-pointer rounded-control bg-clay px-4 py-2 text-sm font-medium text-panel hover:opacity-90 disabled:opacity-50"
               >
                 {deleteCategoryMutation.isPending ? 'Eliminando…' : t('admin.actions.confirmDelete')}
-              </button>
-            </div>
-          </div>
-        </div>
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       )}
     </main>
   )
@@ -756,20 +714,13 @@ function CreateUserModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-carbon/50 p-4 backdrop-blur-xs">
-      <div className="my-8 w-full max-w-xl rounded-card border border-line bg-panel p-6 shadow-2xl">
-        <div className="flex items-center justify-between border-b border-line pb-4">
-          <h2 className="font-display text-lg font-semibold">{t('admin.modal.createTitle')}</h2>
-          <button type="button" onClick={onClose} className="cursor-pointer text-ink-soft hover:text-carbon">
-            ✕
-          </button>
-        </div>
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{t('admin.modal.createTitle')}</DialogTitle>
+        </DialogHeader>
 
-        {error && (
-          <div className="mt-4 rounded-control border border-clay/30 bg-clay/10 p-3 text-xs text-clay">
-            {error}
-          </div>
-        )}
+        {error && <Alert variant="destructive" className="mt-4 text-xs">{error}</Alert>}
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           {/* Selector de Tipo de Usuario */}
@@ -802,22 +753,22 @@ function CreateUserModal({
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-semibold text-ink-soft">{t('admin.modal.name')} *</label>
-              <input
+              <Input
                 required
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+                className="mt-1"
               />
             </div>
             <div>
               <label className="block text-xs font-semibold text-ink-soft">{t('admin.modal.email')} *</label>
-              <input
+              <Input
                 required
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+                className="mt-1"
               />
             </div>
           </div>
@@ -825,24 +776,24 @@ function CreateUserModal({
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-semibold text-ink-soft">{t('admin.modal.password')} *</label>
-              <input
+              <Input
                 required
                 type="password"
                 minLength={6}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t('admin.modal.passwordHint')}
-                className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+                className="mt-1"
               />
             </div>
             <div>
               <label className="block text-xs font-semibold text-ink-soft">{t('admin.modal.phone')}</label>
-              <input
+              <Input
                 type="text"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+503 7000 0000"
-                className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+                className="mt-1"
               />
             </div>
           </div>
@@ -850,21 +801,21 @@ function CreateUserModal({
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-semibold text-ink-soft">{t('admin.modal.city')}</label>
-              <input
+              <Input
                 type="text"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
                 placeholder="San Salvador, Santa Tecla…"
-                className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+                className="mt-1"
               />
             </div>
             <div>
               <label className="block text-xs font-semibold text-ink-soft">{t('admin.modal.address')}</label>
-              <input
+              <Input
                 type="text"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+                className="mt-1"
               />
             </div>
           </div>
@@ -880,12 +831,12 @@ function CreateUserModal({
                   <label className="block text-xs font-semibold text-ink-soft">
                     {t('admin.modal.businessName')}
                   </label>
-                  <input
+                  <Input
                     type="text"
                     value={businessName}
                     onChange={(e) => setBusinessName(e.target.value)}
                     placeholder={name || 'Nombre comercial'}
-                    className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+                    className="mt-1"
                   />
                 </div>
                 <div>
@@ -906,12 +857,12 @@ function CreateUserModal({
 
               <div>
                 <label className="block text-xs font-semibold text-ink-soft">{t('admin.modal.headline')}</label>
-                <input
+                <Input
                   type="text"
                   value={headline}
                   onChange={(e) => setHeadline(e.target.value)}
                   placeholder="Ej: Plomería y fontanería 24/7 con garantía"
-                  className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+                  className="mt-1"
                 />
               </div>
 
@@ -957,25 +908,15 @@ function CreateUserModal({
             </div>
           )}
 
-          <div className="mt-6 flex justify-end gap-2 border-t border-line pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="cursor-pointer rounded-control border border-line bg-paper px-4 py-2 text-sm font-medium hover:bg-paper/80"
-            >
-              {t('admin.actions.cancel')}
-            </button>
-            <button
-              type="submit"
-              disabled={createMutation.isPending}
-              className="cursor-pointer rounded-control bg-moss px-5 py-2 text-sm font-medium text-panel hover:opacity-90 disabled:opacity-50"
-            >
+          <DialogFooter className="mt-6 border-t border-line pt-4">
+            <Button variant="outline" type="button" onClick={onClose}>{t('admin.actions.cancel')}</Button>
+            <Button type="submit" isLoading={createMutation.isPending}>
               {createMutation.isPending ? 'Guardando…' : t('admin.actions.createUser')}
-            </button>
-          </div>
+            </Button>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -1052,20 +993,13 @@ function EditUserModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-carbon/50 p-4 backdrop-blur-xs">
-      <div className="my-8 w-full max-w-xl rounded-card border border-line bg-panel p-6 shadow-2xl">
-        <div className="flex items-center justify-between border-b border-line pb-4">
-          <h2 className="font-display text-lg font-semibold">{t('admin.modal.editTitle')}</h2>
-          <button type="button" onClick={onClose} className="cursor-pointer text-ink-soft hover:text-carbon">
-            ✕
-          </button>
-        </div>
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{t('admin.modal.editTitle')}</DialogTitle>
+        </DialogHeader>
 
-        {error && (
-          <div className="mt-4 rounded-control border border-clay/30 bg-clay/10 p-3 text-xs text-clay">
-            {error}
-          </div>
-        )}
+        {error && <Alert variant="destructive" className="mt-4 text-xs">{error}</Alert>}
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           {/* Roles */}
@@ -1094,22 +1028,22 @@ function EditUserModal({
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-semibold text-ink-soft">{t('admin.modal.name')} *</label>
-              <input
+              <Input
                 required
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+                className="mt-1"
               />
             </div>
             <div>
               <label className="block text-xs font-semibold text-ink-soft">{t('admin.modal.email')} *</label>
-              <input
+              <Input
                 required
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+                className="mt-1"
               />
             </div>
           </div>
@@ -1119,22 +1053,22 @@ function EditUserModal({
               <label className="block text-xs font-semibold text-ink-soft">
                 {t('admin.modal.password')} ({t('admin.modal.passwordEditHint')})
               </label>
-              <input
+              <Input
                 type="password"
                 minLength={6}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="••••••••"
-                className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+                className="mt-1"
               />
             </div>
             <div>
               <label className="block text-xs font-semibold text-ink-soft">{t('admin.modal.phone')}</label>
-              <input
+              <Input
                 type="text"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+                className="mt-1"
               />
             </div>
           </div>
@@ -1142,20 +1076,20 @@ function EditUserModal({
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-semibold text-ink-soft">{t('admin.modal.city')}</label>
-              <input
+              <Input
                 type="text"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+                className="mt-1"
               />
             </div>
             <div>
               <label className="block text-xs font-semibold text-ink-soft">{t('admin.modal.address')}</label>
-              <input
+              <Input
                 type="text"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+                className="mt-1"
               />
             </div>
           </div>
@@ -1171,11 +1105,11 @@ function EditUserModal({
                   <label className="block text-xs font-semibold text-ink-soft">
                     {t('admin.modal.businessName')}
                   </label>
-                  <input
+                  <Input
                     type="text"
                     value={businessName}
                     onChange={(e) => setBusinessName(e.target.value)}
-                    className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+                    className="mt-1"
                   />
                 </div>
                 <div>
@@ -1196,11 +1130,11 @@ function EditUserModal({
 
               <div>
                 <label className="block text-xs font-semibold text-ink-soft">{t('admin.modal.headline')}</label>
-                <input
+                <Input
                   type="text"
                   value={headline}
                   onChange={(e) => setHeadline(e.target.value)}
-                  className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+                  className="mt-1"
                 />
               </div>
 
@@ -1246,25 +1180,15 @@ function EditUserModal({
             </div>
           )}
 
-          <div className="mt-6 flex justify-end gap-2 border-t border-line pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="cursor-pointer rounded-control border border-line bg-paper px-4 py-2 text-sm font-medium hover:bg-paper/80"
-            >
-              {t('admin.actions.cancel')}
-            </button>
-            <button
-              type="submit"
-              disabled={updateMutation.isPending}
-              className="cursor-pointer rounded-control bg-moss px-5 py-2 text-sm font-medium text-panel hover:opacity-90 disabled:opacity-50"
-            >
+          <DialogFooter className="mt-6 border-t border-line pt-4">
+            <Button variant="outline" type="button" onClick={onClose}>{t('admin.actions.cancel')}</Button>
+            <Button type="submit" isLoading={updateMutation.isPending}>
               {updateMutation.isPending ? 'Guardando…' : t('admin.actions.save')}
-            </button>
-          </div>
+            </Button>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -1290,7 +1214,7 @@ function CategoryCard({
   const [expanded, setExpanded] = useState(true)
 
   return (
-    <div className="rounded-card border border-line bg-panel overflow-hidden">
+    <Card className="overflow-hidden">
       {/* Categoría Principal */}
       <div className="p-4 border-b border-line cursor-pointer hover:bg-paper/50" onClick={() => isRoot && children.length > 0 && setExpanded(!expanded)}>
         <div className="flex items-center gap-3">
@@ -1427,7 +1351,7 @@ function CategoryCard({
           ))}
         </div>
       )}
-    </div>
+    </Card>
   )
 }
 
@@ -1481,42 +1405,35 @@ function CreateCategoryModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-carbon/50 p-4 backdrop-blur-xs">
-      <div className="my-8 w-full max-w-xl rounded-card border border-line bg-panel p-6 shadow-2xl">
-        <div className="flex items-center justify-between border-b border-line pb-4">
-          <h2 className="font-display text-lg font-semibold">
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>
             {parentId ? t('admin.categories.modal.createSubcategoryTitle') : t('admin.categories.modal.createCategoryTitle')}
-          </h2>
-          <button type="button" onClick={onClose} className="cursor-pointer text-ink-soft hover:text-carbon">
-            ✕
-          </button>
-        </div>
+          </DialogTitle>
+        </DialogHeader>
 
-        {error && (
-          <div className="mt-4 rounded-control border border-clay/30 bg-clay/10 p-3 text-xs text-clay">
-            {error}
-          </div>
-        )}
+        {error && <Alert variant="destructive" className="mt-4 text-xs">{error}</Alert>}
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <div>
             <label className="block text-xs font-semibold text-ink-soft">{t('admin.categories.form.name')} *</label>
-            <input
+            <Input
               required
               type="text"
               value={name}
               onChange={handleNameChange}
-              className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+              className="mt-1"
             />
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-ink-soft">{t('admin.categories.form.slug')}</label>
-            <input
+            <Input
               type="text"
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
-              className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+              className="mt-1"
               placeholder={t('admin.categories.form.slugPlaceholder')}
             />
             <p className="mt-1 text-xs text-ink-soft">{t('admin.categories.form.slugHint')}</p>
@@ -1524,12 +1441,12 @@ function CreateCategoryModal({
 
           <div>
             <label className="block text-xs font-semibold text-ink-soft">{t('admin.categories.form.icon')}</label>
-            <input
+            <Input
               type="text"
               value={icon}
               onChange={(e) => setIcon(e.target.value)}
               maxLength={2}
-              className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+              className="mt-1"
               placeholder="🏠"
             />
             <p className="mt-1 text-xs text-ink-soft">{t('admin.categories.form.iconHint')}</p>
@@ -1552,25 +1469,15 @@ function CreateCategoryModal({
             <p className="mt-1 text-xs text-ink-soft">{t('admin.categories.form.parentHint')}</p>
           </div>
 
-          <div className="mt-6 flex justify-end gap-2 border-t border-line pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="cursor-pointer rounded-control border border-line bg-paper px-4 py-2 text-sm font-medium hover:bg-paper/80"
-            >
-              {t('admin.actions.cancel')}
-            </button>
-            <button
-              type="submit"
-              disabled={createMutation.isPending}
-              className="cursor-pointer rounded-control bg-moss px-5 py-2 text-sm font-medium text-panel hover:opacity-90 disabled:opacity-50"
-            >
+<DialogFooter className="mt-6 border-t border-line pt-4">
+            <Button variant="outline" type="button" onClick={onClose}>{t('admin.actions.cancel')}</Button>
+            <Button type="submit" isLoading={createMutation.isPending}>
               {createMutation.isPending ? 'Guardando…' : t('admin.actions.createCategory')}
-            </button>
-          </div>
+            </Button>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -1626,52 +1533,46 @@ function EditCategoryModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-carbon/50 p-4 backdrop-blur-xs">
-      <div className="my-8 w-full max-w-xl rounded-card border border-line bg-panel p-6 shadow-2xl">
-        <div className="flex items-center justify-between border-b border-line pb-4">
-          <h2 className="font-display text-lg font-semibold">{t('admin.categories.modal.editTitle')}</h2>
-          <button type="button" onClick={onClose} className="cursor-pointer text-ink-soft hover:text-carbon">
-            ✕
-          </button>
-        </div>
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{t('admin.categories.modal.editTitle')}</DialogTitle>
+        </DialogHeader>
 
-        {error && (
-          <div className="mt-4 rounded-control border border-clay/30 bg-clay/10 p-3 text-xs text-clay">
-            {error}
-          </div>
-        )}
+        {error && <Alert variant="destructive" className="mt-4 text-xs">{error}</Alert>}
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <div>
             <label className="block text-xs font-semibold text-ink-soft">{t('admin.categories.form.name')} *</label>
-            <input
+            <Input
               required
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+              className="mt-1"
             />
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-ink-soft">{t('admin.categories.form.slug')}</label>
-            <input
+            <Input
               type="text"
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
-              className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+              className="mt-1"
             />
+
             <p className="mt-1 text-xs text-ink-soft">{t('admin.categories.form.slugHint')}</p>
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-ink-soft">{t('admin.categories.form.icon')}</label>
-            <input
+            <Input
               type="text"
               value={icon}
               onChange={(e) => setIcon(e.target.value)}
               maxLength={2}
-              className="mt-1 w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
+              className="mt-1"
             />
             <p className="mt-1 text-xs text-ink-soft">{t('admin.categories.form.iconHint')}</p>
           </div>
@@ -1693,24 +1594,14 @@ function EditCategoryModal({
             <p className="mt-1 text-xs text-ink-soft">{t('admin.categories.form.parentHint')}</p>
           </div>
 
-          <div className="mt-6 flex justify-end gap-2 border-t border-line pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="cursor-pointer rounded-control border border-line bg-paper px-4 py-2 text-sm font-medium hover:bg-paper/80"
-            >
-              {t('admin.actions.cancel')}
-            </button>
-            <button
-              type="submit"
-              disabled={updateMutation.isPending}
-              className="cursor-pointer rounded-control bg-moss px-5 py-2 text-sm font-medium text-panel hover:opacity-90 disabled:opacity-50"
-            >
+          <DialogFooter className="mt-6 border-t border-line pt-4">
+            <Button variant="outline" type="button" onClick={onClose}>{t('admin.actions.cancel')}</Button>
+            <Button type="submit" isLoading={updateMutation.isPending}>
               {updateMutation.isPending ? 'Guardando…' : t('admin.actions.save')}
-            </button>
-          </div>
+            </Button>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }

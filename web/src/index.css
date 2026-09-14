@@ -10,6 +10,28 @@
   --clay: #b5502e;
   --line: #e2e8f0;
   --ink-soft: #64748b;
+
+  /* Mapeo a tokens shadcn/wearemobi-ui (consumidos por components/ui) */
+  --background: var(--paper);
+  --foreground: var(--carbon);
+  --card: var(--panel);
+  --card-foreground: var(--carbon);
+  --popover: var(--panel);
+  --popover-foreground: var(--carbon);
+  --primary: var(--moss);
+  --primary-foreground: #ffffff;
+  --secondary: var(--moss-soft);
+  --secondary-foreground: var(--moss);
+  --muted: var(--moss-soft);
+  --muted-foreground: var(--ink-soft);
+  --accent: var(--moss-soft);
+  --accent-foreground: var(--carbon);
+  --destructive: var(--clay);
+  --destructive-foreground: #ffffff;
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--moss);
+  --radius: 0.5rem;
 }
 
 [data-theme='dark'] {
@@ -21,6 +43,27 @@
   --clay: #e08a63;
   --line: #283548;
   --ink-soft: #94a3b8;
+
+  --background: var(--paper);
+  --foreground: var(--carbon);
+  --card: var(--panel);
+  --card-foreground: var(--carbon);
+  --popover: var(--panel);
+  --popover-foreground: var(--carbon);
+  --primary: var(--moss);
+  --primary-foreground: #0b0f17;
+  --secondary: var(--moss-soft);
+  --secondary-foreground: var(--moss);
+  --muted: var(--moss-soft);
+  --muted-foreground: var(--ink-soft);
+  --accent: var(--moss-soft);
+  --accent-foreground: var(--carbon);
+  --destructive: var(--clay);
+  --destructive-foreground: #ffffff;
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--moss);
+  --radius: 0.5rem;
 }
 
 @theme inline {
@@ -32,6 +75,27 @@
   --color-clay: var(--clay);
   --color-line: var(--line);
   --color-ink-soft: var(--ink-soft);
+
+  /* Tokens shadcn/wearemobi-ui */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 
   --font-display: 'Space Grotesk', sans-serif;
   --font-sans: 'Inter', sans-serif;

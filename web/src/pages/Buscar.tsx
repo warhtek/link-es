@@ -11,6 +11,7 @@ import {
 } from '../lib/search'
 import { api } from '../lib/api'
 import { useQuery } from '@tanstack/react-query'
+import { Button, Input } from '@/components/ui'
 
 const RADIUS_OPTIONS = [1, 5, 10] as const
 
@@ -66,21 +67,17 @@ export function BuscarPage() {
       <div className="flex min-w-0 flex-col border-line lg:w-[45%] lg:border-r lg:overflow-hidden">
         <div className="space-y-3 border-b border-line bg-panel px-4 py-3">
           <form onSubmit={onSubmit} className="flex gap-2" role="search">
-            <input
+            <Input
               type="search"
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder={t('ds.searchPlaceholder')}
               aria-label={t('search.title')}
               data-testid="search-input"
-              className="w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none placeholder:text-ink-soft focus:border-moss"
             />
-            <button
-              type="submit"
-              className="shrink-0 cursor-pointer rounded-control bg-moss px-4 py-2 text-sm font-medium text-panel hover:opacity-90"
-            >
+            <Button type="submit" className="shrink-0">
               {t('home.searchCta')}
-            </button>
+            </Button>
           </form>
 
           <div className="flex flex-wrap items-center gap-2">

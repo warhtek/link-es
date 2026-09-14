@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { RequireAuth } from '../components/RequireAuth'
 import { BookingStatusBadge } from '../components/BookingStatusBadge'
-import { inputClass } from './Login'
+import { Button, Input, Badge } from '@/components/ui'
 import {
   useConversationMessages,
   useConversations,
@@ -71,12 +71,13 @@ function MensajesContent() {
                         {c.counterpart.name}
                       </b>
                       {c.unreadCount > 0 && (
-                        <span
-                          className="shrink-0 rounded-full bg-clay px-2 py-0.5 font-mono text-[10px] font-bold text-panel"
+                        <Badge
+                          variant="destructive"
+                          className="shrink-0 rounded-full font-mono text-[10px]"
                           data-testid="unread-badge"
                         >
                           {c.unreadCount}
-                        </span>
+                        </Badge>
                       )}
                     </div>
                     <span className="mt-0.5 block truncate text-xs text-ink-soft">
@@ -152,14 +153,15 @@ function Thread({
     <section className="flex min-w-0 flex-1 flex-col" data-testid="thread">
       {/* Cabecera del hilo */}
       <header className="flex items-center gap-3 border-b border-line bg-panel px-4 py-3">
-        <button
-          type="button"
+        <Button
+          variant="outline"
+          size="sm"
           onClick={onBack}
           aria-label={t('chat.back')}
-          className="cursor-pointer rounded-control border border-line bg-paper px-2 py-1 font-mono text-xs lg:hidden"
+          className="lg:hidden"
         >
           ←
-        </button>
+        </Button>
         <div className="min-w-0 flex-1">
           <h2 className="truncate text-sm font-semibold">{conversation.counterpart.name}</h2>
           {conversation.bookingCode && (
@@ -210,7 +212,7 @@ function Thread({
 
       {/* Enviar */}
       <form onSubmit={onSubmit} className="flex gap-2 border-t border-line bg-panel px-4 py-3">
-        <input
+        <Input
           type="text"
           value={body}
           onChange={(e) => setBody(e.target.value)}
@@ -218,16 +220,16 @@ function Thread({
           aria-label={t('chat.placeholder')}
           maxLength={2000}
           data-testid="chat-input"
-          className={`${inputClass} flex-1`}
+          className="flex-1"
         />
-        <button
+        <Button
           type="submit"
           disabled={!body.trim() || sendMessage.isPending}
           data-testid="chat-send"
-          className="shrink-0 cursor-pointer rounded-control bg-moss px-4 py-2 text-sm font-medium text-panel hover:opacity-90 disabled:opacity-50"
+          className="shrink-0"
         >
           ➤
-        </button>
+        </Button>
       </form>
     </section>
   )

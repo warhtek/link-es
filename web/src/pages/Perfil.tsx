@@ -2,7 +2,7 @@ import { useState, type FormEvent, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { RequireAuth } from '../components/RequireAuth'
-import { inputClass } from './Login'
+import { Button, Card, Input, Textarea, Field, Alert, Badge } from '@/components/ui'
 import { useLogout, useMe, useProviderMe, useSwitchMode, useUpdateProfile, useUploadDocument, useUpdateProviderProfile, useCategories } from '../lib/auth'
 import { LocationPicker } from '../components/LocationPicker'
 import type { PublicUser } from '../lib/auth'
@@ -35,7 +35,7 @@ function PerfilContent() {
   return (
     <main className="mx-auto w-full max-w-2xl space-y-6 px-4 py-10 sm:py-14">
       {/* Cabecera de cuenta */}
-      <section className="rounded-card border border-line bg-panel p-5 sm:p-6">
+      <Card className="p-5 sm:p-6">
         <div className="flex items-center gap-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-moss font-display text-lg font-semibold text-panel">
             {user.name.charAt(0).toUpperCase()}
@@ -46,13 +46,13 @@ function PerfilContent() {
             </h1>
             <p className="truncate text-sm text-ink-soft">{user.email}</p>
           </div>
-          <button
-            type="button"
+          <Button
+            variant="outline"
             onClick={() => logout.mutate()}
-            className="ml-auto shrink-0 cursor-pointer rounded-control border border-line bg-paper px-3 py-1.5 text-sm font-medium text-carbon hover:bg-moss-soft"
+            className="ml-auto shrink-0"
           >
             {t('auth.logout')}
-          </button>
+          </Button>
         </div>
 
         <dl className="mt-5 grid grid-cols-2 gap-3 border-t border-line pt-4 font-mono text-xs sm:grid-cols-4">
@@ -65,7 +65,7 @@ function PerfilContent() {
             <dd className="mt-1">—</dd>
           </div>
         </dl>
-      </section>
+      </Card>
 
       {/* Cambio de modo */}
       <ModeSwitcher
@@ -82,10 +82,10 @@ function PerfilContent() {
   )
 }
 
-const VERIFICATION_STYLE: Record<string, string> = {
-  VERIFIED: 'border-moss bg-moss-soft text-moss',
-  PENDING: 'border-clay/40 bg-clay/10 text-carbon',
-  NONE: 'border-line bg-paper text-ink-soft',
+const VERIFICATION_STYLE: Record<string, 'success' | 'destructive' | 'outline'> = {
+  VERIFIED: 'success',
+  PENDING: 'destructive',
+  NONE: 'outline',
 }
 
 function ProviderCard() {
@@ -94,23 +94,21 @@ function ProviderCard() {
 
   if (provider.isLoading) {
     return (
-      <section className="rounded-card border border-line bg-panel p-5 sm:p-6">
+      <Card className="p-5 sm:p-6">
         <p className="font-mono text-xs uppercase tracking-wide text-ink-soft">…</p>
-      </section>
+      </Card>
     )
   }
   if (!provider.data) return null
   const { verificationStatus, documents, categories, businessName, serviceRadiusKm } = provider.data
 
   return (
-    <section className="rounded-card border border-line bg-panel p-5 sm:p-6">
+    <Card className="p-5 sm:p-6">
       <div className="flex flex-wrap items-center gap-2">
         <h2 className="font-display text-base font-semibold tracking-tight">{businessName}</h2>
-        <span
-          className={`rounded-control border px-2 py-0.5 font-mono text-[11px] uppercase tracking-wide ${VERIFICATION_STYLE[verificationStatus]}`}
-        >
+        <Badge variant={VERIFICATION_STYLE[verificationStatus]} className="font-mono text-[11px] uppercase">
           {t(`provider.status.${verificationStatus}`)}
-        </span>
+        </Badge>
       </div>
 
       <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-line pt-4 text-sm sm:grid-cols-3">
@@ -132,7 +130,7 @@ function ProviderCard() {
           </dd>
         </div>
       </dl>
-    </section>
+    </Card>
   )
 }
 
@@ -156,7 +154,7 @@ function ModeSwitcher({
   ]
 
   return (
-    <section className="rounded-card border border-line bg-panel p-5 sm:p-6">
+    <Card className="p-5 sm:p-6">
       <h2 className="font-display text-base font-semibold tracking-tight">
         {t('mode.title')}
       </h2>
@@ -189,15 +187,14 @@ function ModeSwitcher({
       {!isProvider && (
         <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-control border border-line bg-paper px-3 py-2.5">
           <p className="text-xs text-ink-soft">{t('mode.becomeProviderHint')}</p>
-          <Link
-            to="/proveedor/onboarding"
-            className="shrink-0 cursor-pointer rounded-control bg-moss px-3 py-1.5 text-xs font-medium text-panel hover:opacity-90"
-          >
-            {t('mode.becomeProviderCta')}
-          </Link>
+          <Button size="sm" asChild>
+            <Link to="/proveedor/onboarding">
+              {t('mode.becomeProviderCta')}
+            </Link>
+          </Button>
         </div>
       )}
-    </section>
+    </Card>
   )
 }
 
@@ -227,36 +224,30 @@ function EditProfileForm({ user }: { user: PublicUser }) {
   }
 
   return (
-    <section className="rounded-card border border-line bg-panel p-5 sm:p-6">
+    <Card className="p-5 sm:p-6">
       <h2 className="font-display text-base font-semibold tracking-tight">
         {t('profile.editTitle')}
       </h2>
 
       <form onSubmit={onSubmit} className="mt-4 grid gap-4 sm:grid-cols-2" noValidate>
         {EDITABLE_FIELDS.map(([field, labelKey, optional]) => (
-          <label key={field} className="block space-y-1.5">
-            <span className="text-sm font-medium">
-              {t(labelKey)}
-              {optional && <span className="ml-1 text-xs text-ink-soft">({t('common.optional')})</span>}
-            </span>
-            <input
+          <Field key={field} label={`${t(labelKey)}${optional ? ` (${t('common.optional')})` : ''}`}>
+            <Input
               type={field === 'phone' ? 'tel' : 'text'}
               required={!optional && field === 'name'}
               value={form[field]}
               onChange={(event) => setForm((prev) => ({ ...prev, [field]: event.target.value }))}
-              className={inputClass}
             />
-          </label>
+          </Field>
         ))}
 
         <div className="flex items-center gap-3 sm:col-span-2">
-          <button
+          <Button
             type="submit"
-            disabled={updateProfile.isPending}
-            className="cursor-pointer rounded-control bg-moss px-4 py-2 text-sm font-medium text-panel hover:opacity-90 disabled:cursor-wait disabled:opacity-60"
+            isLoading={updateProfile.isPending}
           >
             {t('common.save')}
-          </button>
+          </Button>
           {updateProfile.isSuccess && !updateProfile.isPending && (
             <span className="font-mono text-xs uppercase tracking-wide text-moss">
               {t('common.saved')}
@@ -269,7 +260,7 @@ function EditProfileForm({ user }: { user: PublicUser }) {
           )}
         </div>
       </form>
-    </section>
+    </Card>
   )
 }
 
@@ -344,47 +335,48 @@ function ProviderProfileEdit() {
   const submitting = updateProvider.isPending || uploadDocument.isPending
 
   return (
-    <section className="rounded-card border border-line bg-panel p-5 sm:p-6">
+    <Card className="p-5 sm:p-6">
       <h2 className="font-display text-base font-semibold tracking-tight">
         {t('provider.businessTitle')}
       </h2>
 
       <form onSubmit={onSubmit} className="mt-4 space-y-6" noValidate>
-        <Section title={t('provider.businessTitle')}>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label={t('provider.businessName')} full>
-              <input
+        <Card className="p-5 sm:p-6">
+          <h2 className="font-display text-base font-semibold tracking-tight">{t('provider.businessTitle')}</h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <Field label={t('provider.businessName')} className="sm:col-span-2">
+              <Input
                 type="text"
                 required
                 minLength={2}
                 value={form.businessName}
                 onChange={(e) => setForm({ ...form, businessName: e.target.value })}
-                className={inputClass}
               />
             </Field>
-            <Field label={`${t('provider.headline')} (${t('common.optional')})`} full>
-              <input
+            <Field label={`${t('provider.headline')} (${t('common.optional')})`} className="sm:col-span-2">
+              <Input
                 type="text"
                 maxLength={120}
                 placeholder={t('provider.headlinePlaceholder')}
                 value={form.headline}
                 onChange={(e) => setForm({ ...form, headline: e.target.value })}
-                className={inputClass}
               />
             </Field>
-            <Field label={`${t('provider.bio')} (${t('common.optional')})`} full>
-              <textarea
+            <Field label={`${t('provider.bio')} (${t('common.optional')})`} className="sm:col-span-2">
+              <Textarea
                 rows={3}
                 maxLength={2000}
                 value={form.bio}
                 onChange={(e) => setForm({ ...form, bio: e.target.value })}
-                className={`${inputClass} resize-none`}
               />
             </Field>
           </div>
-        </Section>
+        </Card>
 
-        <Section title={t('provider.categoriesTitle')} hint={t('provider.categoriesHint')}>
+        <Card className="p-5 sm:p-6">
+          <h2 className="font-display text-base font-semibold tracking-tight">{t('provider.categoriesTitle')}</h2>
+          <p className="mt-1 text-xs text-ink-soft">{t('provider.categoriesHint')}</p>
+          <div className="mt-4">
           {categories.isLoading ? (
             <p className="font-mono text-xs uppercase tracking-wide text-ink-soft">…</p>
           ) : (
@@ -415,23 +407,24 @@ function ProviderProfileEdit() {
               ))}
             </div>
           )}
-        </Section>
+          </div>
+        </Card>
 
-        <Section title={t('provider.areaTitle')}>
-          <div className="grid gap-4 sm:grid-cols-2">
+        <Card className="p-5 sm:p-6">
+          <h2 className="font-display text-base font-semibold tracking-tight">{t('provider.areaTitle')}</h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <Field label={t('profile.city')}>
-              <input
+              <Input
                 type="text"
                 value={form.city}
                 onChange={(e) => setForm({ ...form, city: e.target.value })}
-                className={inputClass}
               />
             </Field>
             <Field label={t('provider.radius')}>
               <select
                 value={form.serviceRadiusKm}
                 onChange={(e) => setForm({ ...form, serviceRadiusKm: Number(e.target.value) })}
-                className={inputClass}
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer"
               >
                 {[1, 5, 10, 15, 20, 30, 50].map((km) => (
                   <option key={km} value={km}>
@@ -447,42 +440,47 @@ function ProviderProfileEdit() {
             </Field>
             <p className="text-xs text-ink-soft">{t('provider.areaMapHint')}</p>
           </div>
-        </Section>
+        </Card>
 
-        <Section title={t('provider.documentsTitle')} hint={t('provider.documentsHint')}>
-          <div className="space-y-3">
-            {DOC_FIELDS.map(({ type, labelKey, required }) => (
-              <FileField
-                key={type}
-                label={
-                  <>
-                    {t(labelKey)}
-                    {required ? '' : ` (${t('common.optional')})`}
-                  </>
-                }
-                file={files[type]}
-                existingDocument={documents.find((d) => d.type === type)}
-                accept=".pdf,.jpg,.jpeg,.png,.webp"
-                onChange={(file) => setFile(type, file)}
-              />
-            ))}
+        <Card className="p-5 sm:p-6">
+          <h2 className="font-display text-base font-semibold tracking-tight">{t('provider.documentsTitle')}</h2>
+          <p className="mt-1 text-xs text-ink-soft">{t('provider.documentsHint')}</p>
+          <div className="mt-4">
+            <div className="space-y-3">
+              {DOC_FIELDS.map(({ type, labelKey, required }) => (
+                <FileField
+                  key={type}
+                  label={
+                    <>
+                      {t(labelKey)}
+                      {required ? '' : ` (${t('common.optional')})`}
+                    </>
+                  }
+                  file={files[type]}
+                  existingDocument={documents.find((d) => d.type === type)}
+                  accept=".pdf,.jpg,.jpeg,.png,.webp"
+                  onChange={(file) => setFile(type, file)}
+                />
+              ))}
+            </div>
           </div>
-        </Section>
+        </Card>
 
         {updateProvider.isError && (
-          <p role="alert" className="rounded-control border border-clay/40 bg-clay/10 px-3 py-2 text-sm">
+          <Alert variant="destructive">
             {t('errors.generic')}
-          </p>
+          </Alert>
         )}
 
         <div className="flex items-center gap-3">
-          <button
+          <Button
             type="submit"
             disabled={submitting || selectedCategoryIds.length === 0}
-            className="cursor-pointer rounded-control bg-moss px-4 py-2.5 text-sm font-medium text-panel hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+            isLoading={submitting}
+            className="sm:w-auto"
           >
             {submitting ? t('provider.submitting') : t('common.save')}
-          </button>
+          </Button>
           {updateProvider.isSuccess && !updateProvider.isPending && (
             <span className="font-mono text-xs uppercase tracking-wide text-moss">
               {t('common.saved')}
@@ -490,43 +488,7 @@ function ProviderProfileEdit() {
           )}
         </div>
       </form>
-    </section>
-  )
-}
-
-// Componentes de UI reutilizables
-function Section({
-  title,
-  hint,
-  children,
-}: {
-  title: string
-  hint?: string
-  children: React.ReactNode
-}) {
-  return (
-    <section className="rounded-card border border-line bg-panel p-5 sm:p-6">
-      <h2 className="font-display text-base font-semibold tracking-tight">{title}</h2>
-      {hint && <p className="mt-1 text-xs text-ink-soft">{hint}</p>}
-      <div className="mt-4">{children}</div>
-    </section>
-  )
-}
-
-function Field({
-  label,
-  full,
-  children,
-}: {
-  label: string
-  full?: boolean
-  children: React.ReactNode
-}) {
-  return (
-    <label className={`block space-y-1.5 ${full ? 'sm:col-span-2' : ''}`}>
-      <span className="text-sm font-medium">{label}</span>
-      {children}
-    </label>
+    </Card>
   )
 }
 

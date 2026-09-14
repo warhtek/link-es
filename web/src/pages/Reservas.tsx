@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { RequireAuth } from '../components/RequireAuth'
 import { BookingStatusBadge } from '../components/BookingStatusBadge'
 import { StarRating } from '../components/StarRating'
-import { inputClass } from './Login'
+import { Button, Textarea, Alert } from '@/components/ui'
 import { useBookings, useCreateReview, useUpdateBookingStatus } from '../lib/auth'
 import { ChatLink } from './Mensajes'
 import type { ClientBooking } from '../lib/api'
@@ -59,15 +59,16 @@ function ReservasContent() {
                   <span className="font-mono text-xs text-clay">{b.code}</span>
                   <BookingStatusBadge status={b.status} />
                   {(b.status === 'PENDING' || b.status === 'ACCEPTED' || b.status === 'IN_PROGRESS') && (
-                    <button
-                      type="button"
+                    <Button
+                      variant="outline"
+                      size="sm"
                       onClick={() => cancel.mutate({ id: b.id, status: 'CANCELLED' })}
                       disabled={cancel.isPending}
                       data-testid={`cancel-${b.code}`}
-                      className="ml-auto cursor-pointer rounded-control border border-line bg-paper px-2.5 py-1 text-xs font-medium hover:bg-moss-soft"
+                      className="ml-auto"
                     >
                       {t('booking.cancelAction')}
-                    </button>
+                    </Button>
                   )}
                 </div>
                 <p className="mt-1.5 text-sm font-semibold">{b.service.title}</p>
@@ -126,14 +127,14 @@ function ReservasContent() {
                 )}
 
                 {b.status === 'COMPLETED' && b.myRating == null && reviewingId !== b.id && (
-                  <button
-                    type="button"
+                  <Button
+                    size="sm"
                     onClick={() => setReviewingId(b.id)}
                     data-testid={`rate-${b.code}`}
-                    className="mt-2 cursor-pointer rounded-control bg-moss px-3 py-1.5 text-xs font-medium text-panel hover:opacity-90"
+                    className="mt-2"
                   >
                     ★ {t('review.cta')}
-                  </button>
+                  </Button>
                 )}
 
                 {reviewingId === b.id && (
@@ -183,28 +184,25 @@ function ReviewForm({
         <span className="mb-1 block text-xs font-medium">{t('review.ratingLabel')}</span>
         <StarRating value={rating} onChange={setRating} />
       </div>
-      <textarea
+      <Textarea
         rows={2}
         maxLength={1000}
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         placeholder={t('review.commentPlaceholder')}
         data-testid="review-comment"
-        className={`${inputClass} resize-none`}
       />
       {error ? (
-        <p role="alert" className="text-xs text-clay">
-          {t('errors.generic')}
-        </p>
+        <Alert variant="destructive">{t('errors.generic')}</Alert>
       ) : null}
-      <button
+      <Button
         type="submit"
         disabled={pending || rating === 0}
+        isLoading={pending}
         data-testid="review-submit"
-        className="cursor-pointer rounded-control bg-moss px-4 py-1.5 text-xs font-medium text-panel hover:opacity-90 disabled:opacity-50"
       >
         {t('review.send')}
-      </button>
+      </Button>
     </form>
   )
 }

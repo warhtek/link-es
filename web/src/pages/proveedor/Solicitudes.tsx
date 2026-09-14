@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { Button, Card } from '@/components/ui'
 import { RequireAuth } from '../../components/RequireAuth'
 import { BookingStatusBadge } from '../../components/BookingStatusBadge'
 import { useBookings, useMe, useUpdateBookingStatus } from '../../lib/auth'
@@ -44,7 +45,7 @@ function SolicitudesContent() {
 
   function Row({ b, actions }: { b: ProviderBooking; actions?: boolean }) {
     return (
-      <li className="rounded-card border border-line bg-panel px-4 py-3.5" data-testid="request-item">
+      <li className="px-4 py-3.5" data-testid="request-item">
         <div className="flex items-center gap-2">
           <span className="font-mono text-xs text-clay">{b.code}</span>
           <BookingStatusBadge status={b.status} />
@@ -59,39 +60,37 @@ function SolicitudesContent() {
           <div className="mt-2.5 flex flex-wrap gap-2">
             {b.status === 'PENDING' && (
               <>
-                <button
-                  type="button"
+                <Button
+                  size="sm"
+                  isLoading={move.isPending}
                   onClick={() => move.mutate({ id: b.id, status: 'ACCEPTED' })}
-                  disabled={move.isPending}
                   data-testid="accept-request"
-                  className="cursor-pointer rounded-control bg-moss px-3 py-1.5 text-xs font-medium text-panel hover:opacity-90 disabled:opacity-60"
                 >
                   ✓ {t('booking.accept')}
-                </button>
-                <button
-                  type="button"
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  isLoading={move.isPending}
                   onClick={() => move.mutate({ id: b.id, status: 'REJECTED' })}
-                  disabled={move.isPending}
                   data-testid="reject-request"
-                  className="cursor-pointer rounded-control border border-clay/50 bg-clay/10 px-3 py-1.5 text-xs font-medium text-carbon hover:opacity-90"
                 >
                   ✕ {t('booking.reject')}
-                </button>
+                </Button>
               </>
             )}
                 {b.conversationId && (
               <ChatLink conversationId={b.conversationId} />
             )}
             {NEXT_ACTION[b.status] && (
-              <button
-                type="button"
+              <Button
+                size="sm"
+                isLoading={move.isPending}
                 onClick={() => move.mutate({ id: b.id, status: NEXT_ACTION[b.status]!.status })}
-                disabled={move.isPending}
                 data-testid={`${NEXT_ACTION[b.status]!.testid}-request`}
-                className="cursor-pointer rounded-control bg-moss px-3 py-1.5 text-xs font-medium text-panel hover:opacity-90"
               >
                 {t(NEXT_ACTION[b.status]!.labelKey)}
-              </button>
+              </Button>
             )}
           </div>
         )}
@@ -111,9 +110,9 @@ function SolicitudesContent() {
           {t('booking.pendingSection')}
         </h2>
         {pending.length === 0 ? (
-          <p className="rounded-card border border-line bg-panel p-5 text-sm text-ink-soft">
+          <Card className="p-5"><p className="text-sm text-ink-soft">
             {t('booking.noPending')}
-          </p>
+          </p></Card>
         ) : (
           <ul className="space-y-3">
             {pending.map((b) => (
@@ -128,9 +127,9 @@ function SolicitudesContent() {
           {t('booking.workingSection')}
         </h2>
         {working.length === 0 ? (
-          <p className="rounded-card border border-line bg-panel p-5 text-sm text-ink-soft">
+          <Card className="p-5"><p className="text-sm text-ink-soft">
             {t('booking.noWorking')}
-          </p>
+          </p></Card>
         ) : (
           <ul className="space-y-3">
             {working.map((b) => (

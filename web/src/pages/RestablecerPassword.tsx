@@ -3,7 +3,17 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { api } from '../lib/api'
 import { authErrorMessage } from '../lib/errors'
-import { inputClass } from './Login'
+import {
+  Alert,
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Field,
+  Input,
+} from '@/components/ui'
 
 export function RestablecerPasswordPage() {
   const { t } = useTranslation()
@@ -38,11 +48,11 @@ export function RestablecerPasswordPage() {
   if (!token) {
     return (
       <main className="mx-auto w-full max-w-md px-4 py-10 sm:py-14">
-        <div className="rounded-card border border-line bg-panel p-6 sm:p-8">
-          <p role="alert" className="text-sm text-ink-soft">
-            {t('auth.resetMissingToken')}
-          </p>
-        </div>
+        <Card className="p-6 sm:p-8">
+          <CardContent>
+            <Alert variant="destructive">{t('auth.resetMissingToken')}</Alert>
+          </CardContent>
+        </Card>
         <p className="mt-4 text-center text-sm text-ink-soft">
           <Link to="/recuperar-password" className="font-medium text-moss hover:underline">
             {t('auth.backToForgot')}
@@ -54,73 +64,51 @@ export function RestablecerPasswordPage() {
 
   return (
     <main className="mx-auto w-full max-w-md px-4 py-10 sm:py-14">
-      <div className="rounded-card border border-line bg-panel p-6 sm:p-8">
-        <h1 className="font-display text-xl font-semibold tracking-tight">
-          {t('auth.resetTitle')}
-        </h1>
-        <p className="mt-1 text-sm text-ink-soft">{t('auth.resetSubtitle')}</p>
+      <Card className="p-6 sm:p-8">
+        <CardHeader>
+          <CardTitle>{t('auth.resetTitle')}</CardTitle>
+          <CardDescription>{t('auth.resetSubtitle')}</CardDescription>
+        </CardHeader>
 
-        {changed ? (
-          <div className="mt-6 space-y-4">
-            <p
-              role="status"
-              className="rounded-control border border-moss/40 bg-moss/10 px-3 py-2 text-sm"
-            >
-              {t('auth.resetDone')}
-            </p>
-            <Link
-              to="/login"
-              className="block w-full rounded-control bg-moss px-4 py-2.5 text-center text-sm font-medium text-panel hover:opacity-90"
-            >
-              {t('auth.backToLogin')}
-            </Link>
-          </div>
-        ) : (
-          <form onSubmit={onSubmit} className="mt-6 space-y-4" noValidate>
-            <label className="block space-y-1.5">
-              <span className="text-sm font-medium">{t('auth.newPassword')}</span>
-              <input
-                type="password"
-                required
-                minLength={8}
-                autoComplete="new-password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                className={inputClass}
-              />
-              <span className="text-xs text-ink-soft">{t('auth.passwordHint')}</span>
-            </label>
-            <label className="block space-y-1.5">
-              <span className="text-sm font-medium">{t('auth.confirmPassword')}</span>
-              <input
-                type="password"
-                required
-                autoComplete="new-password"
-                value={confirm}
-                onChange={(event) => setConfirm(event.target.value)}
-                className={inputClass}
-              />
-            </label>
+        <CardContent>
+          {changed ? (
+            <div className="mt-6 space-y-4">
+              <Alert variant="success">{t('auth.resetDone')}</Alert>
+              <Button variant="outline" asChild className="w-full">
+                <Link to="/login">{t('auth.backToLogin')}</Link>
+              </Button>
+            </div>
+          ) : (
+            <form onSubmit={onSubmit} className="mt-6 space-y-4" noValidate>
+              <Field label={t('auth.newPassword')} description={t('auth.passwordHint')}>
+                <Input
+                  type="password"
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                />
+              </Field>
+              <Field label={t('auth.confirmPassword')}>
+                <Input
+                  type="password"
+                  required
+                  autoComplete="new-password"
+                  value={confirm}
+                  onChange={(event) => setConfirm(event.target.value)}
+                />
+              </Field>
 
-            {error && (
-              <p
-                role="alert"
-                className="rounded-control border border-clay/40 bg-clay/10 px-3 py-2 text-sm text-carbon"
-              >
-                {error}
-              </p>
-            )}
+              {error && <Alert variant="destructive">{error}</Alert>}
 
-            <button
-              type="submit"
-              disabled={pending}
-              className="w-full cursor-pointer rounded-control bg-moss px-4 py-2.5 text-sm font-medium text-panel hover:opacity-90 disabled:cursor-wait disabled:opacity-60"
-            >
-              {t('auth.resetSubmit')}
-            </button>
-          </form>
-        )}
-      </div>
+              <Button type="submit" isLoading={pending} className="w-full">
+                {t('auth.resetSubmit')}
+              </Button>
+            </form>
+          )}
+        </CardContent>
+      </Card>
     </main>
   )
 }

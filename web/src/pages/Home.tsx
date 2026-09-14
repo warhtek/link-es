@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useProviderSearch } from '../lib/search'
 import { api } from '../lib/api'
 import { ProviderCard } from '../components/ProviderCard'
+import { Button, Input } from '@/components/ui'
 
 export function HomePage() {
   const { t } = useTranslation()
@@ -35,20 +36,16 @@ export function HomePage() {
             {t('home.heroSubtitle')}
           </p>
           <form onSubmit={onSubmit} className="mx-auto mt-6 flex max-w-lg gap-2" role="search">
-            <input
+            <Input
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t('ds.searchPlaceholder')}
               aria-label={t('search.title')}
-              className="w-full rounded-control border border-line bg-paper px-3 py-2.5 text-sm outline-none placeholder:text-ink-soft focus:border-moss"
             />
-            <button
-              type="submit"
-              className="shrink-0 cursor-pointer rounded-control bg-moss px-5 py-2.5 text-sm font-medium text-panel hover:opacity-90"
-            >
+            <Button type="submit">
               {t('home.searchCta')}
-            </button>
+            </Button>
           </form>
         </div>
       </section>

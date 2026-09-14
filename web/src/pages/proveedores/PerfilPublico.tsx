@@ -1,11 +1,11 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Button, Card, Input, Textarea, Alert } from '@/components/ui'
 import { usePublicProvider } from '../../lib/search'
 import { getAccessToken } from '../../lib/api'
 import { useCreateBooking } from '../../lib/auth'
 import { authErrorMessage } from '../../lib/errors'
-import { inputClass } from '../Login'
 import { StarRating } from '../../components/StarRating'
 
 export function PerfilPublicoPage() {
@@ -47,7 +47,7 @@ function PerfilPublicoContent() {
       </nav>
 
       {/* Cabecera tipo ficha */}
-      <header className="rounded-card border border-line bg-panel">
+      <Card className="overflow-hidden">
         <div className="flex items-start gap-4 border-b border-line px-5 py-5 sm:px-6">
           <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[10px] bg-moss-soft font-display text-xl font-semibold text-moss">
             {p.businessName.charAt(0).toUpperCase()}
@@ -87,17 +87,17 @@ function PerfilPublicoContent() {
             </span>
           ))}
         </div>
-      </header>
+      </Card>
 
       {p.bio && (
-        <section className="mt-6 rounded-card border border-line bg-panel p-5 sm:p-6">
+        <Card className="mt-6 p-5 sm:p-6">
           <h2 className="font-display text-base font-semibold tracking-tight">{t('provider.bio')}</h2>
           <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-carbon/90">{p.bio}</p>
-        </section>
+        </Card>
       )}
 
       {/* Servicios con precio en mono */}
-      <section className="mt-6 rounded-card border border-line bg-panel p-5 sm:p-6">
+      <Card className="mt-6 p-5 sm:p-6">
         <h2 className="font-display text-base font-semibold tracking-tight">{t('public.servicesTitle')}</h2>
         {p.services.length === 0 ? (
           <p className="mt-2 text-sm text-ink-soft">{t('public.noServices')}</p>
@@ -124,10 +124,10 @@ function PerfilPublicoContent() {
             ))}
           </ul>
         )}
-      </section>
+        </Card>
 
       {/* Reseñas verificadas: solo clientes con servicio completado */}
-      <section className="mt-6 rounded-card border border-line bg-panel p-5 sm:p-6" data-testid="reviews-section">
+        <Card className="mt-6 p-5 sm:p-6" data-testid="reviews-section">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-base font-semibold tracking-tight">{t('public.reviewsTitle')}</h2>
           {p.ratingCount > 0 && (
@@ -162,7 +162,7 @@ function PerfilPublicoContent() {
         <p className="mt-3 rounded-control border border-line bg-paper px-3 py-2 text-xs text-ink-soft">
           {t('public.reviewsVerifiedNote')}
         </p>
-      </section>
+        </Card>
 
       <RequestServiceSection services={p.services} />
     </main>
@@ -187,16 +187,14 @@ function RequestServiceSection({
   // Sin sesión el CTA lleva a login (vuelve después); con sesión se abre el formulario.
   if (!getAccessToken()) {
     return (
-      <div className="mt-6 rounded-card border border-line bg-panel p-5 text-center sm:p-6">
+      <Card className="mt-6 p-5 text-center sm:p-6">
         <p className="text-sm text-ink-soft">{t('public.requestNote')}</p>
-        <Link
-          to="/login"
-          data-testid="request-service"
-          className="mt-3 inline-block cursor-pointer rounded-control bg-moss px-5 py-2.5 text-sm font-medium text-panel hover:opacity-90"
-        >
-          {t('ds.requestBtn')}
-        </Link>
-      </div>
+        <Button asChild className="mt-3">
+          <Link to="/login" data-testid="request-service">
+            {t('ds.requestBtn')}
+          </Link>
+        </Button>
+      </Card>
     )
   }
 
@@ -217,36 +215,36 @@ function RequestServiceSection({
 
   if (createBooking.isSuccess && createBooking.data) {
     return (
-      <div className="mt-6 rounded-card border border-moss bg-moss-soft p-5 text-center sm:p-6" data-testid="booking-success">
+      <Card className="mt-6 border-moss bg-moss-soft p-5 text-center sm:p-6" data-testid="booking-success">
         <p className="font-display text-base font-semibold text-moss">{t('booking.createdTitle')}</p>
         <p className="mt-1 font-mono text-lg">{createBooking.data.code}</p>
         <p className="mx-auto mt-1 max-w-xs text-xs text-ink-soft">{t('booking.createdNote')}</p>
         <Link to="/reservas" className="mt-3 inline-block text-sm font-medium text-moss hover:underline">
           {t('booking.goMyBookings')}
         </Link>
-      </div>
+      </Card>
     )
   }
 
   if (!open || services.length === 0) {
     return (
-      <div className="mt-6 rounded-card border border-line bg-panel p-5 text-center sm:p-6">
+      <Card className="mt-6 p-5 text-center sm:p-6">
         <p className="text-sm text-ink-soft">{t('public.requestNote')}</p>
-        <button
+        <Button
           type="button"
           onClick={() => setOpen(true)}
           disabled={services.length === 0}
+          className="mt-3"
           data-testid="request-service"
-          className="mt-3 cursor-pointer rounded-control bg-moss px-5 py-2.5 text-sm font-medium text-panel hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {t('ds.requestBtn')}
-        </button>
-      </div>
+        </Button>
+      </Card>
     )
   }
 
   return (
-    <section className="mt-6 rounded-card border border-line bg-panel p-5 sm:p-6" data-testid="request-form">
+    <Card className="mt-6 p-5 sm:p-6" data-testid="request-form">
       <h2 className="font-display text-base font-semibold tracking-tight">{t('booking.formTitle')}</h2>
       <form onSubmit={onSubmit} className="mt-4 grid gap-4 sm:grid-cols-2" noValidate>
         <label className="block space-y-1.5">
@@ -255,7 +253,7 @@ function RequestServiceSection({
             value={form.serviceId}
             onChange={(e) => setForm({ ...form, serviceId: e.target.value })}
             required
-            className={inputClass}
+            className="w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
             data-testid="booking-service"
           >
             {services.map((s) => (
@@ -271,25 +269,23 @@ function RequestServiceSection({
         </label>
         <label className="block space-y-1.5">
           <span className="text-sm font-medium">{t('booking.when')}</span>
-          <input
+          <Input
             type="datetime-local"
             required
             value={form.scheduledAt}
             onChange={(e) => setForm({ ...form, scheduledAt: e.target.value })}
-            className={inputClass}
             data-testid="booking-date"
           />
         </label>
         <label className="block space-y-1.5 sm:col-span-2">
           <span className="text-sm font-medium">{t('booking.address')}</span>
-          <input
+          <Input
             type="text"
             required
             minLength={5}
             value={form.address}
             onChange={(e) => setForm({ ...form, address: e.target.value })}
             placeholder={t('booking.addressPlaceholder')}
-            className={inputClass}
             data-testid="booking-address"
           />
           <span className="block text-xs text-ink-soft">{t('booking.addressPrivacy')}</span>
@@ -298,39 +294,34 @@ function RequestServiceSection({
           <span className="text-sm font-medium">
             {t('booking.notes')} ({t('common.optional')})
           </span>
-          <textarea
+          <Textarea
             rows={2}
             maxLength={1000}
             value={form.notes}
             onChange={(e) => setForm({ ...form, notes: e.target.value })}
-            className={`${inputClass} resize-none`}
+            className="resize-none"
           />
         </label>
 
         {createBooking.isError && (
-          <p role="alert" className="rounded-control border border-clay/40 bg-clay/10 px-3 py-2 text-sm sm:col-span-2">
+          <Alert variant="destructive" className="sm:col-span-2">
             {authErrorMessage(createBooking.error, t)}
-          </p>
+          </Alert>
         )}
 
         <div className="flex items-center gap-3 sm:col-span-2">
-          <button
+          <Button
             type="submit"
-            disabled={createBooking.isPending}
+            isLoading={createBooking.isPending}
             data-testid="booking-submit"
-            className="cursor-pointer rounded-control bg-moss px-5 py-2.5 text-sm font-medium text-panel hover:opacity-90 disabled:cursor-wait disabled:opacity-60"
           >
             {createBooking.isPending ? t('booking.sending') : t('booking.send')}
-          </button>
-          <button
-            type="button"
-            onClick={() => setOpen(false)}
-            className="cursor-pointer rounded-control border border-line bg-paper px-4 py-2.5 text-sm font-medium hover:bg-moss-soft"
-          >
+          </Button>
+          <Button variant="outline" type="button" onClick={() => setOpen(false)}>
             {t('common.cancel')}
-          </button>
+          </Button>
         </div>
       </form>
-    </section>
+    </Card>
   )
 }

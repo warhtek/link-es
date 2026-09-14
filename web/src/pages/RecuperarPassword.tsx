@@ -3,7 +3,17 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { api } from '../lib/api'
 import { authErrorMessage } from '../lib/errors'
-import { inputClass } from './Login'
+import {
+  Alert,
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Field,
+  Input,
+} from '@/components/ui'
 
 export function RecuperarPasswordPage() {
   const { t } = useTranslation()
@@ -26,53 +36,37 @@ export function RecuperarPasswordPage() {
 
   return (
     <main className="mx-auto w-full max-w-md px-4 py-10 sm:py-14">
-      <div className="rounded-card border border-line bg-panel p-6 sm:p-8">
-        <h1 className="font-display text-xl font-semibold tracking-tight">
-          {t('auth.forgotTitle')}
-        </h1>
-        <p className="mt-1 text-sm text-ink-soft">{t('auth.forgotSubtitle')}</p>
+      <Card className="p-6 sm:p-8">
+        <CardHeader>
+          <CardTitle>{t('auth.forgotTitle')}</CardTitle>
+          <CardDescription>{t('auth.forgotSubtitle')}</CardDescription>
+        </CardHeader>
 
-        {sent ? (
-          <p
-            role="status"
-            className="mt-6 rounded-control border border-moss/40 bg-moss/10 px-3 py-2 text-sm"
-          >
-            {t('auth.forgotSent')}
-          </p>
-        ) : (
-          <form onSubmit={onSubmit} className="mt-6 space-y-4" noValidate>
-            <label className="block space-y-1.5">
-              <span className="text-sm font-medium">{t('auth.email')}</span>
-              <input
-                type="email"
-                required
-                autoComplete="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                className={inputClass}
-                placeholder={t('auth.emailPlaceholder')}
-              />
-            </label>
+        <CardContent>
+          {sent ? (
+            <Alert variant="success">{t('auth.forgotSent')}</Alert>
+          ) : (
+            <form onSubmit={onSubmit} className="mt-6 space-y-4" noValidate>
+              <Field label={t('auth.email')}>
+                <Input
+                  type="email"
+                  required
+                  autoComplete="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder={t('auth.emailPlaceholder')}
+                />
+              </Field>
 
-            {error && (
-              <p
-                role="alert"
-                className="rounded-control border border-clay/40 bg-clay/10 px-3 py-2 text-sm text-carbon"
-              >
-                {error}
-              </p>
-            )}
+              {error && <Alert variant="destructive">{error}</Alert>}
 
-            <button
-              type="submit"
-              disabled={pending}
-              className="w-full cursor-pointer rounded-control bg-moss px-4 py-2.5 text-sm font-medium text-panel hover:opacity-90 disabled:cursor-wait disabled:opacity-60"
-            >
-              {t('auth.forgotSubmit')}
-            </button>
-          </form>
-        )}
-      </div>
+              <Button type="submit" isLoading={pending} className="w-full">
+                {t('auth.forgotSubmit')}
+              </Button>
+            </form>
+          )}
+        </CardContent>
+      </Card>
 
       <p className="mt-4 text-center text-sm text-ink-soft">
         <Link to="/login" className="font-medium text-moss hover:underline">

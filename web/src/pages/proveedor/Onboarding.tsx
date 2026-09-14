@@ -3,7 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { RequireAuth } from '../../components/RequireAuth'
 import { LocationPicker } from '../../components/LocationPicker'
-import { inputClass } from '../Login'
+import { Button, Card, Input, Textarea, Alert } from '@/components/ui'
 import {
   useCategories,
   useMe,
@@ -107,89 +107,97 @@ function OnboardingForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-6" noValidate>
-      <Section title={t('provider.businessTitle')}>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label={t('provider.businessName')} full>
-            <input
+      <Card className="p-5 sm:p-6">
+        <h2 className="font-display text-base font-semibold tracking-tight">{t('provider.businessTitle')}</h2>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <label className="block space-y-1.5 sm:col-span-2">
+            <span className="text-sm font-medium">{t('provider.businessName')}</span>
+            <Input
               type="text"
               required
               minLength={2}
               value={form.businessName}
               onChange={(e) => setForm({ ...form, businessName: e.target.value })}
-              className={inputClass}
             />
-          </Field>
-          <Field label={`${t('provider.headline')} (${t('common.optional')})`} full>
-            <input
+          </label>
+          <label className="block space-y-1.5 sm:col-span-2">
+            <span className="text-sm font-medium">{`${t('provider.headline')} (${t('common.optional')})`}</span>
+            <Input
               type="text"
               maxLength={120}
               placeholder={t('provider.headlinePlaceholder')}
               value={form.headline}
               onChange={(e) => setForm({ ...form, headline: e.target.value })}
-              className={inputClass}
             />
-          </Field>
-          <Field label={`${t('provider.bio')} (${t('common.optional')})`} full>
-            <textarea
+          </label>
+          <label className="block space-y-1.5 sm:col-span-2">
+            <span className="text-sm font-medium">{`${t('provider.bio')} (${t('common.optional')})`}</span>
+            <Textarea
               rows={3}
               maxLength={2000}
               value={form.bio}
               onChange={(e) => setForm({ ...form, bio: e.target.value })}
-              className={`${inputClass} resize-none`}
+              className="resize-none"
             />
-          </Field>
+          </label>
         </div>
-      </Section>
+      </Card>
 
-      <Section title={t('provider.categoriesTitle')} hint={t('provider.categoriesHint')}>
-        {categories.isLoading ? (
-          <p className="font-mono text-xs uppercase tracking-wide text-ink-soft">…</p>
-        ) : (
-          <div className="space-y-4">
-            {categories.data?.map((root: CategoryNode) => (
-              <div key={root.id}>
-                <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">
-                  {root.name}
-                </p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {(root.children.length ? root.children : [root]).map((cat) => (
-                    <button
-                      key={cat.id}
-                      type="button"
-                      onClick={() => toggleCategory(cat.id)}
-                      aria-pressed={selectedCategories.includes(cat.id)}
-                      className={`cursor-pointer rounded-control border px-3 py-1.5 text-sm ${
-                        selectedCategories.includes(cat.id)
-                          ? 'border-moss bg-moss-soft font-medium text-moss'
-                          : 'border-line bg-paper hover:bg-moss-soft/50'
-                      }`}
-                    >
-                      {cat.name}
-                    </button>
-                  ))}
+      <Card className="p-5 sm:p-6">
+        <h2 className="font-display text-base font-semibold tracking-tight">{t('provider.categoriesTitle')}</h2>
+        <p className="mt-1 text-xs text-ink-soft">{t('provider.categoriesHint')}</p>
+        <div className="mt-4">
+          {categories.isLoading ? (
+            <p className="font-mono text-xs uppercase tracking-wide text-ink-soft">…</p>
+          ) : (
+            <div className="space-y-4">
+              {categories.data?.map((root: CategoryNode) => (
+                <div key={root.id}>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">
+                    {root.name}
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {(root.children.length ? root.children : [root]).map((cat) => (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => toggleCategory(cat.id)}
+                        aria-pressed={selectedCategories.includes(cat.id)}
+                        className={`cursor-pointer rounded-control border px-3 py-1.5 text-sm ${
+                          selectedCategories.includes(cat.id)
+                            ? 'border-moss bg-moss-soft font-medium text-moss'
+                            : 'border-line bg-paper hover:bg-moss-soft/50'
+                        }`}
+                      >
+                        {cat.name}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </Section>
+              ))}
+            </div>
+          )}
+        </div>
+      </Card>
 
-      <Section title={t('provider.areaTitle')}>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label={t('profile.city')}>
-            <input
+      <Card className="p-5 sm:p-6">
+        <h2 className="font-display text-base font-semibold tracking-tight">{t('provider.areaTitle')}</h2>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <label className="block space-y-1.5">
+            <span className="text-sm font-medium">{t('profile.city')}</span>
+            <Input
               type="text"
               required
               value={form.city}
               onChange={(e) => setForm({ ...form, city: e.target.value })}
-              className={inputClass}
             />
-          </Field>
-          <Field label={t('provider.radius')}>
+          </label>
+          <label className="block space-y-1.5">
+            <span className="text-sm font-medium">{t('provider.radius')}</span>
             <select
               value={form.serviceRadiusKm}
               onChange={(e) => setForm({ ...form, serviceRadiusKm: Number(e.target.value) })}
-              className={inputClass}
+              className="w-full rounded-control border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-moss"
             >
               {RADIUS_OPTIONS.map((km) => (
                 <option key={km} value={km}>
@@ -197,21 +205,24 @@ function OnboardingForm() {
                 </option>
               ))}
             </select>
-          </Field>
+          </label>
         </div>
         <div className="mt-4 space-y-2">
-          <Field label={t('provider.mapPickerLabel')}>
+          <label className="block space-y-1.5">
+            <span className="text-sm font-medium">{t('provider.mapPickerLabel')}</span>
             <LocationPicker
               value={form.lat != null && form.lng != null ? { lat: form.lat, lng: form.lng } : null}
               onChange={(lat, lng) => setForm((prev) => ({ ...prev, lat, lng }))}
             />
-          </Field>
+          </label>
           <p className="text-xs text-ink-soft">{t('provider.areaMapHint')}</p>
         </div>
-      </Section>
+      </Card>
 
-      <Section title={t('provider.documentsTitle')} hint={t('provider.documentsHint')}>
-        <div className="space-y-3">
+      <Card className="p-5 sm:p-6">
+        <h2 className="font-display text-base font-semibold tracking-tight">{t('provider.documentsTitle')}</h2>
+        <p className="mt-1 text-xs text-ink-soft">{t('provider.documentsHint')}</p>
+        <div className="mt-4 space-y-3">
           {DOC_FIELDS.map(({ type, labelKey, required }) => (
             <FileField
               key={type}
@@ -227,21 +238,20 @@ function OnboardingForm() {
             />
           ))}
         </div>
-      </Section>
+      </Card>
 
       {onboarding.isError && (
-        <p role="alert" className="rounded-control border border-clay/40 bg-clay/10 px-3 py-2 text-sm">
-          {t(onboardingErrorKey(onboarding.error))}
-        </p>
+        <Alert variant="destructive">{t(onboardingErrorKey(onboarding.error))}</Alert>
       )}
 
-      <button
+      <Button
         type="submit"
-        disabled={submitting || selectedCategories.length === 0 || !files.ID}
-        className="w-full cursor-pointer rounded-control bg-moss px-4 py-2.5 text-sm font-medium text-panel hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+        isLoading={submitting}
+        disabled={selectedCategories.length === 0 || !files.ID}
+        className="w-full sm:w-auto"
       >
         {submitting ? t('provider.submitting') : t('provider.submit')}
-      </button>
+      </Button>
       <p className="text-xs text-ink-soft">{t('provider.submitNote')}</p>
     </form>
   )
@@ -251,41 +261,6 @@ function onboardingErrorKey(error: unknown): string {
   const code = (error as { code?: string })?.code
   if (code === 'validation_error') return 'errors.validation'
   return 'errors.generic'
-}
-
-function Section({
-  title,
-  hint,
-  children,
-}: {
-  title: string
-  hint?: string
-  children: React.ReactNode
-}) {
-  return (
-    <section className="rounded-card border border-line bg-panel p-5 sm:p-6">
-      <h2 className="font-display text-base font-semibold tracking-tight">{title}</h2>
-      {hint && <p className="mt-1 text-xs text-ink-soft">{hint}</p>}
-      <div className="mt-4">{children}</div>
-    </section>
-  )
-}
-
-function Field({
-  label,
-  full,
-  children,
-}: {
-  label: string
-  full?: boolean
-  children: React.ReactNode
-}) {
-  return (
-    <label className={`block space-y-1.5 ${full ? 'sm:col-span-2' : ''}`}>
-      <span className="text-sm font-medium">{label}</span>
-      {children}
-    </label>
-  )
 }
 
 function FileField({
