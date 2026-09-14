@@ -94,7 +94,6 @@ export function LocationPicker({ value, onChange }: Props) {
           center={value ? [value.lat, value.lng] : DEFAULT_CENTER}
           zoom={13}
           scrollWheelZoom={false}
-          dragging={false}
           className="h-full w-full"
           attributionControl={false}
         >
