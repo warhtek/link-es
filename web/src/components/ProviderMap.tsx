@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { MapContainer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet'
+import { MapContainer, Marker, Popup, Tooltip, useMap, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
 import { useTranslation } from 'react-i18next'
 import { formatDistance, type ProviderSearchResult } from '../lib/search'
@@ -145,25 +145,37 @@ export function ProviderMap({
               opacity={selectedId && selectedId !== p.id ? 0.45 : 1}
               eventHandlers={{ click: () => onSelectProvider(p.id) }}
             >
-              <Popup>
-                <b>{p.businessName}</b>
-                <br />
-                <span>★ {p.ratingAvg.toFixed(1)} ({p.ratingCount})</span>
-                {p.distanceKm != null && (
-                  <>
-                    <br />
-                    <span className="font-mono">{formatDistance(p.distanceKm)}</span>
-                  </>
+              <Tooltip direction="top" offset={[0, -8]} className="linkes-tooltip">
+                <span className="block font-display text-sm font-semibold leading-tight">{p.businessName}</span>
+                {p.headline && (
+                  <span className="mt-0.5 block text-xs text-ink-soft">{p.headline}</span>
                 )}
-                <br />
-                <button
-                  type="button"
-                  onClick={() => onSelectProvider(p.id)}
-                  className="mt-1 cursor-pointer rounded-control bg-moss px-2 py-0.5 text-xs text-panel"
-                >
-                  {t('search.viewProfile')}
-                </button>
-              </Popup>
+                <span className="mt-1 flex items-baseline gap-1.5 text-xs">
+                  <span className="text-clay">★ <b>{p.ratingAvg.toFixed(1)}</b></span>
+                  <span className="text-ink-soft">({p.ratingCount})</span>
+                  {p.distanceKm != null && (
+                    <span className="font-mono text-ink-soft">{formatDistance(p.distanceKm)}</span>
+                  )}
+                </span>
+                {p.categories.length > 0 && (
+                  <span className="mt-1.5 flex flex-wrap gap-1">
+                    {p.categories.slice(0, 2).map((c) => (
+                      <span
+                        key={c.name}
+                        className="rounded-control bg-moss-soft px-1.5 py-0.5 text-[10px] font-medium text-moss"
+                      >
+                        {c.icon != null && `${c.icon} `}
+                        {c.name}
+                      </span>
+                    ))}
+                    {p.categories.length > 2 && (
+                      <span className="rounded-control bg-paper px-1.5 py-0.5 text-[10px] font-medium text-ink-soft">
+                        +{p.categories.length - 2}
+                      </span>
+                    )}
+                  </span>
+                )}
+              </Tooltip>
             </Marker>
           ))}
       </MapContainer>

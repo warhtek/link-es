@@ -180,3 +180,19 @@ body {
   background: var(--panel);
 }
 .leaflet-popup-tip { background: var(--panel); }
+
+/* Card del proveedor al pasar el cursor (o tocar en táctil) en el mapa de búsqueda. */
+.leaflet-tooltip.linkes-tooltip {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--carbon);
+  box-shadow: none;
+  padding: 10px 12px;
+  font-family: inherit;
+}
+.linkes-tooltip.leaflet-tooltip-top::before {
+  border-top-color: var(--panel);
+  box-shadow: none;
+  margin-left: -6px;
+}
