@@ -30,6 +30,7 @@ export function ProviderCard({
           src={provider.avatarUrl ?? ''}
           alt={provider.businessName}
           className="h-13 w-13 shrink-0 rounded-[10px] font-semibold"
+          fit="contain"
         />
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline justify-between gap-2">

@@ -668,7 +668,7 @@ function ProviderProfileEdit() {
               />
             </Field>
             <div className="flex justify-center">
-              <ImageThumb src={avatarUrl} alt="avatar" className="h-20 w-20 rounded-[10px]" />
+              <ImageThumb src={avatarUrl} alt="avatar" className="h-20 w-20 rounded-[10px]" fit="contain" />
             </div>
           </div>
 

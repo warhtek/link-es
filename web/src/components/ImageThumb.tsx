@@ -5,10 +5,12 @@ export function ImageThumb({
   src,
   alt,
   className,
+  fit = 'cover',
 }: {
   src: string
   alt: string
   className?: string
+  fit?: 'cover' | 'contain'
 }) {
   // Solo recuerda el error de la URL concreta: si el enlace cambia
   // (p. ej. al editarlo en el formulario) se reintenta la carga.
@@ -32,7 +34,7 @@ export function ImageThumb({
       loading="lazy"
       referrerPolicy="no-referrer"
       onError={() => setFailedSrc(trimmed)}
-      className={`object-cover ${className ?? ''}`}
+      className={`object-${fit} ${className ?? ''}`}
     />
   )
 }

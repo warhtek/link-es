@@ -54,6 +54,7 @@ function PerfilPublicoContent() {
             src={p.avatarUrl ?? ''}
             alt={p.businessName}
             className="h-14 w-14 shrink-0 rounded-[10px] text-xl font-semibold"
+            fit="contain"
           />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
