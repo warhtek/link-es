@@ -126,7 +126,8 @@ export function Topbar() {
           ))}
         </nav>
 
-      <div className="ml-auto flex shrink-0 items-center gap-2">
+      {/* En móvil los controles desbordan: se permiten scroll horizontal a ambos lados */}
+      <div className="ml-auto flex shrink-0 items-center gap-2 max-sm:grow max-sm:shrink max-sm:min-w-0 max-sm:overflow-x-auto max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden">
         <div
           className="flex gap-0.5 rounded-lg border border-line bg-paper p-0.5"
           role="group"
@@ -224,7 +225,9 @@ export function Topbar() {
           </div>
         )}
 
-        {/* Hamburguesa — solo en móvil (<md) */}
+      </div>
+
+      {/* Hamburguesa — solo en móvil (<md) */}
         <button
           type="button"
           aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
@@ -245,7 +248,6 @@ export function Topbar() {
             </svg>
           )}
         </button>
-      </div>
     </header>
 
       {/* Menú desplegable móvil */}

@@ -21,7 +21,7 @@ export function ProviderCard({
       onMouseEnter={() => onHover?.(provider.id)}
       onMouseLeave={() => onHover?.(null)}
       data-testid="provider-card"
-      className={`block rounded-card border bg-panel transition-colors ${
+      className={`block min-w-0 rounded-card border bg-panel transition-colors ${
         highlighted ? 'border-moss' : 'border-line hover:border-moss/60'
       }`}
     >
