@@ -68,6 +68,8 @@ model ProviderProfile {
   businessName       String
   headline           String?
   bio                String?
+  avatarUrl          String?                @db.VarChar(1000)
+  galleryImages      String[]               @default([])
   verificationStatus VerificationStatus     @default(NONE)
   availableOnline    Boolean                @default(true)
   ratingAvg          Float                  @default(0)
@@ -122,7 +124,7 @@ model Service {
   categoryId  String
   title       String
   description String?
-  priceFrom   Decimal         @db.Decimal(10, 2)
+  priceFrom   Decimal?        @db.Decimal(10, 2)
   unit        ServiceUnit     @default(HOUR)
   active      Boolean         @default(true)
   createdAt   DateTime        @default(now())

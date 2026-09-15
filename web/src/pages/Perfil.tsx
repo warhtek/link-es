@@ -5,6 +5,8 @@ import { RequireAuth } from '../components/RequireAuth'
 import { Button, Card, Input, Textarea, Field, Alert, Badge } from '@/components/ui'
 import { useLogout, useMe, useProviderMe, useSwitchMode, useUpdateProfile, useUploadDocument, useUpdateProviderProfile, useCategories } from '../lib/auth'
 import { LocationPicker } from '../components/LocationPicker'
+import { ImageThumb } from '../components/ImageThumb'
+import { authErrorMessage } from '../lib/errors'
 import type { PublicUser } from '../lib/auth'
 import type { CategoryNode } from '../lib/api'
 
@@ -13,6 +15,15 @@ const DOC_FIELDS = [
   { type: 'LICENSE', labelKey: 'provider.docLicense', required: false },
   { type: 'CERTIFICATION', labelKey: 'provider.docCertification', required: false },
 ] as const
+
+function isValidImageUrl(value: string): boolean {
+  const url = value.trim()
+  try {
+    return /^https?:\/\//.test(new URL(url).href)
+  } catch {
+    return false
+  }
+}
 
 export function PerfilPage() {
   return (
@@ -272,7 +283,7 @@ function ProviderProfileEdit() {
   const updateProvider = useUpdateProviderProfile()
   const uploadDocument = useUploadDocument()
 
-  const { businessName, headline, bio, categories: providerCategories, serviceRadiusKm, city, lat, lng, documents } = provider.data ?? {
+  const { businessName, headline, bio, categories: providerCategories, serviceRadiusKm, city, lat, lng, documents, avatarUrl: avatarUrlInitial, galleryImages: providerGallery } = provider.data ?? {
     businessName: '',
     headline: null,
     bio: null,
@@ -282,7 +293,10 @@ function ProviderProfileEdit() {
     lat: null,
     lng: null,
     documents: [],
+    avatarUrl: null,
+    galleryImages: [],
   }
+  const providerServices = provider.data?.services ?? []
 
   const [form, setForm] = useState({
     businessName,
@@ -296,6 +310,23 @@ function ProviderProfileEdit() {
   )
   const [selectedCategoryIds, setSelectedCategoryIds] = useState(providerCategories.map((c) => c.id))
   const [files, setFiles] = useState<Partial<Record<'ID' | 'LICENSE' | 'CERTIFICATION', File>>>({})
+  const [servicePrices, setServicePrices] = useState<Record<string, string>>(() =>
+    Object.fromEntries(providerServices.map((s) => [s.id, s.priceFrom == null ? '' : String(s.priceFrom)])),
+  )
+  const [newService, setNewService] = useState({
+    title: '',
+    description: '',
+    categoryId: providerCategories[0]?.id ?? '',
+    unit: 'HOUR' as 'HOUR' | 'PROJECT',
+    price: '',
+  })
+  const [serviceDrafts, setServiceDrafts] = useState<
+    { key: string; title: string; categoryId: string; unit: 'HOUR' | 'PROJECT'; price: string }[]
+  >([])
+  const serviceTitleRef = useRef<HTMLInputElement>(null)
+  const [avatarUrl, setAvatarUrl] = useState(avatarUrlInitial ?? '')
+  const [gallery, setGallery] = useState<string[]>(providerGallery)
+  const [galleryUrl, setGalleryUrl] = useState('')
 
   if (provider.isLoading || !provider.data) return null
 
@@ -307,6 +338,37 @@ function ProviderProfileEdit() {
 
   function setFile(type: 'ID' | 'LICENSE' | 'CERTIFICATION', file: File | null) {
     setFiles((prev) => ({ ...prev, [type]: file ?? undefined }))
+  }
+
+  function addServiceDraft() {
+    if (!newService.title.trim() || !newService.categoryId) return
+    setServiceDrafts((prev) => [
+      ...prev,
+      {
+        key: crypto.randomUUID(),
+        title: newService.title.trim(),
+        categoryId: newService.categoryId,
+        unit: newService.unit,
+        price: newService.price.trim(),
+      },
+    ])
+    setNewService((prev) => ({ ...prev, title: '', description: '', price: '' }))
+    serviceTitleRef.current?.focus()
+  }
+
+  function removeServiceDraft(key: string) {
+    setServiceDrafts((prev) => prev.filter((d) => d.key !== key))
+  }
+
+  function addGalleryImage() {
+    const url = galleryUrl.trim()
+    if (!isValidImageUrl(url)) return
+    setGallery((prev) => [...prev, url])
+    setGalleryUrl('')
+  }
+
+  function removeGalleryImage(index: number) {
+    setGallery((prev) => prev.filter((_, i) => i !== index))
   }
 
   async function onSubmit(event: FormEvent) {
@@ -321,10 +383,25 @@ function ProviderProfileEdit() {
         city: form.city || undefined,
         lat: position ? position.lat : null,
         lng: position ? position.lng : null,
+        avatarUrl: avatarUrl.trim() === '' ? null : avatarUrl.trim(),
+        galleryImages: gallery.map((u) => u.trim()).filter(Boolean),
+        services: [
+          ...Object.entries(servicePrices).map(([id, price]) => ({
+            id,
+            priceFrom: price.trim() === '' ? null : Number(price),
+          })),
+          ...serviceDrafts.map((d) => ({
+            title: d.title,
+            categoryId: d.categoryId,
+            unit: d.unit,
+            priceFrom: d.price.trim() === '' ? null : Number(d.price),
+          })),
+        ],
       })
     } catch {
       return
     }
+    setServiceDrafts([])
     for (const [type, file] of Object.entries(files)) {
       if (file) {
         await uploadDocument.mutateAsync({ file, type })
@@ -411,6 +488,249 @@ function ProviderProfileEdit() {
         </Card>
 
         <Card className="p-5 sm:p-6">
+          <h2 className="font-display text-base font-semibold tracking-tight">{t('provider.servicesTitle')}</h2>
+          <p className="mt-1 text-xs text-ink-soft">{t('provider.servicesHint')}</p>
+          {providerServices.length === 0 ? (
+            <p className="mt-4 text-sm text-ink-soft">{t('provider.servicesEmpty')}</p>
+          ) : (
+            <ul className="mt-4 divide-y divide-line">
+              {providerServices.map((service) => (
+                <li key={service.id} className="flex items-center justify-between gap-3 py-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">{service.title}</p>
+                    {service.description && (
+                      <p className="mt-0.5 truncate text-xs text-ink-soft">{service.description}</p>
+                    )}
+                  </div>
+                  <div className="flex shrink-0 flex-col items-end gap-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-sm text-ink-soft">$</span>
+                      <Input
+                        type="number"
+                        inputMode="decimal"
+                        min={0}
+                        step="0.01"
+                        placeholder="0"
+                        aria-label={`${service.title} — ${t('provider.servicePrice')}`}
+                        className="h-9 w-24 text-right font-mono"
+                        value={servicePrices[service.id] ?? ''}
+                        onChange={(e) =>
+                          setServicePrices((prev) => ({ ...prev, [service.id]: e.target.value }))
+                        }
+                      />
+                      <span className="whitespace-nowrap font-mono text-xs text-ink-soft">
+                        / {t(`provider.serviceUnit${service.unit}`)}
+                      </span>
+                    </div>
+                    {(servicePrices[service.id] ?? '').trim() === '' && (
+                      <span className="font-mono text-[11px] uppercase tracking-wide text-ink-soft">
+                        {t('provider.serviceNoPrice')}
+                      </span>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <div className="mt-5 border-t border-line pt-4">
+            <h3 className="font-display text-sm font-semibold tracking-tight">
+              {t('provider.serviceAddTitle')}
+              {serviceDrafts.length > 0 && (
+                <span className="ml-2 font-mono text-xs text-ink-soft">({serviceDrafts.length})</span>
+              )}
+            </h3>
+            <p className="mt-1 text-xs text-ink-soft">{t('provider.serviceAddEntriesHint')}</p>
+            <div className="mt-3 grid gap-4 sm:grid-cols-2">
+              <Field label={t('provider.serviceName')} className="sm:col-span-2">
+                <Input
+                  ref={serviceTitleRef}
+                  type="text"
+                  maxLength={120}
+                  value={newService.title}
+                  onChange={(e) => setNewService({ ...newService, title: e.target.value })}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      addServiceDraft()
+                    }
+                  }}
+                />
+              </Field>
+              <Field label={t('provider.serviceCategory')}>
+                <select
+                  value={newService.categoryId}
+                  onChange={(e) => setNewService({ ...newService, categoryId: e.target.value })}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer"
+                >
+                  {providerCategories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <Field label={t('provider.serviceUnit')}>
+                <select
+                  value={newService.unit}
+                  onChange={(e) =>
+                    setNewService({ ...newService, unit: e.target.value as 'HOUR' | 'PROJECT' })
+                  }
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer"
+                >
+                  <option value="HOUR">{t('provider.serviceUnitHOUR')}</option>
+                  <option value="PROJECT">{t('provider.serviceUnitPROJECT')}</option>
+                </select>
+              </Field>
+              <Field label={`${t('provider.servicePrice')} (${t('common.optional')}) ($)`}>
+                <Input
+                  type="number"
+                  inputMode="decimal"
+                  min={0}
+                  step="0.01"
+                  placeholder="0"
+                  value={newService.price}
+                  onChange={(e) => setNewService({ ...newService, price: e.target.value })}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      addServiceDraft()
+                    }
+                  }}
+                />
+              </Field>
+              <div className="sm:col-span-2">
+                <Field label={`${t('provider.serviceDescription')} (${t('common.optional')})`}>
+                  <Textarea
+                    rows={2}
+                    maxLength={500}
+                    value={newService.description}
+                    onChange={(e) => setNewService({ ...newService, description: e.target.value })}
+                  />
+                </Field>
+              </div>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mt-4"
+              onClick={addServiceDraft}
+              disabled={!newService.title.trim() || !newService.categoryId}
+            >
+              {t('provider.serviceAddCta')}
+            </Button>
+
+            {serviceDrafts.length > 0 && (
+              <>
+                <ul className="mt-4 divide-y divide-line">
+                  {serviceDrafts.map((d) => (
+                    <li key={d.key} className="flex items-center justify-between gap-3 py-2.5">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium">{d.title}</p>
+                        <p className="truncate font-mono text-xs text-ink-soft">
+                        {d.price.trim() === ''
+                          ? t('provider.serviceNoPrice')
+                          : `$${d.price} / ${t(`provider.serviceUnit${d.unit}`)}`}
+                      </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeServiceDraft(d.key)}
+                        className="shrink-0 cursor-pointer rounded-control border border-line bg-panel px-2.5 py-1 text-xs font-medium text-clay hover:bg-moss-soft"
+                      >
+                        {t('provider.serviceRemove')}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-2 text-xs text-ink-soft">
+                  {serviceDrafts.length === 1
+                    ? t('provider.serviceDraftHint_one')
+                    : t('provider.serviceDraftHint', { count: serviceDrafts.length })}
+                </p>
+              </>
+            )}
+          </div>
+        </Card>
+
+        <Card className="p-5 sm:p-6">
+          <h2 className="font-display text-base font-semibold tracking-tight">{t('provider.imagesTitle')}</h2>
+          <p className="mt-1 text-xs text-ink-soft">{t('provider.imagesHint')}</p>
+
+          <div className="mt-4 grid gap-4 sm:grid-cols-[1fr_auto] sm:items-center">
+            <Field label={`${t('provider.avatarLabel')} (${t('common.optional')})`}>
+              <Input
+                type="url"
+                placeholder={t('provider.imagePlaceholder')}
+                value={avatarUrl}
+                onChange={(e) => setAvatarUrl(e.target.value)}
+              />
+            </Field>
+            <div className="flex justify-center">
+              <ImageThumb src={avatarUrl} alt="avatar" className="h-20 w-20 rounded-[10px]" />
+            </div>
+          </div>
+
+          <div className="mt-5 border-t border-line pt-4">
+            <h3 className="font-display text-sm font-semibold tracking-tight">
+              {t('provider.galleryTitle')}
+              {gallery.length > 0 && (
+                <span className="ml-2 font-mono text-xs text-ink-soft">({gallery.length})</span>
+              )}
+            </h3>
+            <p className="mt-1 text-xs text-ink-soft">{t('provider.galleryHint')}</p>
+
+            {gallery.length === 0 ? (
+              <p className="mt-3 text-sm text-ink-soft">{t('provider.imagesEmpty')}</p>
+            ) : (
+              <ul className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
+                {gallery.map((url, index) => (
+                  <li
+                    key={`${url}-${index}`}
+                    className="group relative overflow-hidden rounded-card border border-line"
+                  >
+                    <ImageThumb src={url} alt={`${t('provider.galleryTitle')} ${index + 1}`} className="aspect-video w-full" />
+                    <button
+                      type="button"
+                      onClick={() => removeGalleryImage(index)}
+                      className="absolute right-1.5 top-1.5 cursor-pointer rounded-control border border-line bg-panel/90 px-2 py-1 text-[11px] font-medium text-clay hover:bg-panel"
+                    >
+                      {t('provider.imageRemove')}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Input
+                type="url"
+                placeholder={t('provider.imagePlaceholder')}
+                value={galleryUrl}
+                onChange={(e) => setGalleryUrl(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    addGalleryImage()
+                  }
+                }}
+                className="sm:max-w-xs"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={!isValidImageUrl(galleryUrl)}
+                onClick={addGalleryImage}
+              >
+                {t('provider.imageAdd')}
+              </Button>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-5 sm:p-6">
           <h2 className="font-display text-base font-semibold tracking-tight">{t('provider.areaTitle')}</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <Field label={t('profile.city')}>
@@ -468,7 +788,7 @@ function ProviderProfileEdit() {
 
         {updateProvider.isError && (
           <Alert variant="destructive">
-            {t('errors.generic')}
+            {authErrorMessage(updateProvider.error, t)}
           </Alert>
         )}
 
@@ -550,3 +870,4 @@ function FileField({
     </div>
   )
 }
+

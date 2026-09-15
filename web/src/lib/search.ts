@@ -12,6 +12,7 @@ export interface ProviderSearchResult {
   city: string | null
   lat: number | null
   lng: number | null
+  avatarUrl: string | null
   distanceKm: number | null
   categories: { name: string; icon: string | null }[]
 }
@@ -19,9 +20,10 @@ export interface ProviderSearchResult {
 export interface PublicProviderDetail extends Omit<ProviderSearchResult, 'distanceKm'> {
   bio: string | null
   serviceRadiusKm: number
+  galleryImages: string[]
   categories: { id: string; name: string; icon: string | null }[]
   reviews: { id: string; rating: number; comment: string | null; createdAt: string; authorFirstName: string }[]
-  services: { id: string; title: string; description: string | null; priceFrom: number; unit: 'HOUR' | 'PROJECT' }[]
+  services: { id: string; title: string; description: string | null; priceFrom: number | null; unit: 'HOUR' | 'PROJECT' }[]
 }
 
 export type SortOption = 'distance' | 'rating' | 'bookings'

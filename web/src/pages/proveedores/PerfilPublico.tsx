@@ -7,6 +7,7 @@ import { getAccessToken } from '../../lib/api'
 import { useCreateBooking } from '../../lib/auth'
 import { authErrorMessage } from '../../lib/errors'
 import { StarRating } from '../../components/StarRating'
+import { ImageThumb } from '../../components/ImageThumb'
 
 export function PerfilPublicoPage() {
   return <PerfilPublicoContent />
@@ -49,9 +50,11 @@ function PerfilPublicoContent() {
       {/* Cabecera tipo ficha */}
       <Card className="overflow-hidden">
         <div className="flex items-start gap-4 border-b border-line px-5 py-5 sm:px-6">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[10px] bg-moss-soft font-display text-xl font-semibold text-moss">
-            {p.businessName.charAt(0).toUpperCase()}
-          </div>
+          <ImageThumb
+            src={p.avatarUrl ?? ''}
+            alt={p.businessName}
+            className="h-14 w-14 shrink-0 rounded-[10px] text-xl font-semibold"
+          />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="font-display text-xl font-semibold tracking-tight">{p.businessName}</h1>
@@ -96,6 +99,22 @@ function PerfilPublicoContent() {
         </Card>
       )}
 
+      {p.galleryImages.length > 0 && (
+        <Card className="mt-6 p-5 sm:p-6" data-testid="gallery-section">
+          <h2 className="font-display text-base font-semibold tracking-tight">{t('public.galleryTitle')}</h2>
+          <div className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-3">
+            {p.galleryImages.map((url, index) => (
+              <ImageThumb
+                key={`${url}-${index}`}
+                src={url}
+                alt={`${p.businessName} ${index + 1}`}
+                className="aspect-video w-full rounded-card border border-line"
+              />
+            ))}
+          </div>
+        </Card>
+      )}
+
       {/* Servicios con precio en mono */}
       <Card className="mt-6 p-5 sm:p-6">
         <h2 className="font-display text-base font-semibold tracking-tight">{t('public.servicesTitle')}</h2>
@@ -112,13 +131,19 @@ function PerfilPublicoContent() {
                   )}
                 </div>
                 <span className="shrink-0 font-mono text-sm">
-                  ${service.priceFrom.toFixed(2)}
-                  <span className="text-xs text-ink-soft">
-                    {' '}
-                    / {i18n.language.startsWith('en')
-                      ? service.unit === 'HOUR' ? 'hr' : 'project'
-                      : service.unit === 'HOUR' ? 'hora' : 'proyecto'}
-                  </span>
+                  {service.priceFrom == null ? (
+                    t('public.priceOnRequest')
+                  ) : (
+                    <>
+                      ${service.priceFrom.toFixed(2)}
+                      <span className="text-xs text-ink-soft">
+                        {' '}
+                        / {i18n.language.startsWith('en')
+                          ? service.unit === 'HOUR' ? 'hr' : 'project'
+                          : service.unit === 'HOUR' ? 'hora' : 'proyecto'}
+                      </span>
+                    </>
+                  )}
                 </span>
               </li>
             ))}
@@ -172,7 +197,7 @@ function PerfilPublicoContent() {
 function RequestServiceSection({
   services,
 }: {
-  services: { id: string; title: string; priceFrom: number; unit: 'HOUR' | 'PROJECT' }[]
+  services: { id: string; title: string; priceFrom: number | null; unit: 'HOUR' | 'PROJECT' }[]
 }) {
   const { t, i18n } = useTranslation()
   const createBooking = useCreateBooking()
@@ -258,11 +283,12 @@ function RequestServiceSection({
           >
             {services.map((s) => (
               <option key={s.id} value={s.id}>
-                {s.title} — ${s.priceFrom.toFixed(2)}
-                {' '}
-                {i18n.language.startsWith('en')
-                  ? s.unit === 'HOUR' ? '/hr' : '/project'
-                  : s.unit === 'HOUR' ? '/hora' : '/proyecto'}
+                {s.title} —{' '}
+                {s.priceFrom == null
+                  ? t('public.priceOnRequest')
+                  : `$${s.priceFrom.toFixed(2)} ${i18n.language.startsWith('en')
+                      ? s.unit === 'HOUR' ? '/hr' : '/project'
+                      : s.unit === 'HOUR' ? '/hora' : '/proyecto'}`}
               </option>
             ))}
           </select>

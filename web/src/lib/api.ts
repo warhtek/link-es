@@ -178,6 +178,16 @@ export const api = {
     serviceRadiusKm?: number
     lat?: number | null
     lng?: number | null
+    avatarUrl?: string | null
+    galleryImages?: string[]
+    services?: {
+      id?: string
+      title?: string
+      description?: string | null
+      priceFrom?: number | null
+      unit?: 'HOUR' | 'PROJECT'
+      categoryId?: string
+    }[]
   }) => request<ProviderProfile>('/providers/me', { method: 'PATCH', body: JSON.stringify(input) }),
   uploadDocument: (file: File, type: string) => {
     const form = new FormData()
@@ -274,7 +284,7 @@ interface BookingBase {
   address: string
   notes: string | null
   createdAt: string
-  service: { id: string; title: string; priceFrom: number; unit: 'HOUR' | 'PROJECT' }
+  service: { id: string; title: string; priceFrom: number | null; unit: 'HOUR' | 'PROJECT' }
 }
 
 export interface ClientBooking extends BookingBase {
@@ -305,11 +315,23 @@ export interface VerificationDocument {
   createdAt: string
 }
 
+export interface ProviderService {
+  id: string
+  title: string
+  description: string | null
+  priceFrom: number | null
+  unit: 'HOUR' | 'PROJECT'
+  active: boolean
+  createdAt: string
+}
+
 export interface ProviderProfile {
   id: string
   businessName: string
   headline: string | null
   bio: string | null
+  avatarUrl: string | null
+  galleryImages: string[]
   verificationStatus: 'NONE' | 'PENDING' | 'VERIFIED'
   serviceRadiusKm: number
   city: string | null
@@ -317,6 +339,7 @@ export interface ProviderProfile {
   lng: number | null
   documents: VerificationDocument[]
   categories: CategoryNode[]
+  services: ProviderService[]
 }
 
 interface OnboardingResponse extends SessionResponse {

@@ -80,7 +80,7 @@ bookingRouter.get('/', async (req, res) => {
     })
     res.json(bookings.map(({ client, service, conversation, review, ...b }) => ({
       ...b,
-      service: { ...service, priceFrom: Number(service.priceFrom) },
+      service: { ...service, priceFrom: service.priceFrom == null ? null : Number(service.priceFrom) },
       clientName: client.name,
       conversationId: conversation?.id ?? null,
       myRating: review?.rating ?? null,
@@ -98,7 +98,7 @@ bookingRouter.get('/', async (req, res) => {
     })
     res.json(bookings.map(({ provider, service, conversation, review, ...b }) => ({
       ...b,
-      service: { ...service, priceFrom: Number(service.priceFrom) },
+      service: { ...service, priceFrom: service.priceFrom == null ? null : Number(service.priceFrom) },
       providerBusinessName: provider.businessName,
       providerId: provider.id,
       conversationId: conversation?.id ?? null,

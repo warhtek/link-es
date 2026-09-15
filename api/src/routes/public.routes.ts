@@ -24,6 +24,7 @@ interface SearchRow {
   city: string | null
   lat: number | null
   lng: number | null
+  avatarUrl: string | null
   distanceKm: number | null
 }
 
@@ -93,6 +94,7 @@ publicProviderRouter.get('/', async (req: Request, res: Response) => {
     SELECT p.id, p."businessName", p.headline, p."verificationStatus",
            p."ratingAvg", p."ratingCount", u.city,
            p."serviceAreaLat" AS lat, p."serviceAreaLng" AS lng,
+           p."avatarUrl" AS "avatarUrl",
            ${lat !== undefined && lng !== undefined ? distanceExpr(String(lat), String(lng)) : Prisma.sql`NULL::float8`} AS "distanceKm"
     FROM provider_profiles p
     JOIN users u ON u.id = p."userId"
@@ -123,6 +125,7 @@ publicProviderRouter.get('/', async (req: Request, res: Response) => {
       city: row.city,
       lat: row.lat,
       lng: row.lng,
+      avatarUrl: row.avatarUrl,
       distanceKm: row.distanceKm == null ? null : Number(row.distanceKm),
       categories: catRows
         .filter((c) => c.B === row.id)
@@ -140,6 +143,8 @@ publicProviderRouter.get('/:id', async (req: Request, res: Response) => {
       businessName: true,
       headline: true,
       bio: true,
+      avatarUrl: true,
+      galleryImages: true,
       verificationStatus: true,
       ratingAvg: true,
       ratingCount: true,
@@ -160,7 +165,7 @@ publicProviderRouter.get('/:id', async (req: Request, res: Response) => {
       services: {
         where: { active: true },
         select: { id: true, title: true, description: true, priceFrom: true, unit: true },
-        orderBy: { priceFrom: 'asc' },
+        orderBy: [{ priceFrom: { sort: 'asc', nulls: 'last' } }],
       },
     },
   })
@@ -173,6 +178,8 @@ publicProviderRouter.get('/:id', async (req: Request, res: Response) => {
     businessName: profile.businessName,
     headline: profile.headline,
     bio: profile.bio,
+    avatarUrl: profile.avatarUrl,
+    galleryImages: profile.galleryImages,
     verificationStatus: profile.verificationStatus,
     ratingAvg: profile.ratingAvg,
     ratingCount: profile.ratingCount,
@@ -187,6 +194,9 @@ publicProviderRouter.get('/:id', async (req: Request, res: Response) => {
       createdAt: r.createdAt,
       authorFirstName: r.client.name.split(' ')[0],
     })),
-    services: profile.services.map((s) => ({ ...s, priceFrom: Number(s.priceFrom) })),
+    services: profile.services.map((s) => ({
+      ...s,
+      priceFrom: s.priceFrom == null ? null : Number(s.priceFrom),
+    })),
   })
 })

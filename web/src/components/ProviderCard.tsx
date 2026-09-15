@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { formatDistance, type ProviderSearchResult } from '../lib/search'
+import { ImageThumb } from './ImageThumb'
 
 // Ficha de directorio (plan sección 3): borde 1px sin sombra, distancia como dato ancla.
 export function ProviderCard({
@@ -25,9 +26,11 @@ export function ProviderCard({
       }`}
     >
       <div className="flex items-center gap-3 border-b border-line px-4 py-3.5">
-        <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-[10px] bg-moss-soft font-semibold text-moss">
-          {provider.businessName.charAt(0).toUpperCase()}
-        </div>
+        <ImageThumb
+          src={provider.avatarUrl ?? ''}
+          alt={provider.businessName}
+          className="h-13 w-13 shrink-0 rounded-[10px] font-semibold"
+        />
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline justify-between gap-2">
             <b className="truncate text-sm font-semibold">{provider.businessName}</b>

@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import { randomBytes } from 'node:crypto'
 import { PrismaClient, DocumentStatus, DocumentType, VerificationStatus, Plan, SubscriptionStatus } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
@@ -65,6 +66,8 @@ type ProviderSeed = {
   headline: string
   bio: string
   verificationStatus: VerificationStatus
+  avatarUrl?: string
+  galleryImages?: string[]
   lat: number
   lng: number
   radiusKm: number
@@ -85,6 +88,11 @@ const providers: ProviderSeed[] = [
     headline: 'Reparaciones de fugas e instalaciones en el día',
     bio: 'Más de 12 años resolviendo emergencias de plomería en colonias de San Salvador. Trabajo limpio y con garantía escrita.',
     verificationStatus: VerificationStatus.VERIFIED,
+    avatarUrl: 'https://placehold.co/400x400/1D4ED8/FFFFFF.png?text=Plomeria+Lopez',
+    galleryImages: [
+      'https://placehold.co/600x400/E2E8F0/0F172A.png?text=Reparacion+de+fugas',
+      'https://placehold.co/600x400/E2E8F0/0F172A.png?text=Instalaciones+de+WC',
+    ],
     lat: 13.689,
     lng: -89.238,
     radiusKm: 8,
@@ -109,6 +117,11 @@ const providers: ProviderSeed[] = [
     headline: 'Certificado, trabajos con seguro y factura',
     bio: 'Instalaciones eléctricas residenciales y comerciales. Revisión de paneles, tomacorrientes y alumbrado.',
     verificationStatus: VerificationStatus.VERIFIED,
+    avatarUrl: 'https://placehold.co/400x400/1D4ED8/FFFFFF.png?text=Electricista+CR',
+    galleryImages: [
+      'https://placehold.co/600x400/E2E8F0/0F172A.png?text=Paneles+electricos',
+      'https://placehold.co/600x400/E2E8F0/0F172A.png?text=Alumbrado',
+    ],
     lat: 13.695,
     lng: -89.235,
     radiusKm: 10,
@@ -131,6 +144,11 @@ const providers: ProviderSeed[] = [
     headline: 'Matemáticas y física para bachillerato y universidad',
     bio: 'Licenciada en Educación Matemática. Clases personalizadas presenciales o en línea, con seguimiento semanal.',
     verificationStatus: VerificationStatus.VERIFIED,
+    avatarUrl: 'https://placehold.co/400x400/1D4ED8/FFFFFF.png?text=Matematicas+con+Ana',
+    galleryImages: [
+      'https://placehold.co/600x400/E2E8F0/0F172A.png?text=Clases+presenciales',
+      'https://placehold.co/600x400/E2E8F0/0F172A.png?text=Clases+en+linea',
+    ],
     lat: 13.664,
     lng: -89.254,
     radiusKm: 15,
@@ -150,6 +168,10 @@ const providers: ProviderSeed[] = [
     headline: 'Muebles a medida y reparación de puertas',
     bio: 'Carpintería tradicional y moderna. Muebles de melamina y madera sólida hechos a medida.',
     verificationStatus: VerificationStatus.PENDING,
+    avatarUrl: 'https://placehold.co/400x400/1D4ED8/FFFFFF.png?text=Carpinteria+Don+Jorge',
+    galleryImages: [
+      'https://placehold.co/600x400/E2E8F0/0F172A.png?text=Muebles+a+medida',
+    ],
     lat: 13.71,
     lng: -89.14,
     radiusKm: 12,
@@ -168,6 +190,11 @@ const providers: ProviderSeed[] = [
     headline: 'Peinados y uñas a domicilio para eventos',
     bio: 'Estilista profesional con 8 años de experiencia en novias, quinceañeras y eventos sociales.',
     verificationStatus: VerificationStatus.VERIFIED,
+    avatarUrl: 'https://placehold.co/400x400/1D4ED8/FFFFFF.png?text=Belleza+Rosa',
+    galleryImages: [
+      'https://placehold.co/600x400/E2E8F0/0F172A.png?text=Peinados+para+novias',
+      'https://placehold.co/600x400/E2E8F0/0F172A.png?text=Manicura+en+gel',
+    ],
     lat: 13.677,
     lng: -89.273,
     radiusKm: 20,
@@ -188,6 +215,11 @@ const providers: ProviderSeed[] = [
     headline: 'Computadoras lentas, virus y formateos el mismo día',
     bio: 'Técnico certificado. Mantenimiento preventivo, limpieza de virus, instalación de programas y respaldo de información.',
     verificationStatus: VerificationStatus.NONE,
+    avatarUrl: 'https://placehold.co/400x400/1D4ED8/FFFFFF.png?text=Soporte+LP',
+    galleryImages: [
+      'https://placehold.co/600x400/E2E8F0/0F172A.png?text=Mantenimiento+PC',
+      'https://placehold.co/600x400/E2E8F0/0F172A.png?text=Limpieza+de+virus',
+    ],
     lat: 13.7,
     lng: -89.21,
     radiusKm: 6,
@@ -206,6 +238,11 @@ const providers: ProviderSeed[] = [
     headline: 'Sesiones de retrato y cobertura de eventos',
     bio: 'Fotógrafa freelance. Entrega de fotos editadas en 72 horas, galería privada en línea.',
     verificationStatus: VerificationStatus.VERIFIED,
+    avatarUrl: 'https://placehold.co/400x400/1D4ED8/FFFFFF.png?text=Fotografia+Sofia',
+    galleryImages: [
+      'https://placehold.co/600x400/E2E8F0/0F172A.png?text=Retrato+de+graduacion',
+      'https://placehold.co/600x400/E2E8F0/0F172A.png?text=Cobertura+de+eventos',
+    ],
     lat: 13.693,
     lng: -89.193,
     radiusKm: 30,
@@ -226,6 +263,11 @@ const providers: ProviderSeed[] = [
     headline: 'Pintura de casas y locales con acabado garantizado',
     bio: 'Cuadrilla de tres personas. Protegemos muebles y pisos, entregamos limpio y a tiempo.',
     verificationStatus: VerificationStatus.PENDING,
+    avatarUrl: 'https://placehold.co/400x400/1D4ED8/FFFFFF.png?text=Pintura+Profesional+MS',
+    galleryImages: [
+      'https://placehold.co/600x400/E2E8F0/0F172A.png?text=Pintura+de+cuartos',
+      'https://placehold.co/600x400/E2E8F0/0F172A.png?text=Acabado+garantizado',
+    ],
     lat: 13.68,
     lng: -89.17,
     radiusKm: 14,
@@ -237,6 +279,10 @@ const providers: ProviderSeed[] = [
     ],
   },
 ]
+
+async function bookingCode() {
+  return `BK-${randomBytes(3).toString('hex').toUpperCase()}`
+}
 
 async function main() {
   // Limpieza en orden inverso de dependencias (seed de desarrollo, no incremental)
@@ -327,6 +373,8 @@ async function main() {
             businessName: p.businessName,
             headline: p.headline,
             bio: p.bio,
+            avatarUrl: p.avatarUrl ?? null,
+            galleryImages: p.galleryImages ?? [],
             verificationStatus: p.verificationStatus,
             serviceAreaLat: p.lat,
             serviceAreaLng: p.lng,
@@ -387,6 +435,7 @@ async function main() {
           scheduledAt: new Date(Date.now() - (i + 1) * 7 * 24 * 3600 * 1000),
           address: client.city === 'Santa Tecla' ? 'Residencial La Esperanza, Santa Tecla' : 'Colonia Escalón, San Salvador',
           notes: 'Reserva generada por el seed',
+          code: await bookingCode(),
         },
       })
       await prisma.review.create({
