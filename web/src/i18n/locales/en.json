@@ -56,7 +56,11 @@
 "reviewsTitle": "Reviews",
     "noReviews": "No reviews yet.",
     "reviewsVerifiedNote": "Only clients with a completed service can review providers.",
-    "galleryTitle": "Work gallery"
+    "galleryTitle": "Work gallery",
+    "lightboxClose": "Close enlarged view",
+    "lightboxPrev": "Previous image",
+    "lightboxNext": "Next image",
+    "lightboxCounter": "{{current}} of {{total}}"
   },
   "common": {
     "optional": "optional",

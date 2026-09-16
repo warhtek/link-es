@@ -6,6 +6,7 @@ import { Button, Card, Input, Textarea, Field, Alert, Badge } from '@/components
 import { useLogout, useMe, useProviderMe, useSwitchMode, useUpdateProfile, useUploadDocument, useUpdateProviderProfile, useCategories } from '../lib/auth'
 import { LocationPicker } from '../components/LocationPicker'
 import { ImageThumb } from '../components/ImageThumb'
+import { GalleryLightbox } from '../components/GalleryLightbox'
 import { authErrorMessage } from '../lib/errors'
 import type { PublicUser } from '../lib/auth'
 import type { CategoryNode } from '../lib/api'
@@ -327,6 +328,7 @@ function ProviderProfileEdit() {
   const [avatarUrl, setAvatarUrl] = useState(avatarUrlInitial ?? '')
   const [gallery, setGallery] = useState<string[]>(providerGallery)
   const [galleryUrl, setGalleryUrl] = useState('')
+  const [galleryLightbox, setGalleryLightbox] = useState<number | null>(null)
 
   if (provider.isLoading || !provider.data) return null
 
@@ -690,7 +692,14 @@ function ProviderProfileEdit() {
                     key={`${url}-${index}`}
                     className="group relative overflow-hidden rounded-card border border-line"
                   >
-                    <ImageThumb src={url} alt={`${t('provider.galleryTitle')} ${index + 1}`} className="aspect-video w-full" />
+                    <button
+                      type="button"
+                      onClick={() => setGalleryLightbox(index)}
+                      className="block w-full cursor-pointer text-left"
+                      aria-label={`${t('provider.galleryTitle')} ${index + 1}`}
+                    >
+                      <ImageThumb src={url} alt={`${t('provider.galleryTitle')} ${index + 1}`} className="aspect-video w-full" />
+                    </button>
                     <button
                       type="button"
                       onClick={() => removeGalleryImage(index)}
@@ -808,6 +817,12 @@ function ProviderProfileEdit() {
           )}
         </div>
       </form>
+      <GalleryLightbox
+        images={gallery}
+        index={galleryLightbox}
+        onClose={() => setGalleryLightbox(null)}
+        onNavigate={setGalleryLightbox}
+      />
     </Card>
   )
 }

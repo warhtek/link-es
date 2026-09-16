@@ -56,7 +56,11 @@
     "reviewsTitle": "Reseñas",
     "noReviews": "Aún no tiene reseñas.",
     "reviewsVerifiedNote": "Solo pueden reseñar clientes con un servicio completado en la plataforma.",
-    "galleryTitle": "Galería de trabajos"
+    "galleryTitle": "Galería de trabajos",
+    "lightboxClose": "Cerrar vista ampliada",
+    "lightboxPrev": "Imagen anterior",
+    "lightboxNext": "Imagen siguiente",
+    "lightboxCounter": "{{current}} de {{total}}"
   },
   "common": {
     "optional": "opcional",

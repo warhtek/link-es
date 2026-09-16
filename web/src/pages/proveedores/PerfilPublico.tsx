@@ -8,6 +8,7 @@ import { useCreateBooking } from '../../lib/auth'
 import { authErrorMessage } from '../../lib/errors'
 import { StarRating } from '../../components/StarRating'
 import { ImageThumb } from '../../components/ImageThumb'
+import { GalleryLightbox } from '../../components/GalleryLightbox'
 
 export function PerfilPublicoPage() {
   return <PerfilPublicoContent />
@@ -17,6 +18,7 @@ function PerfilPublicoContent() {
   const { t, i18n } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const provider = usePublicProvider(id)
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
 
   if (provider.isPending) {
     return (
@@ -105,12 +107,19 @@ function PerfilPublicoContent() {
           <h2 className="font-display text-base font-semibold tracking-tight">{t('public.galleryTitle')}</h2>
           <div className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-3">
             {p.galleryImages.map((url, index) => (
-              <ImageThumb
+              <button
                 key={`${url}-${index}`}
-                src={url}
-                alt={`${p.businessName} ${index + 1}`}
-                className="aspect-video w-full rounded-card border border-line"
-              />
+                type="button"
+                onClick={() => setLightboxIndex(index)}
+                className="cursor-pointer overflow-hidden rounded-card border border-line text-left transition-colors hover:border-moss/60"
+                aria-label={`${t('public.galleryTitle')} ${index + 1}`}
+              >
+                <ImageThumb
+                  src={url}
+                  alt={`${p.businessName} ${index + 1}`}
+                  className="aspect-video w-full"
+                />
+              </button>
             ))}
           </div>
         </Card>
@@ -191,6 +200,13 @@ function PerfilPublicoContent() {
         </Card>
 
       <RequestServiceSection services={p.services} />
+
+      <GalleryLightbox
+        images={p.galleryImages}
+        index={lightboxIndex}
+        onClose={() => setLightboxIndex(null)}
+        onNavigate={setLightboxIndex}
+      />
     </main>
   )
 }
