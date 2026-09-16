@@ -2,6 +2,7 @@ import { Router, type Request, type Response } from 'express'
 import { z } from 'zod'
 import { Prisma } from '@prisma/client'
 import { prisma } from '../lib/prisma.js'
+import { resolveImageUrl } from '../lib/external-image.js'
 
 export const publicProviderRouter = Router()
 
@@ -132,6 +133,22 @@ publicProviderRouter.get('/', async (req: Request, res: Response) => {
         .map((c) => ({ name: c.name, icon: c.icon })),
     })),
   )
+})
+
+// Resuelve un enlace de compartir (Google Photos, Drive, Dropbox) hacia una URL
+// directa de imagen. El frontend la usa para renderizar <img> de galerías.
+publicProviderRouter.get('/image-url', async (req: Request, res: Response) => {
+  const parsed = z.object({ u: z.string().trim().min(1).max(1000) }).safeParse(req.query)
+  if (!parsed.success) {
+    res.status(400).json({ error: 'validation_error', issues: parsed.error.flatten() })
+    return
+  }
+  const resolved = await resolveImageUrl(parsed.data.u)
+  if (!resolved) {
+    res.status(422).json({ error: 'unresolvable_image_url' })
+    return
+  }
+  res.json({ url: resolved })
 })
 
 publicProviderRouter.get('/:id', async (req: Request, res: Response) => {

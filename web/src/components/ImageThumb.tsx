@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { normalizeImageUrl } from '../lib/image'
+import { useEffect, useState } from 'react'
+import { resolveImageUrl } from '../lib/resolveImage'
 
 export function ImageThumb({
   src,
@@ -15,9 +15,21 @@ export function ImageThumb({
   // Solo recuerda el error de la URL concreta: si el enlace cambia
   // (p. ej. al editarlo en el formulario) se reintenta la carga.
   const [failedSrc, setFailedSrc] = useState<string | null>(null)
+  const [resolvedUrl, setResolvedUrl] = useState<string | null>(null)
   const trimmed = src.trim()
 
-  if (!trimmed || failedSrc === trimmed) {
+  useEffect(() => {
+    let active = true
+    setResolvedUrl(null)
+    resolveImageUrl(trimmed).then((url) => {
+      if (active) setResolvedUrl(url)
+    })
+    return () => {
+      active = false
+    }
+  }, [trimmed])
+
+  if (!trimmed || failedSrc === resolvedUrl || resolvedUrl === null) {
     return (
       <div
         className={`flex items-center justify-center bg-moss-soft font-display text-sm text-moss ${className ?? ''}`}
@@ -28,12 +40,12 @@ export function ImageThumb({
   }
   return (
     <img
-      key={trimmed}
-      src={normalizeImageUrl(trimmed)}
+      key={resolvedUrl}
+      src={resolvedUrl}
       alt={alt}
       loading="lazy"
       referrerPolicy="no-referrer"
-      onError={() => setFailedSrc(trimmed)}
+      onError={() => setFailedSrc(resolvedUrl)}
       className={`object-${fit} ${className ?? ''}`}
     />
   )
