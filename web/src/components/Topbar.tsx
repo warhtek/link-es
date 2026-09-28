@@ -243,7 +243,8 @@ export function Topbar() {
           aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen((o) => !o)}
-          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-line bg-paper text-ink-soft hover:bg-moss-soft/60 md:hidden"
+          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-line bg-paper text-ink-soft hover:bg-moss-soft/60 md:hidden touch-manipulation"
+          style={{ touchAction: 'manipulation' }}
         >
           {menuOpen ? (
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -263,7 +264,8 @@ export function Topbar() {
       {/* Menú desplegable móvil */}
       {menuOpen && (
         <nav
-          className="sticky top-[53px] z-10 flex flex-col border-b border-line bg-panel px-4 py-2 md:hidden"
+          className="fixed top-0 left-0 right-0 z-50 flex flex-col border-b border-line bg-panel px-4 py-2 md:hidden"
+          style={{ top: '53px', maxHeight: 'calc(100vh - 53px)', overflowY: 'auto' }}
           aria-label={t('nav.mobileMenu')}
         >
           {navLinks.filter((l) => l.show).map((l) => (
