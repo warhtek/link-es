@@ -12,12 +12,11 @@ export function ThemeTileLayer() {
     return () => observer.disconnect()
   }, [])
 
-  const dark = theme === 'dark'
   return (
     <TileLayer
       key={theme}
       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      url={dark ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'}
+      url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
     />
   )
 }
