@@ -64,7 +64,9 @@ export function Topbar() {
   const me = useMe()
   const logout = useLogout()
   const updateProfile = useUpdateProfile()
-  const user = getAccessToken() ? me.data : undefined
+  const hasToken = Boolean(getAccessToken())
+  const user = hasToken && !me.isLoading ? me.data : undefined
+  const isAuthLoading = hasToken && me.isLoading
 
   useEffect(() => {
     const observer = new MutationObserver(() => {
@@ -93,8 +95,8 @@ export function Topbar() {
 
   const navLinks = [
     { to: '/buscar', label: t('nav.search'), show: true },
-    { to: '/mensajes', label: t('nav.messages'), show: !!user },
-    { to: '/reservas', label: t('nav.bookings'), show: !!user },
+    { to: '/mensajes', label: t('nav.messages'), show: hasToken },
+    { to: '/reservas', label: t('nav.bookings'), show: hasToken },
     { to: '/proveedor/solicitudes', label: t('nav.requests'), show: !!(user?.roles.includes('PROVIDER')) },
     { to: '/admin', label: t('nav.admin'), show: !!(user?.roles.includes('ADMIN')) },
   ]
@@ -177,7 +179,15 @@ export function Topbar() {
           {resolved}
         </span>
 
-        {user ? (
+        {isAuthLoading ? (
+          <div className="flex shrink-0 items-center gap-1 rounded-lg border border-line bg-paper p-0.5" data-testid="session-loading">
+            <div className="flex items-center gap-2 rounded-md px-2 py-1">
+              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-moss/20 animate-pulse">
+                <div className="h-2.5 w-2.5 rounded-full bg-moss/40 animate-pulse" />
+              </div>
+            </div>
+          </div>
+        ) : user ? (
           <div
             className="flex shrink-0 items-center gap-1 rounded-lg border border-line bg-paper p-0.5"
             data-testid="session-user"
